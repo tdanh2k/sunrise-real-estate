@@ -6,12 +6,16 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "tsx watch src/app.ts"
+    "dev": "tsx watch src/app.ts",
+    "db-pull": "prisma db pull",
+    "generate-client": "prisma generate",
+    "env-pull": "pnpm dlx dotenv-vault@latest pull"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "5.10.2",
     "@trpc/server": "11.0.0-next-beta.299",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

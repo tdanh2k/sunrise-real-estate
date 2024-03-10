@@ -12,7 +12,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@tanstack/react-query": "^5.25.0",
-    "@tanstack/react-router": "^1.19.2",
+    "@tanstack/react-router": "^1.19.4",
     "@trpc/client": "11.0.0-next-beta.299",
     "@trpc/react-query": "11.0.0-next-beta.299",
     "react": "^18.2.0",
@@ -24,8 +24,8 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.20.1",
     "@tanstack/react-query-devtools": "^5.25.0",
-    "@tanstack/router-devtools": "^1.19.2",
-    "@tanstack/router-vite-plugin": "^1.19.2",
+    "@tanstack/router-devtools": "^1.19.4",
+    "@tanstack/router-vite-plugin": "^1.19.5",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@types/react-image-gallery": "^1.2.4",
