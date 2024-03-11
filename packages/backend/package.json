@@ -9,6 +9,7 @@
     "dev": "tsx watch src/app.ts",
     "db-pull": "prisma db pull",
     "generate-client": "prisma generate",
+    "prisma-studio": "prisma studio",
     "env-pull": "dotenv-vault pull",
     "env-push": "dotenv-vault push",
     "env-open": "dotenv-vault open"
