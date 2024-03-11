@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 
 const TanStackRouterDevtools =
   //process.env?.["NODE_ENV"] === "production"
-  import.meta.env.DEV
+  import.meta.env.PROD
     ? () => null // Render nothing in production
     : lazy(() =>
         // Lazy load in development
