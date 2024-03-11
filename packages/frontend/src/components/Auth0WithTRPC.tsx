@@ -16,12 +16,12 @@ const queryClient = new QueryClient({
 
 export const Auth0WithTRPC: FC<{ children?: ReactNode }> = ({ children }) => (
   <Auth0Provider
-    domain="dev-ofnrpe1wby52d4ok.us.auth0.com"
-    clientId="9sJEcD99x0KKiaBxlBxnwzCaO1C4OEqo"
+    domain={import.meta.env.VITE_AUTH0_DOMAIN}
+    clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
     useCookiesForTransactions
     authorizationParams={{
       redirect_uri: window.location.origin,
-      audience: "http://localhost:3000",
+      audience: import.meta.env.VITE_AUTH0_AUDIENCE,
     }}
   >
     <Auth0Context.Consumer>

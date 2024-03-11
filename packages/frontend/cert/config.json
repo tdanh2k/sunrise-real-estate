@@ -4,13 +4,12 @@
     "hosts": [
       "localhost",
       "192.168.1.198",
-      "192.168.137.1",
       "127.0.0.1",
-      "172.20.160.1"
+      "172.31.48.1"
     ],
     "hash": {
-      "key": "783f27456f7986cb1cfab6709a5d79d75acaf49edba47c37c98cbfae91ec03d3",
-      "cert": "37f7dbb4405e045c3ae442206b979c086c752391863a4d933119617cdfde0f29"
+      "key": "2cf1d57d99ede480952f4b40ee6612c79e87bb5e285e419174c9b0e54910570a",
+      "cert": "1d820dcfb3267795c78152991830b51070ece543d58f7fdabbeb14f12ce947c6"
     }
   },
   "configFilePath": "D:\\Personal\\sunrise-real-estate\\packages\\frontend\\cert\\config.json"
