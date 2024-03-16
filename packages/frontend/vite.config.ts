@@ -11,7 +11,7 @@ export default defineConfig({
     TanStackRouterVite(),
     mkcert({
       autoUpgrade: true,
-      savePath: "./cert",
+      //savePath: "./cert",
       keyFileName: "key.pem",
       certFileName: "cert.pem",
     }),
