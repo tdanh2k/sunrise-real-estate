@@ -9,7 +9,8 @@ import {
   RequiredUUID,
 } from "../utils/ZodUtils";
 
-export const AddPostSchema = z.object({
+export const PostSchema = z.object({
+  Id: RequiredUUID,
   Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
@@ -19,6 +20,8 @@ export const AddPostSchema = z.object({
   MapUrl: RequiredURL,
   PostCurrentDetail: z.array(
     z.object({
+      Id: RequiredUUID,
+      PostId: RequiredUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
@@ -27,15 +30,19 @@ export const AddPostSchema = z.object({
   ),
   PostFeature: z.array(
     z.object({
+      Id: RequiredUUID,
+      PostId: RequiredUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalDate,
     })
   ),
   PostImage: z.array(z.object({
+    Id: RequiredUUID,
     Name: RequiredString,
     Size: NonNegativeIntegerNumber,
     Path: RequiredString,
+    PostId: RequiredUUID,
     MimeType: OptionalString,
     CreatedDate: OptionalDate,
   }))

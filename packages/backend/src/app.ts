@@ -7,11 +7,7 @@ import helmet from "helmet";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/not-found.middleware.js";
 import cors from "cors";
-
-const createContext = ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions) => ({}); // no context
+import { createTRPCContext } from "./routers/context";
 
 const app = express();
 const port = 3000;
@@ -53,7 +49,7 @@ app.use(
   //checkRequiredPermissions(["use:trpc"]),
   trpcExpress.createExpressMiddleware({
     router: appRouter,
-    createContext,
+    createContext: createTRPCContext,
   })
 );
 

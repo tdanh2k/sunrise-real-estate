@@ -18,8 +18,6 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      { find: "@client", replacement: path.resolve(__dirname, "src/client") },
-      { find: "@manage", replacement: path.resolve(__dirname, "src/manage") },
       {
         find: "@routes",
         replacement: path.resolve(__dirname, "src/routes"),

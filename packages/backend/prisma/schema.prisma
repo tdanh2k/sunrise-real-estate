@@ -8,89 +8,122 @@ datasource db {
 }
 
 model DraftPost {
-  Id                    String                  @id(map: "DraftPost_PK") @db.UniqueIdentifier
-  Idx                   Int                     @default(autoincrement())
-  Code                  String?                 @db.VarChar(100)
-  Title                 String                  @db.NVarChar(255)
-  Description           String                  @db.NVarChar(Max)
-  UserId                String                  @db.VarChar(255)
-  TypeId                String                  @db.UniqueIdentifier
-  CreatedDate           DateTime?               @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftPost__Creat__6EF57B66") @db.DateTimeOffset
-  PostType              PostType                @relation(fields: [Id], references: [Id], onUpdate: NoAction, map: "DraftPost_PostType_FK")
-  DraftPostCurrentParam DraftPostCurrentParam[]
-  DraftPostImage        DraftPostImage[]
-}
-
-model DraftPostCurrentParam {
-  DraftId   String    @db.UniqueIdentifier
-  ParamId   String    @db.UniqueIdentifier
-  Value     String    @db.NVarChar(255)
-  Id        String    @id(map: "DraftPostCurrentParam_PK") @db.UniqueIdentifier
-  DraftPost DraftPost @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftPostCurrentParam_DraftPost_FK")
-  PostParam PostParam @relation(fields: [ParamId], references: [Id], onUpdate: NoAction, map: "DraftPostCurrentParam_PostParam_FK")
+  Id                 String               @id(map: "DraftPost_PK") @default(dbgenerated("newid()"), map: "DF__DraftPost__Id__2180FB33") @db.UniqueIdentifier
+  Idx                Int                  @default(autoincrement())
+  Code               String?              @db.VarChar(100)
+  Title              String               @db.NVarChar(255)
+  Description        String               @db.NVarChar(Max)
+  UserId             String               @db.VarChar(255)
+  TypeId             String               @db.UniqueIdentifier
+  CreatedDate        DateTime?            @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftPost__Creat__22751F6C") @db.DateTimeOffset
+  Address            String               @db.NVarChar(255)
+  MapUrl             String               @db.VarChar(256)
+  DraftCurrentDetail DraftCurrentDetail[]
+  DraftFeature       DraftFeature[]
+  GlobalPostType     GlobalPostType       @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "DraftPost_GlobalPostType_FK")
+  DraftPostImage     DraftPostImage[]
 }
 
 model DraftPostImage {
-  Id          String    @id(map: "DraftPostImage_PK") @db.UniqueIdentifier
+  Id          String    @id(map: "DraftPostImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftPostIma__Id__2645B050") @db.UniqueIdentifier
   Name        String    @db.NVarChar(255)
   Size        Int?
   MimeType    String?   @db.VarChar(100)
   Path        String    @db.NVarChar(255)
   DraftId     String    @db.UniqueIdentifier
-  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftPost__Creat__72C60C4A") @db.DateTimeOffset
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftPost__Creat__2739D489") @db.DateTimeOffset
   DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onUpdate: NoAction, map: "DraftPostImage_DraftPost_FK")
 }
 
 model Post {
-  Id               String             @id(map: "Post_PK") @db.UniqueIdentifier
-  Idx              Int                @default(autoincrement())
-  Code             String?            @db.VarChar(100)
-  Title            String?            @db.NVarChar(100)
-  Description      String?            @db.NVarChar(Max)
-  UserId           String             @db.VarChar(255)
-  CreatedDate      DateTime?          @default(dbgenerated("sysdatetimeoffset()"), map: "DF__Post__CreatedDat__628FA481") @db.DateTimeOffset
-  TypeId           String             @db.UniqueIdentifier
-  PostType         PostType           @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Post_PostType_FK")
-  PostCurrentParam PostCurrentParam[]
-  PostImage        PostImage[]
-}
-
-model PostCurrentParam {
-  PostId    String    @db.UniqueIdentifier
-  ParamId   String    @db.UniqueIdentifier
-  Value     String    @db.NVarChar(255)
-  Id        String    @id(map: "PostCurrentParam_PK") @db.UniqueIdentifier
-  Post      Post      @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostCurrentParam_Post_FK")
-  PostParam PostParam @relation(fields: [ParamId], references: [Id], onUpdate: NoAction, map: "PostCurrentParam_PostParam_FK")
+  Id                String              @id(map: "Post_PK") @default(dbgenerated("newid()"), map: "DF__Post__Id__2B0A656D") @db.UniqueIdentifier
+  Idx               Int                 @default(autoincrement())
+  Code              String?             @db.VarChar(100)
+  Title             String?             @db.NVarChar(100)
+  Description       String?             @db.NVarChar(Max)
+  UserId            String              @db.VarChar(255)
+  CreatedDate       DateTime?           @default(dbgenerated("sysdatetimeoffset()"), map: "DF__Post__CreatedDat__2BFE89A6") @db.DateTimeOffset
+  TypeId            String              @db.UniqueIdentifier
+  Address           String              @db.NVarChar(255)
+  MapUrl            String              @db.VarChar(256)
+  PostType          GlobalPostType      @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Post_PostType_FK")
+  PostCurrentDetail PostCurrentDetail[]
+  PostFeature       PostFeature[]
+  PostImage         PostImage[]
 }
 
 model PostImage {
-  Id          String    @id(map: "PostImage_PK") @db.UniqueIdentifier
+  Id          String    @id(map: "PostImage_PK") @default(dbgenerated("newid()"), map: "DF__PostImage__Id__2FCF1A8A") @db.UniqueIdentifier
   Name        String    @db.NVarChar(255)
   Size        Int?
   Path        String    @db.NVarChar(255)
   PostId      String    @db.UniqueIdentifier
-  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__PostImage__Creat__66603565") @db.DateTimeOffset
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__PostImage__Creat__30C33EC3") @db.DateTimeOffset
   MimeType    String?   @db.VarChar(100)
   Post        Post      @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostImage_Post_FK")
 }
 
-model PostParam {
-  Id                    String                  @id(map: "PostUnit_PK") @db.UniqueIdentifier
-  Idx                   Int                     @default(autoincrement())
-  Code                  String                  @db.VarChar(100)
-  Name                  String                  @db.NVarChar(255)
-  Unit                  String                  @db.NVarChar(255)
-  CreatedDate           DateTime?               @default(dbgenerated("sysdatetimeoffset()"), map: "DF__PostParam__Creat__6A30C649") @db.DateTimeOffset
-  DraftPostCurrentParam DraftPostCurrentParam[]
-  PostCurrentParam      PostCurrentParam[]
+model DraftCurrentDetail {
+  Id          String           @id(map: "DraftCurrentDetail_PK") @default(dbgenerated("newid()"), map: "DF__DraftCurrent__Id__3A4CA8FD") @db.UniqueIdentifier
+  DraftId     String           @db.UniqueIdentifier
+  DetailId    String           @db.UniqueIdentifier
+  Value       String           @db.NVarChar(255)
+  CreatedDate DateTime?        @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftCurr__Creat__3B40CD36") @db.DateTimeOffset
+  DraftPost   DraftPost        @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftCurrentDetail_DraftPost_FK")
+  PostDetail  GlobalPostDetail @relation(fields: [DetailId], references: [Id], onUpdate: NoAction, map: "DraftCurrentDetail_PostDetail_FK")
 }
 
-model PostType {
-  Id          String     @id(map: "PostType_PK") @db.UniqueIdentifier
-  Idx         Int        @default(autoincrement())
-  Name        String     @db.NVarChar(256)
-  CreatedDate DateTime?  @db.DateTimeOffset
-  DraftPost   DraftPost?
+model DraftFeature {
+  Id          String    @id(map: "DraftFeature_PK") @default(dbgenerated("newid()"), map: "DF__DraftFeature__Id__40058253") @db.UniqueIdentifier
+  Title       String    @db.NVarChar(256)
+  Description String    @db.NVarChar(Max)
+  DraftId     String    @db.UniqueIdentifier
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftFeat__Creat__40F9A68C") @db.DateTimeOffset
+  DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftFeature_DraftPost_FK")
+}
+
+model PostCurrentDetail {
+  Id          String           @id(map: "PostCurrentDetail_PK") @default(dbgenerated("newid()"), map: "DF__PostCurrentD__Id__3493CFA7") @db.UniqueIdentifier
+  PostId      String           @db.UniqueIdentifier
+  DetailId    String           @db.UniqueIdentifier
+  Value       String           @db.NVarChar(255)
+  CreatedDate DateTime?        @default(dbgenerated("sysdatetimeoffset()"), map: "DF__PostCurre__Creat__3587F3E0") @db.DateTimeOffset
+  PostDetail  GlobalPostDetail @relation(fields: [DetailId], references: [Id], onUpdate: NoAction, map: "PostCurrentDetail_PostDetail_FK")
+  Post        Post             @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostCurrentDetail_Post_FK")
+}
+
+model PostFeature {
+  Id          String    @id(map: "PostFeature_PK") @default(dbgenerated("newid()"), map: "DF__PostFeature__Id__44CA3770") @db.UniqueIdentifier
+  Title       String    @db.NVarChar(256)
+  Description String?   @db.NVarChar(Max)
+  PostId      String    @db.UniqueIdentifier
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__PostFeatu__Creat__45BE5BA9") @db.DateTimeOffset
+  Post        Post      @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostFeature_Post_FK")
+}
+
+model GlobalPostDetail {
+  Id                 String               @id(map: "GlobalPostDetail_PK") @default(dbgenerated("newid()"), map: "DF__PostDetail__Id__1CBC4616") @db.UniqueIdentifier
+  Code               String               @db.VarChar(100)
+  Name               String               @db.NVarChar(255)
+  Unit               String               @db.NVarChar(255)
+  CreatedDate        DateTime?            @default(dbgenerated("sysdatetimeoffset()"), map: "DF__PostDetai__Creat__1DB06A4F") @db.DateTimeOffset
+  IsNumber           Boolean?             @default(false, map: "DF__PostDetai__IsNum__1EA48E88")
+  DraftCurrentDetail DraftCurrentDetail[]
+  PostCurrentDetail  PostCurrentDetail[]
+}
+
+model GlobalPostType {
+  Id          String      @id(map: "GlobalPostType_PK") @default(dbgenerated("newid()"), map: "DF__PostType__Id__19DFD96B") @db.UniqueIdentifier
+  Idx         Int         @default(autoincrement())
+  Name        String      @db.NVarChar(256)
+  CreatedDate DateTime?   @db.DateTimeOffset
+  DraftPost   DraftPost[]
   Post        Post[]
+}
+
+model GlobalBlogType {
+  Id          String    @id(map: "GlobalBlogType_PK") @db.UniqueIdentifier
+  Idx         Int
+  Name        String    @db.NVarChar(256)
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__GlobalBlo__Creat__4F47C5E3") @db.DateTimeOffset
 }

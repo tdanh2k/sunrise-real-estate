@@ -9,7 +9,7 @@ import {
   RequiredUUID,
 } from "../utils/ZodUtils";
 
-export const AddPostSchema = z.object({
+export const AddDraftPostSchema = z.object({
   Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,

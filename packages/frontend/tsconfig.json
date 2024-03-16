@@ -21,12 +21,6 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
-      "@client/*": [
-        "./src/client/*"
-      ],
-      "@manage/*": [
-        "./src/manage/*"
-      ],
       "@routes/*": [
         "./src/routes/*"
       ],

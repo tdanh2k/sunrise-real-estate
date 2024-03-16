@@ -15,4 +15,5 @@ export const ClientLayout: FC = () => {
 
 export const Route = createFileRoute("/_client")({
   component: ClientLayout,
+  notFoundComponent: () => <h1>Not found</h1>
 });

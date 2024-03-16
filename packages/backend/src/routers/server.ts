@@ -1,8 +1,10 @@
 import { initTRPC } from "@trpc/server";
 import { z } from "zod";
 import { dbContext } from "../utils/prisma";
+import { AddPostSchema } from "../schemas/AddPost.schema";
+import { Context } from "./context";
 
-export const t = initTRPC.create();
+export const t = initTRPC.context<Context>().create();
 
 // Access as /user.getUser
 export const appRouter = t.router({
@@ -22,7 +24,7 @@ export const appRouter = t.router({
     all: t.procedure.query(async (opt) => {
       const data = await dbContext.post.findMany({
         include: {
-          PostCurrentParam: true,
+          PostCurrentDetail: true,
           PostImage: true,
           PostType: true,
         },
@@ -36,7 +38,7 @@ export const appRouter = t.router({
           Id: input,
         },
         include: {
-          PostCurrentParam: true,
+          PostCurrentDetail: true,
           PostImage: true,
           PostType: true,
         },
@@ -44,9 +46,28 @@ export const appRouter = t.router({
 
       return data;
     }),
-    // add: t.procedure.input().mutation(opt => {
+    add: t.procedure
+      .input(AddPostSchema)
+      .mutation(
+        async ({ ctx, input: { PostCurrentDetail, PostFeature, ...rest } }) => {
+          if (ctx.userId == null) return null;
 
-    // })
+          const result = await dbContext.post.create({
+            data: {
+              ...rest,
+              UserId: ctx.userId,
+              PostCurrentDetail: {
+                create: PostCurrentDetail,
+              },
+              PostFeature: {
+                create: PostFeature,
+              },
+            },
+          });
+
+          return result;
+        }
+      ),
   }),
 });
 // export type definition of API
