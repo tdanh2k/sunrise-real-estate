@@ -15,7 +15,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@tanstack/react-query": "^5.28.4",
-    "@tanstack/react-router": "^1.20.0",
+    "@tanstack/react-router": "^1.20.1",
     "@trpc/client": "11.0.0-next-beta.299",
     "@trpc/react-query": "11.0.0-next-beta.299",
     "dayjs": "^1.11.10",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.27.7",
     "@tanstack/react-query-devtools": "^5.28.4",
-    "@tanstack/router-devtools": "^1.20.0",
+    "@tanstack/router-devtools": "^1.20.1",
     "@tanstack/router-vite-plugin": "^1.20.0",
     "@types/node": "^20.11.28",
     "@types/react": "^18.2.66",

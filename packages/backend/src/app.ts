@@ -1,13 +1,14 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import "dotenv/config.js";
 
-import { appRouter } from "./routers/server.js";
+import { appRouter, openApiDocument } from "./routers/server.js";
 import helmet from "helmet";
-import { errorHandler } from "./middlewares/error.middleware.js";
-import { notFoundHandler } from "./middlewares/not-found.middleware.js";
 import cors from "cors";
 import { createTRPCContext } from "./routers/context";
+import swaggerUi from "swagger-ui-express";
+import { errorHandler } from "./middlewares/error.middleware.js";
+import { notFoundHandler } from "./middlewares/not-found.middleware.js";
 
 const app = express();
 const port = 3000;
@@ -50,6 +51,19 @@ app.use(
   trpcExpress.createExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext,
+  })
+);
+
+// Serve Swagger UI with our OpenAPI schema
+app.use(
+  "/api-docs",
+  (req: Request, res: Response, next: NextFunction) => {
+    res?.set("Content-Security-Policy", `script-src 'self'`);
+    next();
+  },
+  swaggerUi.serve,
+  swaggerUi.setup(openApiDocument, {
+    isExplorer: true,
   })
 );
 

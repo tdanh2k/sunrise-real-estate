@@ -3,13 +3,21 @@
   "version": "1.0.0",
   "description": "A 'real' real estate project",
   "main": "index.js",
+  "keywords": [],
+  "author": "tdanh2k@gmail.com",
+  "license": "ISC",
   "scripts": {
     "dev": "pnpm --stream -r dev",
     "dev-frontend": "pnpm --filter sunrise-real-estate-frontend dev",
     "dev-backend": "pnpm --filter sunrise-real-estate-backend dev",
     "build": "pnpm --stream -r build"
   },
-  "keywords": [],
-  "author": "tdanh2k@gmail.com",
-  "license": "ISC"
+  "pnpm": {
+    "overrides": {
+      "@trpc/server": "11.0.0-next-beta.299"
+    },
+    "patchedDependencies": {
+      "trpc-openapi@1.2.0": "patches/trpc-openapi@1.2.0.patch"
+    }
+  }
 }
