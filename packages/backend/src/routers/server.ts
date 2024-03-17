@@ -3,6 +3,7 @@ import { z } from "zod";
 import { dbContext } from "../utils/prisma";
 import { AddPostSchema } from "../schemas/AddPost.schema";
 import { Context } from "./context";
+import { PostSchema } from "../schemas/Post.schema";
 
 export const t = initTRPC.context<Context>().create();
 
@@ -49,7 +50,10 @@ export const appRouter = t.router({
     add: t.procedure
       .input(AddPostSchema)
       .mutation(
-        async ({ ctx, input: { PostCurrentDetail, PostFeature, ...rest } }) => {
+        async ({
+          ctx,
+          input: { PostCurrentDetail, PostFeature, PostImage, ...rest },
+        }) => {
           if (ctx.userId == null) return null;
 
           const result = await dbContext.post.create({
@@ -57,10 +61,28 @@ export const appRouter = t.router({
               ...rest,
               UserId: ctx.userId,
               PostCurrentDetail: {
-                create: PostCurrentDetail,
+                connectOrCreate: PostCurrentDetail?.map((item) => ({
+                  where: {
+                    Id: item.Id,
+                  },
+                  create: item,
+                })),
               },
               PostFeature: {
-                create: PostFeature,
+                connectOrCreate: PostFeature?.map((item) => ({
+                  where: {
+                    Id: item.Id,
+                  },
+                  create: item,
+                })),
+              },
+              PostImage: {
+                connectOrCreate: PostImage?.map((item) => ({
+                  where: {
+                    Id: item.Id,
+                  },
+                  create: item,
+                })),
               },
             },
           });

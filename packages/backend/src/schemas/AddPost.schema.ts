@@ -4,6 +4,7 @@ import {
   OptionalBoolean,
   OptionalDate,
   OptionalString,
+  OptionalUUID,
   RequiredString,
   RequiredURL,
   RequiredUUID,
@@ -19,6 +20,7 @@ export const AddPostSchema = z.object({
   MapUrl: RequiredURL,
   PostCurrentDetail: z.array(
     z.object({
+      Id: OptionalUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
@@ -27,12 +29,14 @@ export const AddPostSchema = z.object({
   ),
   PostFeature: z.array(
     z.object({
+      Id: OptionalUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalDate,
     })
   ),
   PostImage: z.array(z.object({
+    Id: OptionalUUID,
     Name: RequiredString,
     Size: NonNegativeIntegerNumber,
     Path: RequiredString,

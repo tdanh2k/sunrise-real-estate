@@ -12,7 +12,8 @@
     "prisma-studio": "prisma studio",
     "env-pull": "dotenv-vault pull",
     "env-push": "dotenv-vault push",
-    "env-open": "dotenv-vault open"
+    "env-open": "dotenv-vault open",
+    "postinstall": "patch-package"
   },
   "keywords": [],
   "author": "",
