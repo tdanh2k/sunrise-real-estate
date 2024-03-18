@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import "dotenv/config.js";
 
-import { appRouter, openApiDocument } from "./routers/server.js";
+import { appRouter, openApiDocument } from "./routers/index.js";
 import helmet from "helmet";
 import cors from "cors";
 import { createTRPCContext } from "./routers/context";
@@ -72,6 +72,7 @@ app.use(notFoundHandler);
 
 app.listen(port, () => {
   console.log(
-    `sunrise-real-estate-backend listening on http://localhost:${port}`
+    `sunrise-real-estate-backend listening on http://localhost:${port}.
+     access Swagger docs at http://localhost:${port}/api-docs`
   );
 });
