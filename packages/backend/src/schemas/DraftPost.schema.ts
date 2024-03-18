@@ -18,7 +18,7 @@ export const DraftPostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   MapUrl: RequiredURL,
-  PostCurrentDetail: z.array(
+  DraftCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
       DraftId: RequiredUUID,
@@ -28,7 +28,7 @@ export const DraftPostSchema = z.object({
       CreatedDate: OptionalDate,
     })
   ),
-  PostFeature: z.array(
+  DraftFeature: z.array(
     z.object({
       Id: RequiredUUID,
       DraftId: RequiredUUID,
@@ -37,7 +37,7 @@ export const DraftPostSchema = z.object({
       CreatedDate: OptionalDate,
     })
   ),
-  PostImage: z.array(
+  DraftPostImage: z.array(
     z.object({
       Id: RequiredUUID,
       Name: RequiredString,

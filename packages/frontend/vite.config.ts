@@ -8,7 +8,11 @@ import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 export default defineConfig({
   plugins: [
     react(),
-    TanStackRouterVite(),
+    TanStackRouterVite({
+      routeFilePrefix: "-",
+      routesDirectory: "./src/routes",
+      generatedRouteTree: "./src/routeTree.gen.ts",
+    }),
     mkcert({
       autoUpgrade: true,
       //savePath: "./cert",

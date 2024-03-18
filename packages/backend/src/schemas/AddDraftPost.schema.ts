@@ -4,6 +4,7 @@ import {
   OptionalBoolean,
   OptionalDate,
   OptionalString,
+  OptionalUUID,
   RequiredString,
   RequiredURL,
   RequiredUUID,
@@ -17,26 +18,31 @@ export const AddDraftPostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   MapUrl: RequiredURL,
-  PostCurrentDetail: z.array(
+  DraftCurrentDetail: z.array(
     z.object({
+      Id: OptionalUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
       CreatedDate: OptionalDate,
     })
   ),
-  PostFeature: z.array(
+  DraftFeature: z.array(
     z.object({
+      Id: OptionalUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalDate,
     })
   ),
-  PostImage: z.array(z.object({
-    Name: RequiredString,
-    Size: NonNegativeIntegerNumber,
-    Path: RequiredString,
-    MimeType: OptionalString,
-    CreatedDate: OptionalDate,
-  }))
+  DraftPostImage: z.array(
+    z.object({
+      Id: OptionalUUID,
+      Name: RequiredString,
+      Size: NonNegativeIntegerNumber,
+      Path: RequiredString,
+      MimeType: OptionalString,
+      CreatedDate: OptionalDate,
+    })
+  ),
 });

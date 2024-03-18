@@ -113,7 +113,7 @@ model GlobalPostDetail {
 }
 
 model GlobalPostType {
-  Id          String      @id(map: "GlobalPostType_PK") @default(dbgenerated("newid()"), map: "DF__PostType__Id__19DFD96B") @db.UniqueIdentifier
+  Id          String      @id(map: "GlobalPostType_PK") @default(dbgenerated("newid()"), map: "DF__GlobalPostTy__Id__51300E55") @db.UniqueIdentifier
   Idx         Int         @default(autoincrement())
   Name        String      @db.NVarChar(256)
   CreatedDate DateTime?   @db.DateTimeOffset
@@ -122,7 +122,7 @@ model GlobalPostType {
 }
 
 model GlobalBlogType {
-  Id          String    @id(map: "GlobalBlogType_PK") @db.UniqueIdentifier
+  Id          String    @id(map: "GlobalBlogType_PK") @default(dbgenerated("newid()"), map: "DF__GlobalBlogTy__Id__503BEA1C") @db.UniqueIdentifier
   Idx         Int
   Name        String    @db.NVarChar(256)
   CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__GlobalBlo__Creat__4F47C5E3") @db.DateTimeOffset
