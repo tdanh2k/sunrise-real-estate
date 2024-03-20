@@ -15,7 +15,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@tanstack/react-query": "^5.28.4",
-    "@tanstack/react-router": "^1.20.1",
+    "@tanstack/react-router": "^1.20.5",
     "@trpc/client": "11.0.0-next-beta.299",
     "@trpc/react-query": "11.0.0-next-beta.299",
     "dayjs": "^1.11.10",
@@ -28,22 +28,22 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.27.7",
     "@tanstack/react-query-devtools": "^5.28.4",
-    "@tanstack/router-devtools": "^1.20.1",
-    "@tanstack/router-vite-plugin": "^1.20.2",
-    "@types/node": "^20.11.28",
-    "@types/react": "^18.2.66",
+    "@tanstack/router-devtools": "^1.20.5",
+    "@tanstack/router-vite-plugin": "^1.20.5",
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.67",
     "@types/react-dom": "^18.2.22",
     "@types/react-image-gallery": "^1.2.4",
     "@types/react-slick": "^0.23.13",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "dotenv-vault": "^1.26.1",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "typescript": "^5.4.2",
-    "vite": "^5.1.6",
-    "vite-plugin-mkcert": "^1.17.4"
+    "vite": "^5.2.2",
+    "vite-plugin-mkcert": "^1.17.5"
   }
 }

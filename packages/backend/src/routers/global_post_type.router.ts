@@ -34,12 +34,9 @@ export const GlobalPostType = (init: TType) =>
       .output(GlobalPostTypeSchema.nullable())
       .mutation(async ({ ctx, input }) => {
         //if (ctx.userId == null) return null;
-        console.log({ input });
         const result = await dbContext.globalBlogType.create({
           data: input,
         });
-
-        console.log({ result });
 
         return await GlobalPostTypeSchema.nullable().parseAsync(result);
       }),

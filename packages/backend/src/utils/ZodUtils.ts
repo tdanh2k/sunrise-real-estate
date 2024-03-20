@@ -105,6 +105,12 @@ export const RequiredDate = RequiredString.datetime({
 
 export const OptionalDate = RequiredDate.optional();
 
+export const OptionalJsDate = z
+  .date({
+    invalid_type_error: "Không phải dạng ngày",
+  })
+  .optional();
+
 // export const RequiredMinDate = (minDate: Date | string, message?: string) =>
 //   RequiredDate.refine((val) => new Date(val) > new Date(minDate), {
 //     message: message ?? `Ngày phải sau ${dayjs(minDate).format("dd/MM/yyyy")}`,
