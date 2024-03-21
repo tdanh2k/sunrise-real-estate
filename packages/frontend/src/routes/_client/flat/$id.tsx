@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { FC } from "react";
 import ImageGallery from "react-image-gallery";
 
@@ -248,6 +248,6 @@ export const FlatDetail: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute("/_client/flat/$id")({
+export const Route = createFileRoute("/_client/flat/$id")({
   component: FlatDetail,
 });

@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { BlogItem } from "../../-components/BlogItem";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { BlogItem } from "../-components/BlogItem";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Blog: FC = () => {
   return (
@@ -61,6 +61,6 @@ export const Blog: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute("/_client/blog/")({
+export const Route = createFileRoute("/_client/blog/")({
   component: Blog,
 });

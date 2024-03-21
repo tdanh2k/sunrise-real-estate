@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { FC } from "react";
 
 export const Contact: FC = () => {
@@ -72,6 +72,6 @@ export const Contact: FC = () => {
   );
 };
 
-export const Route = createLazyFileRoute("/_client/contact")({
+export const Route = createFileRoute("/_client/contact")({
   component: Contact,
 });

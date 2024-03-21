@@ -1,11 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { trpc } from "@utils/trpc";
 
 export const About = () => {
   const { error } = useAuth0();
-
-  const { data } = trpc.user.getUser.useQuery("asdas");
 
   return (
     <section className="about">
@@ -14,7 +12,7 @@ export const About = () => {
           <div className="row">
             <div className="col-lg-12">
               <h1 className="page-title">About</h1>
-              <h2 className="page-description">{data?.name}</h2>
+              <h2 className="page-description">cvxvc</h2>
             </div>
           </div>
         </div>
@@ -61,6 +59,6 @@ export const About = () => {
   );
 };
 
-export const Route = createLazyFileRoute("/_client/about")({
+export const Route = createFileRoute("/_client/about")({
   component: About,
 });

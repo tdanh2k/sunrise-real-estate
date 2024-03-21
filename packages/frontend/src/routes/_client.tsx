@@ -1,7 +1,9 @@
 import { FC } from "react";
-import { Header } from "./-components/Header";
-import { Footer } from "./-components/Footer";
+import { Header } from "./_client/-components/Header";
+import { Footer } from "./_client/-components/Footer";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
+
+import "./client.css";
 
 export const ClientLayout: FC = () => {
   return (
@@ -15,5 +17,5 @@ export const ClientLayout: FC = () => {
 
 export const Route = createFileRoute("/_client")({
   component: ClientLayout,
-  notFoundComponent: () => <h1>Not found</h1>
+  notFoundComponent: () => <h1>Not found</h1>,
 });

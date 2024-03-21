@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     react(),
     TanStackRouterVite({
-      routeFilePrefix: "-",
+      //routeFilePrefix: "-",
       routesDirectory: "./src/routes",
       generatedRouteTree: "./src/routeTree.gen.ts",
     }),
