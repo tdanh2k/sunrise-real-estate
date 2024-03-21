@@ -1,11 +1,11 @@
 import { initTRPC } from "@trpc/server";
-import { Context } from "./context";
+import { TRPCContext } from "./context";
 import { OpenApiMeta, generateOpenApiDocument } from "trpc-openapi";
 import { PostRouter } from "./post.router";
 import { DraftPostRouter } from "./draft_post.router";
 import { GlobalPostType } from "./global_post_type.router";
 
-export const t = initTRPC.context<Context>().meta<OpenApiMeta>().create();
+export const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create();
 
 export type TType = typeof t;
 

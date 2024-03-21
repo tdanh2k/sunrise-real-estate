@@ -7,4 +7,4 @@ export const createTRPCContext = ({
   userId: req.auth?.payload.sub,
 }); // no context
 
-export type Context = ReturnType<typeof createTRPCContext>;
+export type TRPCContext = ReturnType<typeof createTRPCContext>;

@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
-    "@tanstack/react-query": "^5.28.4",
-    "@tanstack/react-router": "^1.20.5",
+    "@tanstack/react-query": "^5.28.6",
+    "@tanstack/react-router": "^1.22.0",
     "@trpc/client": "11.0.0-next-beta.299",
     "@trpc/react-query": "11.0.0-next-beta.299",
     "dayjs": "^1.11.10",
@@ -26,9 +26,9 @@
     "sunrise-real-estate-backend": "workspace:^"
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.27.7",
-    "@tanstack/react-query-devtools": "^5.28.4",
-    "@tanstack/router-devtools": "^1.20.5",
+    "@tanstack/eslint-plugin-query": "^5.28.6",
+    "@tanstack/react-query-devtools": "^5.28.6",
+    "@tanstack/router-devtools": "^1.22.0",
     "@tanstack/router-vite-plugin": "^1.20.5",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.67",
@@ -42,7 +42,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "typescript": "^5.4.2",
+    "typescript": "^5.4.3",
     "vite": "^5.2.2",
     "vite-plugin-mkcert": "^1.17.5"
   }
