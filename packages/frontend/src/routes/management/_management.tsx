@@ -3,7 +3,6 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-
 import "@mantine/core/styles.css";
 
 import { MantineProvider } from "@mantine/core";
