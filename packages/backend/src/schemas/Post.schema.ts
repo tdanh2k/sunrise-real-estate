@@ -47,3 +47,5 @@ export const PostSchema = z.object({
     CreatedDate: OptionalJsDate,
   }))
 });
+
+export type TypePost = z.infer<typeof PostSchema>;

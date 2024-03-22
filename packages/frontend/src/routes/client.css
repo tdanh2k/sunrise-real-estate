@@ -698,6 +698,11 @@ section {
 .widget-search-result p {
   margin: 0;
 }
+
+.right-sidebar {
+  color: black;
+}
+
 .right-sidebar .category-ul {
   margin: 0;
   padding: 0;

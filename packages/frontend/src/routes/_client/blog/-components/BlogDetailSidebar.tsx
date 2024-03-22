@@ -1,6 +1,6 @@
 import { FC } from "react"
 
-export const Sidebar: FC = () => {
+export const BlogDetailSidebar: FC = () => {
     return (
         <div className="col-lg-4">
             <div className="right-sidebar">

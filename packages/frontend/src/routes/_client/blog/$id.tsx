@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Sidebar } from "../-components/Sidebar";
+import { BlogDetailSidebar } from "./-components/BlogDetailSidebar";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const BlogDetail: FC = () => {
@@ -43,12 +43,12 @@ export const BlogDetail: FC = () => {
             </p>
           </div>
         </div>
-        <Sidebar />
+        <BlogDetailSidebar />
       </div>
     </div>
   );
 };
 
 export const Route = createFileRoute("/_client/blog/$id")({
-    component: BlogDetail,
-  });
+  component: BlogDetail,
+});
