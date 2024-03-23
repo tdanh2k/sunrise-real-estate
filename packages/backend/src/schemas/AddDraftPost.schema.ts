@@ -20,7 +20,6 @@ export const AddDraftPostSchema = z.object({
   MapUrl: RequiredURL,
   DraftCurrentDetail: z.array(
     z.object({
-      Id: OptionalUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
@@ -29,7 +28,6 @@ export const AddDraftPostSchema = z.object({
   ),
   DraftFeature: z.array(
     z.object({
-      Id: OptionalUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalDate,
@@ -37,7 +35,6 @@ export const AddDraftPostSchema = z.object({
   ),
   DraftPostImage: z.array(
     z.object({
-      Id: OptionalUUID,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,

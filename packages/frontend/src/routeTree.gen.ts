@@ -14,18 +14,26 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ClientImport } from './routes/_client'
-import { Route as ClientIndexImport } from './routes/_client/index'
+import { Route as ClientIndexImport } from './routes/_client.index'
 import { Route as ManagementManagementImport } from './routes/management/_management'
-import { Route as ClientContactImport } from './routes/_client/contact'
-import { Route as ClientAboutImport } from './routes/_client/about'
+import { Route as ClientContactImport } from './routes/_client.contact'
+import { Route as ClientAboutImport } from './routes/_client.about'
 import { Route as ManagementManagementIndexImport } from './routes/management/_management/index'
-import { Route as ClientBlogIndexImport } from './routes/_client/blog/index'
-import { Route as ClientFlatIdImport } from './routes/_client/flat/$id'
-import { Route as ClientBlogIdImport } from './routes/_client/blog/$id'
+import { Route as ClientBlogIndexImport } from './routes/_client.blog/index'
+import { Route as ClientFlatIdImport } from './routes/_client.flat/$id'
+import { Route as ClientBlogIdImport } from './routes/_client.blog/$id'
+import { Route as ManagementManagementPostsPostsImport } from './routes/management/_management/posts/_posts'
+import { Route as ManagementManagementPostsPostsPosttypeImport } from './routes/management/_management/posts/_posts/post_type'
+import { Route as ManagementManagementPostsPostsPostdetailImport } from './routes/management/_management/posts/_posts/post_detail'
+import { Route as ManagementManagementPostsPostsPostImport } from './routes/management/_management/posts/_posts/post'
+import { Route as ManagementManagementPostsPostsDraftpostImport } from './routes/management/_management/posts/_posts/draft_post'
 
 // Create Virtual Routes
 
 const ManagementImport = createFileRoute('/management')()
+const ManagementManagementPostsImport = createFileRoute(
+  '/management/_management/posts',
+)()
 
 // Create/Update Routes
 
@@ -59,6 +67,11 @@ const ClientAboutRoute = ClientAboutImport.update({
   getParentRoute: () => ClientRoute,
 } as any)
 
+const ManagementManagementPostsRoute = ManagementManagementPostsImport.update({
+  path: '/posts',
+  getParentRoute: () => ManagementManagementRoute,
+} as any)
+
 const ManagementManagementIndexRoute = ManagementManagementIndexImport.update({
   path: '/',
   getParentRoute: () => ManagementManagementRoute,
@@ -78,6 +91,36 @@ const ClientBlogIdRoute = ClientBlogIdImport.update({
   path: '/blog/$id',
   getParentRoute: () => ClientRoute,
 } as any)
+
+const ManagementManagementPostsPostsRoute =
+  ManagementManagementPostsPostsImport.update({
+    id: '/_posts',
+    getParentRoute: () => ManagementManagementPostsRoute,
+  } as any)
+
+const ManagementManagementPostsPostsPosttypeRoute =
+  ManagementManagementPostsPostsPosttypeImport.update({
+    path: '/post_type',
+    getParentRoute: () => ManagementManagementPostsPostsRoute,
+  } as any)
+
+const ManagementManagementPostsPostsPostdetailRoute =
+  ManagementManagementPostsPostsPostdetailImport.update({
+    path: '/post_detail',
+    getParentRoute: () => ManagementManagementPostsPostsRoute,
+  } as any)
+
+const ManagementManagementPostsPostsPostRoute =
+  ManagementManagementPostsPostsPostImport.update({
+    path: '/post',
+    getParentRoute: () => ManagementManagementPostsPostsRoute,
+  } as any)
+
+const ManagementManagementPostsPostsDraftpostRoute =
+  ManagementManagementPostsPostsDraftpostImport.update({
+    path: '/draft_post',
+    getParentRoute: () => ManagementManagementPostsPostsRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -123,6 +166,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementManagementIndexImport
       parentRoute: typeof ManagementManagementImport
     }
+    '/management/_management/posts': {
+      preLoaderRoute: typeof ManagementManagementPostsImport
+      parentRoute: typeof ManagementManagementImport
+    }
+    '/management/_management/posts/_posts': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsImport
+      parentRoute: typeof ManagementManagementPostsRoute
+    }
+    '/management/_management/posts/_posts/draft_post': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsDraftpostImport
+      parentRoute: typeof ManagementManagementPostsPostsImport
+    }
+    '/management/_management/posts/_posts/post': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsPostImport
+      parentRoute: typeof ManagementManagementPostsPostsImport
+    }
+    '/management/_management/posts/_posts/post_detail': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsPostdetailImport
+      parentRoute: typeof ManagementManagementPostsPostsImport
+    }
+    '/management/_management/posts/_posts/post_type': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsPosttypeImport
+      parentRoute: typeof ManagementManagementPostsPostsImport
+    }
   }
 }
 
@@ -138,7 +205,17 @@ export const routeTree = rootRoute.addChildren([
     ClientBlogIndexRoute,
   ]),
   ManagementRoute.addChildren([
-    ManagementManagementRoute.addChildren([ManagementManagementIndexRoute]),
+    ManagementManagementRoute.addChildren([
+      ManagementManagementIndexRoute,
+      ManagementManagementPostsRoute.addChildren([
+        ManagementManagementPostsPostsRoute.addChildren([
+          ManagementManagementPostsPostsDraftpostRoute,
+          ManagementManagementPostsPostsPostRoute,
+          ManagementManagementPostsPostsPostdetailRoute,
+          ManagementManagementPostsPostsPosttypeRoute,
+        ]),
+      ]),
+    ]),
   ]),
 ])
 

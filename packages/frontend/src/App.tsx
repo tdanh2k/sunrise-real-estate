@@ -1,5 +1,5 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { Auth0WithTRPC } from "./components/Auth0WithTRPC";
+import { Auth0WithTRPC } from "@components/Auth0WithTRPC";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";

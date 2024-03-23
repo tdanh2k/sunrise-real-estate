@@ -30,6 +30,14 @@ export default defineConfig({
         find: "@utils",
         replacement: path.resolve(__dirname, "src/utils"),
       },
+      {
+        find: "@components",
+        replacement: path.resolve(__dirname, "src/components"),
+      },
+      {
+        find: "@schemas",
+        replacement: path.resolve(__dirname, "src/schemas"),
+      },
     ],
   },
 });

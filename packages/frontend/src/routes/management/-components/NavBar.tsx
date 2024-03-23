@@ -1,39 +1,59 @@
 import { FC } from "react";
 import { AppShell, NavLink } from "@mantine/core";
 import { IconGauge } from "@tabler/icons-react";
+import { Link, Route } from "@tanstack/react-router";
+import { routeTree } from "../../../routeTree.gen";
 
-export const NavBar: FC = () => {
-  return (
-    <AppShell.Navbar p="md">
-      Navbar
-      {/* {Array(15)
-        .fill(0)
-        .map((_, index) => (
-          <Skeleton key={index} h={28} mt="sm" animate={false} />
-        ))} */}
+const NestedMenu: FC<{
+  treeItem?: Route;
+  index: number;
+}> = ({ treeItem, index }) => {
+  return treeItem?.children ? (
+    treeItem?.fullPath !== treeItem.parentRoute.fullPath ? (
       <NavLink
+        key={`${treeItem?.id}-${index}`}
         href="#required-for-focus"
-        label="With right section"
-        leftSection={<IconGauge size="1rem" stroke={1.5} />}
-      />
-      <NavLink
-        href="#required-for-focus"
-        label="First parent link"
+        label={treeItem?.to ?? treeItem?.path}
+        title={treeItem?.to ?? treeItem?.path}
         leftSection={<IconGauge size="1rem" stroke={1.5} />}
         childrenOffset={28}
       >
-        <NavLink href="#required-for-focus" label="First child link" />
-        <NavLink label="Second child link" href="#required-for-focus" />
-        <NavLink
-          label="Nested parent link"
-          childrenOffset={28}
-          href="#required-for-focus"
-        >
-          <NavLink label="First child link" href="#required-for-focus" />
-          <NavLink label="Second child link" href="#required-for-focus" />
-          <NavLink label="Third child link" href="#required-for-focus" />
-        </NavLink>
+        {(treeItem?.children as Route[])?.map((item2, index2) => (
+          <NestedMenu key={item2.id} treeItem={item2} index={index2} />
+        ))}
       </NavLink>
+    ) : (
+      (treeItem?.children as Route[])?.map((item2, index2) => (
+        <NestedMenu key={item2.id} treeItem={item2} index={index2} />
+      ))
+    )
+  ) : (
+    <NavLink
+      key={`${treeItem?.id}-${index}`}
+      href={treeItem?.to ?? treeItem?.path ?? "#"}
+      leftSection={<IconGauge size="1rem" stroke={1.5} />}
+      label={treeItem?.to ?? treeItem?.path}
+      title={treeItem?.to ?? treeItem?.path}
+      renderRoot={(props) => (
+        <Link to={treeItem?.to ?? treeItem?.path} {...props} />
+      )}
+    />
+  );
+};
+
+export const NavBar: FC = () => {
+  //console.log(routeTree.children?.filter((item) => item.to === "/management"));
+  return (
+    <AppShell.Navbar p="md">
+      {routeTree.children
+        ?.filter((item) => item.to === "/management")
+        ?.map((item, index) => (
+          <NestedMenu
+            key={item.id}
+            treeItem={item as unknown as Route}
+            index={index}
+          />
+        ))}
     </AppShell.Navbar>
   );
 };

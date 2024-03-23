@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { FC } from "react";
+import { TypePost } from "sunrise-real-estate-backend/src/schemas/Post.schema";
 
-export const FlatItem: FC<{ slug?: string }> = ({ slug }) => {
+export const FlatItem: FC<{ data?: TypePost }> = ({ data }) => {
   return (
     <div className="text-center col-lg-4 col-12 col-md-6 ">
       <div className="item">
@@ -25,7 +26,7 @@ export const FlatItem: FC<{ slug?: string }> = ({ slug }) => {
             </div>
             <Link
               to={`/flat/$id`}
-              params={{ id: slug ?? "" }}
+              params={{ id: data?.Id ?? "" }}
               className="item-title"
             >
               <button className="btn btn-detail">View</button>

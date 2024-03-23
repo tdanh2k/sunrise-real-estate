@@ -9,7 +9,11 @@ export const DraftPostRouter = (init: TType) =>
   init.router({
     all: t.procedure
       .meta({
-        /* 👉 */ openapi: { method: "GET", path: "/trpc/draft_post.all", tags: ["draft_post"] },
+        /* 👉 */ openapi: {
+          method: "GET",
+          path: "/trpc/draft_post.all",
+          tags: ["draft_post"],
+        },
       })
       .input(z.void())
       .output(z.array(DraftPostSchema))
@@ -27,7 +31,11 @@ export const DraftPostRouter = (init: TType) =>
       }),
     byId: t.procedure
       .meta({
-        /* 👉 */ openapi: { method: "GET", path: "/trpc/draft_post.byId", tags: ["draft_post"] },
+        /* 👉 */ openapi: {
+          method: "GET",
+          path: "/trpc/draft_post.byId",
+          tags: ["draft_post"],
+        },
       })
       .input(
         z.object({
@@ -51,7 +59,11 @@ export const DraftPostRouter = (init: TType) =>
       }),
     create: t.procedure
       .meta({
-        /* 👉 */ openapi: { method: "POST", path: "/trpc/draft_post.create", tags: ["draft_post"] },
+        /* 👉 */ openapi: {
+          method: "POST",
+          path: "/trpc/draft_post.create",
+          tags: ["draft_post"],
+        },
       })
       .input(AddDraftPostSchema)
       .output(
@@ -73,28 +85,37 @@ export const DraftPostRouter = (init: TType) =>
               ...rest,
               UserId: ctx.userId,
               DraftCurrentDetail: {
-                connectOrCreate: DraftCurrentDetail?.map((item) => ({
-                  where: {
-                    Id: item.Id,
-                  },
-                  create: item,
-                })),
+                createMany: {
+                  data: DraftCurrentDetail,
+                },
+                // connectOrCreate: DraftCurrentDetail?.map((item) => ({
+                //   where: {
+                //     Id: item.Id,
+                //   },
+                //   create: item,
+                // })),
               },
               DraftFeature: {
-                connectOrCreate: DraftFeature?.map((item) => ({
-                  where: {
-                    Id: item.Id,
-                  },
-                  create: item,
-                })),
+                createMany: {
+                  data: DraftFeature,
+                },
+                // connectOrCreate: DraftFeature?.map((item) => ({
+                //   where: {
+                //     Id: item.Id,
+                //   },
+                //   create: item,
+                // })),
               },
               DraftPostImage: {
-                connectOrCreate: DraftPostImage?.map((item) => ({
-                  where: {
-                    Id: item.Id,
-                  },
-                  create: item,
-                })),
+                createMany: {
+                  data: DraftPostImage,
+                },
+                // connectOrCreate: DraftPostImage?.map((item) => ({
+                //   where: {
+                //     Id: item.Id,
+                //   },
+                //   create: item,
+                // })),
               },
             },
           });
@@ -108,7 +129,11 @@ export const DraftPostRouter = (init: TType) =>
       ),
     update: t.procedure
       .meta({
-        /* 👉 */ openapi: { method: "PUT", path: "/trpc/draft_post.update", tags: ["draft_post"] },
+        /* 👉 */ openapi: {
+          method: "PUT",
+          path: "/trpc/draft_post.update",
+          tags: ["draft_post"],
+        },
       })
       .input(DraftPostSchema)
       .output(
@@ -174,7 +199,11 @@ export const DraftPostRouter = (init: TType) =>
 
     delete: t.procedure
       .meta({
-        /* 👉 */ openapi: { method: "DELETE", path: "/trpc/draft_post.delete", tags: ["draft_post"] },
+        /* 👉 */ openapi: {
+          method: "DELETE",
+          path: "/trpc/draft_post.delete",
+          tags: ["draft_post"],
+        },
       })
       .input(z.object({ Id: RequiredString }))
       .output(OptionalBoolean.nullable())

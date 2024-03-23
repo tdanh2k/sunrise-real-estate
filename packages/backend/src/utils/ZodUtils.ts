@@ -50,6 +50,8 @@ export const RequiredNumber = z.number({
   required_error: "Vui lòng không bỏ trống dữ liệu này",
 });
 
+export const OptionalNumber = RequiredNumber.optional();
+
 export const PositiveNumber = z
   .number({
     invalid_type_error: "Dữ liệu này không phải dạng số",

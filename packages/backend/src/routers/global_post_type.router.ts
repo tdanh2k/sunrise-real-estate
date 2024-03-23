@@ -5,7 +5,7 @@ import { GlobalPostTypeSchema } from "../schemas/GlobalPostType.schema";
 import { AddGlobalPostTypeSchema } from "../schemas/AddGlobalPostType.schema";
 import { OptionalDate } from "../utils/ZodUtils";
 
-export const GlobalPostType = (init: TType) =>
+export const GlobalPostTypeRouter = (init: TType) =>
   init.router({
     all: t.procedure
       .meta({

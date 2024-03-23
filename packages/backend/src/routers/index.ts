@@ -3,9 +3,13 @@ import { TRPCContext } from "./context";
 import { OpenApiMeta, generateOpenApiDocument } from "trpc-openapi";
 import { PostRouter } from "./post.router";
 import { DraftPostRouter } from "./draft_post.router";
-import { GlobalPostType } from "./global_post_type.router";
+import { GlobalPostTypeRouter } from "./global_post_type.router";
+import superjson from "superjson";
+import { GlobalPostDetailRouter } from "./global_post_detail.router";
 
-export const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create();
+export const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create({
+  transformer: superjson,
+});
 
 export type TType = typeof t;
 
@@ -13,7 +17,8 @@ export type TType = typeof t;
 export const appRouter = t.router({
   post: PostRouter(t),
   draft_post: DraftPostRouter(t),
-  global_post_type: GlobalPostType(t)
+  global_post_type: GlobalPostTypeRouter(t),
+  global_post_detail: GlobalPostDetailRouter(t),
 });
 
 export const openApiDocument = generateOpenApiDocument(appRouter, {
@@ -21,7 +26,6 @@ export const openApiDocument = generateOpenApiDocument(appRouter, {
   version: "1.0.0",
   baseUrl: "http://localhost:3000",
   description: "OpenAPI specification for sunrise-real-estate-backend",
-  tags: ["post", "draft_post"]
 });
 
 // export type definition of API

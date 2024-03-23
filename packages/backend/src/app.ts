@@ -72,7 +72,7 @@ app.use(notFoundHandler);
 
 app.listen(port, () => {
   console.log(
-    `sunrise-real-estate-backend listening on http://localhost:${port}.
-     access Swagger docs at http://localhost:${port}/api-docs`
+    `- sunrise-real-estate-backend listening on http://localhost:${port}.
+- Access Swagger docs at http://localhost:${port}/api-docs`
   );
 });

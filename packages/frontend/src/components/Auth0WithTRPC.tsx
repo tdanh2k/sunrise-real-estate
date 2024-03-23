@@ -4,6 +4,7 @@ import { httpBatchLink } from "@trpc/client";
 import { trpc } from "@utils/trpc";
 import { FC, ReactNode } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import superjson from "superjson";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,12 +33,17 @@ export const Auth0WithTRPC: FC<{ children?: ReactNode }> = ({ children }) => (
               httpBatchLink({
                 url: "http://localhost:3000/trpc",
                 // You can pass any HTTP headers you wish here
-                async headers() {
-                  const test = await getAccessTokenSilently();
-                  return {
-                    authorization: `Bearer ${test}`,
-                  };
-                },
+                // async headers() {
+                //   const token = await getAccessTokenSilently({
+                //     authorizationParams: {
+                //       redirect_uri: "/login",
+                //     },
+                //   });
+                //   return {
+                //     authorization: `Bearer ${token}`,
+                //   };
+                // },
+                transformer: superjson,
               }),
             ],
           })}

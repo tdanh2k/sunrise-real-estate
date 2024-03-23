@@ -3,7 +3,9 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import "@mantine/core/styles.css";
+import '@mantine/core/styles.css'; //import Mantine V7 styles needed by MRT
+import '@mantine/dates/styles.css'; //if using mantine date picker features
+import 'mantine-react-table/styles.css'; //import MRT styles
 
 import { MantineProvider } from "@mantine/core";
 import { Header } from "./-components/Header";

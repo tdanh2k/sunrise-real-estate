@@ -35,12 +35,16 @@ export const AddPostSchema = z.object({
       CreatedDate: OptionalDate,
     })
   ),
-  PostImage: z.array(z.object({
-    Id: OptionalUUID,
-    Name: RequiredString,
-    Size: NonNegativeIntegerNumber,
-    Path: RequiredString,
-    MimeType: OptionalString,
-    CreatedDate: OptionalDate,
-  }))
+  PostImage: z.array(
+    z.object({
+      Id: OptionalUUID,
+      Name: RequiredString,
+      Size: NonNegativeIntegerNumber,
+      Path: RequiredString,
+      MimeType: OptionalString,
+      CreatedDate: OptionalDate,
+    })
+  ),
 });
+
+export type TypeAddPost = z.infer<typeof AddPostSchema>;
