@@ -23,10 +23,10 @@ import { Route as ClientBlogIndexImport } from './routes/_client.blog/index'
 import { Route as ClientFlatIdImport } from './routes/_client.flat/$id'
 import { Route as ClientBlogIdImport } from './routes/_client.blog/$id'
 import { Route as ManagementManagementPostsPostsImport } from './routes/management/_management/posts/_posts'
-import { Route as ManagementManagementPostsPostsPosttypeImport } from './routes/management/_management/posts/_posts/post_type'
-import { Route as ManagementManagementPostsPostsPostdetailImport } from './routes/management/_management/posts/_posts/post_detail'
-import { Route as ManagementManagementPostsPostsPostImport } from './routes/management/_management/posts/_posts/post'
-import { Route as ManagementManagementPostsPostsDraftpostImport } from './routes/management/_management/posts/_posts/draft_post'
+import { Route as ManagementManagementPostsPostsPosttypeIndexImport } from './routes/management/_management/posts/_posts/post_type/index'
+import { Route as ManagementManagementPostsPostsPostdetailIndexImport } from './routes/management/_management/posts/_posts/post_detail/index'
+import { Route as ManagementManagementPostsPostsPostIndexImport } from './routes/management/_management/posts/_posts/post/index'
+import { Route as ManagementManagementPostsPostsDraftpostIndexImport } from './routes/management/_management/posts/_posts/draft_post/index'
 
 // Create Virtual Routes
 
@@ -98,27 +98,27 @@ const ManagementManagementPostsPostsRoute =
     getParentRoute: () => ManagementManagementPostsRoute,
   } as any)
 
-const ManagementManagementPostsPostsPosttypeRoute =
-  ManagementManagementPostsPostsPosttypeImport.update({
-    path: '/post_type',
+const ManagementManagementPostsPostsPosttypeIndexRoute =
+  ManagementManagementPostsPostsPosttypeIndexImport.update({
+    path: '/post_type/',
     getParentRoute: () => ManagementManagementPostsPostsRoute,
   } as any)
 
-const ManagementManagementPostsPostsPostdetailRoute =
-  ManagementManagementPostsPostsPostdetailImport.update({
-    path: '/post_detail',
+const ManagementManagementPostsPostsPostdetailIndexRoute =
+  ManagementManagementPostsPostsPostdetailIndexImport.update({
+    path: '/post_detail/',
     getParentRoute: () => ManagementManagementPostsPostsRoute,
   } as any)
 
-const ManagementManagementPostsPostsPostRoute =
-  ManagementManagementPostsPostsPostImport.update({
-    path: '/post',
+const ManagementManagementPostsPostsPostIndexRoute =
+  ManagementManagementPostsPostsPostIndexImport.update({
+    path: '/post/',
     getParentRoute: () => ManagementManagementPostsPostsRoute,
   } as any)
 
-const ManagementManagementPostsPostsDraftpostRoute =
-  ManagementManagementPostsPostsDraftpostImport.update({
-    path: '/draft_post',
+const ManagementManagementPostsPostsDraftpostIndexRoute =
+  ManagementManagementPostsPostsDraftpostIndexImport.update({
+    path: '/draft_post/',
     getParentRoute: () => ManagementManagementPostsPostsRoute,
   } as any)
 
@@ -174,20 +174,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementManagementPostsPostsImport
       parentRoute: typeof ManagementManagementPostsRoute
     }
-    '/management/_management/posts/_posts/draft_post': {
-      preLoaderRoute: typeof ManagementManagementPostsPostsDraftpostImport
+    '/management/_management/posts/_posts/draft_post/': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsDraftpostIndexImport
       parentRoute: typeof ManagementManagementPostsPostsImport
     }
-    '/management/_management/posts/_posts/post': {
-      preLoaderRoute: typeof ManagementManagementPostsPostsPostImport
+    '/management/_management/posts/_posts/post/': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsPostIndexImport
       parentRoute: typeof ManagementManagementPostsPostsImport
     }
-    '/management/_management/posts/_posts/post_detail': {
-      preLoaderRoute: typeof ManagementManagementPostsPostsPostdetailImport
+    '/management/_management/posts/_posts/post_detail/': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsPostdetailIndexImport
       parentRoute: typeof ManagementManagementPostsPostsImport
     }
-    '/management/_management/posts/_posts/post_type': {
-      preLoaderRoute: typeof ManagementManagementPostsPostsPosttypeImport
+    '/management/_management/posts/_posts/post_type/': {
+      preLoaderRoute: typeof ManagementManagementPostsPostsPosttypeIndexImport
       parentRoute: typeof ManagementManagementPostsPostsImport
     }
   }
@@ -209,10 +209,10 @@ export const routeTree = rootRoute.addChildren([
       ManagementManagementIndexRoute,
       ManagementManagementPostsRoute.addChildren([
         ManagementManagementPostsPostsRoute.addChildren([
-          ManagementManagementPostsPostsDraftpostRoute,
-          ManagementManagementPostsPostsPostRoute,
-          ManagementManagementPostsPostsPostdetailRoute,
-          ManagementManagementPostsPostsPosttypeRoute,
+          ManagementManagementPostsPostsDraftpostIndexRoute,
+          ManagementManagementPostsPostsPostIndexRoute,
+          ManagementManagementPostsPostsPostdetailIndexRoute,
+          ManagementManagementPostsPostsPosttypeIndexRoute,
         ]),
       ]),
     ]),

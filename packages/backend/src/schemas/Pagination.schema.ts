@@ -16,6 +16,6 @@ export const PaginationSchema = z.object({
       })
     )
     .optional(),
-});
+}).passthrough();
 
 export type TypePagination = z.infer<typeof PaginationSchema>;

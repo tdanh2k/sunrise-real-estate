@@ -10,10 +10,11 @@ import { trpc } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
 import { FC, useCallback, useMemo, useState } from "react";
 import { TypePost } from "sunrise-real-estate-backend/src/schemas/Post.schema";
+import { ModalAddPost } from "./-components/ModalAddPost";
 
 const Post: FC = () => {
   const [selectedId, setSelectedId] = useState<string | undefined>("");
-
+  const test = trpc.post.byPage.useQuery({}, {enabled: false})
   const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
     useDisclosure(false);
   const [
@@ -33,20 +34,26 @@ const Post: FC = () => {
     closeModalAdd();
   };
 
-  const handleOpenModalUpdate = useCallback((Id: string | undefined) => () => {
-    setSelectedId(Id);
-    openModalUpdate();
-  }, [openModalUpdate]);
+  const handleOpenModalUpdate = useCallback(
+    (Id: string | undefined) => () => {
+      setSelectedId(Id);
+      openModalUpdate();
+    },
+    [openModalUpdate]
+  );
 
   const handleCloseModalUpdate = () => {
     setSelectedId("");
     closeModalUpdate();
   };
 
-  const handleOpenModalDelete = useCallback((Id: string | undefined) => () => {
-    setSelectedId(Id);
-    openModalDelete();
-  }, [openModalDelete]);
+  const handleOpenModalDelete = useCallback(
+    (Id: string | undefined) => () => {
+      setSelectedId(Id);
+      openModalDelete();
+    },
+    [openModalDelete]
+  );
 
   const handleCloseModalDelete = () => {
     setSelectedId("");
@@ -112,11 +119,16 @@ const Post: FC = () => {
     },
   });
 
-  return <MantineReactTable table={table} />;
+  return (
+    <>
+      <MantineReactTable table={table} />
+      <ModalAddPost isOpen={openedModalAdd} handleClose={handleCloseModalAdd} />
+    </>
+  );
 };
 
 export const Route = createFileRoute(
-  "/management/_management/posts/_posts/post"
+  "/management/_management/posts/_posts/post/"
 )({
   component: Post,
 });

@@ -1,19 +1,22 @@
 import { TextInput, TextInputProps } from "@mantine/core";
-import { FC } from "react";
-import { Control, useController } from "react-hook-form";
+import { Control, FieldValues, Path, useController } from "react-hook-form";
 
-type TextInputRHFProps = Omit<TextInputProps, "ref" | "value" | "error"> & {
-  control?: Control;
+type TextInputRHFProps<T extends FieldValues> = Omit<
+  TextInputProps,
+  "ref" | "value" | "error" | "name"
+> & {
+  name: Path<T>;
+  control?: Control<T>;
 };
 
-export const TextInputRHF: FC<TextInputRHFProps> = ({
+export const TextInputRHF = <T extends FieldValues>({
   name,
   control,
   disabled,
   onChange,
   onBlur,
   ...textInputProps
-}) => {
+}: TextInputRHFProps<T>) => {
   if (name == null || name == undefined) throw new Error("'name' required");
 
   const {

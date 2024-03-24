@@ -11,6 +11,6 @@ export const APIResponseSchema = (dataSchema: z.ZodSchema) =>
     }).optional(),
   });
 
-export type TypeAPIResponse<T extends z.infer<z.ZodSchema>> = z.infer<
+export type TypeAPIResponse<T extends Record<string, unknown> | Record<string, unknown>[]> = z.infer<
   ReturnType<typeof APIResponseSchema>
 > & { data: T };

@@ -8,7 +8,10 @@ import {
   MRT_ColumnFilterFnsState,
   MRT_RowSelectionState,
 } from "mantine-react-table";
-import { UseTRPCQueryResult } from "@trpc/react-query/shared";
+import {
+  UseTRPCQueryOptions,
+  UseTRPCQueryResult,
+} from "@trpc/react-query/shared";
 import { AppRouter } from "sunrise-real-estate-backend/src/routers";
 import { TypePagination } from "sunrise-real-estate-backend/src/schemas/Pagination.schema";
 import { TypeAPIResponse } from "sunrise-real-estate-backend/src/schemas/APIResponse.schema";
@@ -23,10 +26,21 @@ import { MRT_Localization_VI } from "mantine-react-table/locales/vi/index.esm.mj
 
 export type MantineRTProps<T extends MRT_RowData> = {
   columns: MRT_ColumnDef<T>[];
-  useQuery: (
-    input: TypePagination
-  ) => UseTRPCQueryResult<TypeAPIResponse<T>, TRPCClientErrorLike<AppRouter>>;
-
+  useQuery:
+    | ((
+        input: TypePagination
+      ) => UseTRPCQueryResult<
+        TypeAPIResponse<T[]>,
+        TRPCClientErrorLike<AppRouter>
+      >)
+    | ((
+        input: TypePagination,
+        opts?: UseTRPCQueryOptions<TypeAPIResponse<T[]>, TypePagination, Error>
+      ) => UseTRPCQueryResult<
+        TypeAPIResponse<T[]>,
+        TRPCClientErrorLike<AppRouter>
+      >);
+  extraQueryInputs?: { [k: string]: unknown };
   //useQueryOptions: (props: TypePagination) => UseTRPCQueryResult<T, Error>;
   //extraQueryParams?: Record<string, unknown>;
   //querySkip?: boolean;
@@ -39,6 +53,7 @@ export type MantineRTProps<T extends MRT_RowData> = {
 export const useMantineRTInstance = <T extends MRT_RowData>({
   columns,
   useQuery,
+  extraQueryInputs,
   tableProps,
   externalLoading = false,
   topToolbarActionObjectList = [],
@@ -64,32 +79,38 @@ export const useMantineRTInstance = <T extends MRT_RowData>({
     isError,
     error,
     refetch,
-  } = useQuery({
-    paging: {
-      page_size: pagination.pageSize,
-      page_index: pagination.pageIndex + 1,
+  } = useQuery(
+    {
+      paging: {
+        page_size: pagination.pageSize,
+        page_index: pagination.pageIndex + 1,
+      },
+      filters: [
+        // ...(!checkEmpty(globalFilter)
+        //   ? columns
+        //       ?.filter((column) => column.enableGlobalFilter !== false)
+        //       ?.map((column) => ({
+        //         column_name: column.id as string,
+        //         operator_type: "or",
+        //         value: globalFilter,
+        //       })) ?? []
+        //   : []),
+        ...(columnFilters
+          ? columnFilters?.map((column) => ({
+              column_name: column.id as string,
+              //operator_type: columnFilterFns?.[column?.id],
+              value: Array.isArray(column.value)
+                ? column?.value?.[0]
+                : column?.value,
+            })) ?? []
+          : []),
+      ],
+      ...(extraQueryInputs ?? {}),
     },
-    filters: [
-      // ...(!checkEmpty(globalFilter)
-      //   ? columns
-      //       ?.filter((column) => column.enableGlobalFilter !== false)
-      //       ?.map((column) => ({
-      //         column_name: column.id as string,
-      //         operator_type: "or",
-      //         value: globalFilter,
-      //       })) ?? []
-      //   : []),
-      ...(columnFilters
-        ? columnFilters?.map((column) => ({
-            column_name: column.id as string,
-            //operator_type: columnFilterFns?.[column?.id],
-            value: Array.isArray(column.value)
-              ? column?.value?.[0]
-              : column?.value,
-          })) ?? []
-        : []),
-    ],
-  });
+    {
+      enabled: !externalLoading,
+    }
+  );
 
   return useMantineReactTable({
     ...tableProps,

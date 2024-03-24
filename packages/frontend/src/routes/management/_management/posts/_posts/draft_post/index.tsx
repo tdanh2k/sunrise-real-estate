@@ -5,6 +5,6 @@ const DraftPost: FC = () => {
   return <></>;
 };
 
-export const Route = createFileRoute("/management/_management/posts/_posts/draft_post")({
+export const Route = createFileRoute("/management/_management/posts/_posts/draft_post/")({
   component: DraftPost,
 });
