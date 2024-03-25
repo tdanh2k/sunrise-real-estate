@@ -1,11 +1,13 @@
 import { TextInput, TextInputProps } from "@mantine/core";
+import { PickByType } from "@custom_types/PickByType";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 
 type TextInputRHFProps<T extends FieldValues> = Omit<
   TextInputProps,
   "ref" | "value" | "error" | "name"
 > & {
-  name: Path<T>;
+  name?: Path<PickByType<T, string>>; 
+  //name: Path<T>;
   control?: Control<T>;
 };
 
@@ -23,7 +25,7 @@ export const TextInputRHF = <T extends FieldValues>({
     field: { onChange: onFieldChange, onBlur: onFieldBlur, value, ref },
     fieldState: { error },
     formState: { isSubmitting },
-  } = useController({ name, control });
+  } = useController({ name: name as Path<T>, control });
   return (
     <TextInput
       {...textInputProps}

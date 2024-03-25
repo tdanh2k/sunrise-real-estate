@@ -38,6 +38,10 @@ export default defineConfig({
         find: "@schemas",
         replacement: path.resolve(__dirname, "src/schemas"),
       },
+      {
+        find: "@custom_types",
+        replacement: path.resolve(__dirname, "src/custom_types"),
+      },
     ],
   },
 });
