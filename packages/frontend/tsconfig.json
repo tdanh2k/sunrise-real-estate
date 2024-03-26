@@ -25,7 +25,8 @@
       "@utils/*": ["./src/utils/*"],
       "@components/*": ["./src/components/*"],
       "@schemas/*": ["./src/schemas/*"],
-      "@custom_types/*": ["./src/custom_types/*"]
+      "@custom_types/*": ["./src/custom_types/*"],
+      "@sunrise-backend/*": ["../backend/*"]
     }
   },
   "include": ["src"],

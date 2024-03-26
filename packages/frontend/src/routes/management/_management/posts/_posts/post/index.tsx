@@ -9,7 +9,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { trpc } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
 import { FC, useCallback, useMemo, useState } from "react";
-import { TypePost } from "sunrise-real-estate-backend/src/schemas/Post.schema";
+import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 import { ModalAddPost } from "./-components/ModalAddPost";
 
 const Post: FC = () => {

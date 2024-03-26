@@ -3,6 +3,7 @@ import { TType, t } from ".";
 import { dbContext } from "../utils/prisma";
 import { GlobalPostDetailSchema } from "../schemas/GlobalPostDetail.schema";
 import { AddGlobalPostDetailSchema } from "../schemas/AddGlobalPostDetail.schema";
+import { APIResponseSchema } from "../schemas/APIResponse.schema";
 
 export const GlobalPostDetailRouter = (init: TType) =>
   init.router({
@@ -15,11 +16,13 @@ export const GlobalPostDetailRouter = (init: TType) =>
         },
       })
       .input(z.void())
-      .output(z.array(GlobalPostDetailSchema))
+      .output(APIResponseSchema(z.array(GlobalPostDetailSchema)))
       .query(async (opt) => {
         const data = await dbContext.globalPostDetail.findMany();
 
-        return await z.array(GlobalPostDetailSchema).parseAsync(data);
+        return await APIResponseSchema(
+          z.array(GlobalPostDetailSchema)
+        ).parseAsync({ data });
       }),
     create: t.procedure
       .meta({
@@ -30,13 +33,15 @@ export const GlobalPostDetailRouter = (init: TType) =>
         },
       })
       .input(AddGlobalPostDetailSchema)
-      .output(GlobalPostDetailSchema.nullable())
+      .output(APIResponseSchema(GlobalPostDetailSchema.nullable()))
       .mutation(async ({ ctx, input }) => {
         //if (ctx.userId == null) return null;
-        const result = await dbContext.globalPostDetail.create({
+        const data = await dbContext.globalPostDetail.create({
           data: input,
         });
 
-        return await GlobalPostDetailSchema.nullable().parseAsync(result);
+        return await APIResponseSchema(
+          GlobalPostDetailSchema.nullable()
+        ).parseAsync({ data });
       }),
   });

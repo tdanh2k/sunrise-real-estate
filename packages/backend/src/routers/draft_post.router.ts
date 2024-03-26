@@ -4,6 +4,8 @@ import { DraftPostSchema } from "../schemas/DraftPost.schema";
 import { dbContext } from "../utils/prisma";
 import { OptionalBoolean, RequiredString } from "../utils/ZodUtils";
 import { AddDraftPostSchema } from "../schemas/AddDraftPost.schema";
+import { APIResponseSchema } from "../schemas/APIResponse.schema";
+import { TRPCError } from "@trpc/server";
 
 export const DraftPostRouter = (init: TType) =>
   init.router({
@@ -16,7 +18,7 @@ export const DraftPostRouter = (init: TType) =>
         },
       })
       .input(z.void())
-      .output(z.array(DraftPostSchema))
+      .output(APIResponseSchema(z.array(DraftPostSchema)))
       .query(async (opt) => {
         const data = await dbContext.post.findMany({
           include: {
@@ -27,7 +29,9 @@ export const DraftPostRouter = (init: TType) =>
           },
         });
 
-        return await z.array(DraftPostSchema).parseAsync(data);
+        return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+          data,
+        });
       }),
     byId: t.procedure
       .meta({
@@ -42,7 +46,7 @@ export const DraftPostRouter = (init: TType) =>
           Id: RequiredString,
         })
       )
-      .output(DraftPostSchema.nullable())
+      .output(APIResponseSchema(DraftPostSchema.nullable()))
       .query(async ({ input }) => {
         const data = await dbContext.post.findFirst({
           where: {
@@ -55,7 +59,9 @@ export const DraftPostRouter = (init: TType) =>
             PostFeature: true,
           },
         });
-        return await DraftPostSchema.nullable().parseAsync(data);
+        return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+          data,
+        });
       }),
     create: t.procedure
       .meta({
@@ -67,20 +73,26 @@ export const DraftPostRouter = (init: TType) =>
       })
       .input(AddDraftPostSchema)
       .output(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
+        APIResponseSchema(
+          DraftPostSchema.omit({
+            DraftCurrentDetail: true,
+            DraftFeature: true,
+            DraftPostImage: true,
+          }).nullable()
+        )
       )
       .mutation(
         async ({
           ctx,
           input: { DraftCurrentDetail, DraftFeature, DraftPostImage, ...rest },
         }) => {
-          if (ctx.userId == null) return null;
+          if (ctx.userId == null)
+            throw new TRPCError({
+              code: "UNAUTHORIZED",
+              message: ``,
+            });
 
-          const result = await dbContext.draftPost.create({
+          const data = await dbContext.draftPost.create({
             data: {
               ...rest,
               UserId: ctx.userId,
@@ -120,11 +132,13 @@ export const DraftPostRouter = (init: TType) =>
             },
           });
 
-          return await DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          }).parseAsync(result);
+          return await APIResponseSchema(
+            DraftPostSchema.omit({
+              DraftCurrentDetail: true,
+              DraftFeature: true,
+              DraftPostImage: true,
+            }).nullable()
+          ).parseAsync({ data });
         }
       ),
     update: t.procedure
@@ -137,11 +151,13 @@ export const DraftPostRouter = (init: TType) =>
       })
       .input(DraftPostSchema)
       .output(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
+        APIResponseSchema(
+          DraftPostSchema.omit({
+            DraftCurrentDetail: true,
+            DraftFeature: true,
+            DraftPostImage: true,
+          }).nullable()
+        )
       )
       .mutation(
         async ({
@@ -189,11 +205,13 @@ export const DraftPostRouter = (init: TType) =>
             },
           });
 
-          return await DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          }).parseAsync(result);
+          return await APIResponseSchema(
+            DraftPostSchema.omit({
+              DraftCurrentDetail: true,
+              DraftFeature: true,
+              DraftPostImage: true,
+            })
+          ).parseAsync(result);
         }
       ),
 
@@ -206,7 +224,7 @@ export const DraftPostRouter = (init: TType) =>
         },
       })
       .input(z.object({ Id: RequiredString }))
-      .output(OptionalBoolean.nullable())
+      .output(APIResponseSchema(OptionalBoolean.nullable()))
       .mutation(async ({ ctx, input: { Id } }) => {
         //if (ctx.userId == null) return null;
 
@@ -216,6 +234,8 @@ export const DraftPostRouter = (init: TType) =>
           },
         });
 
-        return Boolean(result);
+        return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
+          data: Boolean(result),
+        });
       }),
   });

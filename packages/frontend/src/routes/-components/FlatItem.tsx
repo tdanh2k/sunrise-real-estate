@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { FC } from "react";
-import { TypePost } from "sunrise-real-estate-backend/src/schemas/Post.schema";
+import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 
 export const FlatItem: FC<{ data?: TypePost }> = ({ data }) => {
   return (

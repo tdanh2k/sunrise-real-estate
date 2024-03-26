@@ -12,9 +12,9 @@ import {
   UseTRPCQueryOptions,
   UseTRPCQueryResult,
 } from "@trpc/react-query/shared";
-import { AppRouter } from "sunrise-real-estate-backend/src/routers";
-import { TypePagination } from "sunrise-real-estate-backend/src/schemas/Pagination.schema";
-import { TypeAPIResponse } from "sunrise-real-estate-backend/src/schemas/APIResponse.schema";
+import { AppRouter } from "@sunrise-backend/src/routers";
+import { TypePagination } from "@sunrise-backend/src/schemas/Pagination.schema";
+import { TypeAPIResponse } from "@sunrise-backend/src/schemas/APIResponse.schema";
 import { TRPCClientErrorLike } from "@trpc/client";
 import {
   CustomToolbarButtonsPropsType,
@@ -83,7 +83,7 @@ export const useMantineRTInstance = <T extends MRT_RowData>({
     {
       paging: {
         page_size: pagination.pageSize,
-        page_index: pagination.pageIndex + 1,
+        page_index: pagination.pageIndex,
       },
       filters: [
         // ...(!checkEmpty(globalFilter)

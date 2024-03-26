@@ -8,5 +8,7 @@ import {
 export const AddGlobalPostTypeSchema = z.object({
   Idx: NonNegativeIntegerNumber,
   Name: RequiredString,
-  CreatedDate: OptionalDate,
+  //CreatedDate: OptionalDate,
 });
+
+export type TypeAddGlobalPostType = z.infer<typeof AddGlobalPostTypeSchema>;

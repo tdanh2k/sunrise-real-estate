@@ -6,6 +6,7 @@ import { RequiredString } from "../utils/ZodUtils";
 import { AddPostSchema } from "../schemas/AddPost.schema";
 import { PaginationSchema } from "../schemas/Pagination.schema";
 import { APIResponseSchema } from "../schemas/APIResponse.schema";
+import { TRPCError } from "@trpc/server";
 
 export const PostRouter = (init: TType) =>
   init.router({
@@ -78,19 +79,6 @@ export const PostRouter = (init: TType) =>
           dbContext.post.count(),
         ]);
 
-        // const data = await dbContext.post.findMany({
-        //   skip: page_index,
-        //   take: page_size,
-        //   include: {
-        //     PostCurrentDetail: true,
-        //     PostImage: true,
-        //     PostType: true,
-        //     PostFeature: true,
-        //   },
-        // });
-
-        //const row_count = await dbContext.post.count();
-
         return await APIResponseSchema(z.array(PostSchema)).parseAsync({
           data,
           paging: {
@@ -126,6 +114,7 @@ export const PostRouter = (init: TType) =>
             PostFeature: true,
           },
         });
+
         return await APIResponseSchema(PostSchema.nullable()).parseAsync({
           data,
         });
@@ -154,13 +143,10 @@ export const PostRouter = (init: TType) =>
           input: { PostCurrentDetail, PostFeature, PostImage, ...rest },
         }) => {
           if (ctx.userId == null)
-            return await APIResponseSchema(
-              PostSchema.omit({
-                PostCurrentDetail: true,
-                PostFeature: true,
-                PostImage: true,
-              }).nullable()
-            ).parseAsync({ data: null });
+            throw new TRPCError({
+              code: "UNAUTHORIZED",
+              message: ``,
+            });
 
           const result = await dbContext.post.create({
             data: {

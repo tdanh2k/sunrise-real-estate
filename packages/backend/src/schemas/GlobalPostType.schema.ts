@@ -12,3 +12,5 @@ export const GlobalPostTypeSchema = z.object({
   Name: RequiredString,
   CreatedDate: OptionalJsDate,
 });
+
+export type TypeGlobalPostType = z.infer<typeof GlobalPostTypeSchema>;

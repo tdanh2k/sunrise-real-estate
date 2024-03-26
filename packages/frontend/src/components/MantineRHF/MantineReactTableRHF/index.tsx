@@ -11,12 +11,9 @@ import {
 import { MRT_Localization_VI } from "mantine-react-table/locales/vi/index.esm.mjs";
 import {
   ArrayPath,
-  Control,
-  FieldArray,
   FieldArrayWithId,
   FieldValues,
-  Path,
-  useFieldArray,
+  UseFieldArrayReturn,
 } from "react-hook-form";
 
 type MantineReactTableRHFProps<
@@ -25,8 +22,13 @@ type MantineReactTableRHFProps<
 > = {
   //name: ArrayPath<T>;
   //control?: Control<T>;
+  methods: UseFieldArrayReturn<T, N>;
   columns: MRT_ColumnDef<FieldArrayWithId<T, N>>[];
-  data: FieldArrayWithId<T, N>[];
+  tableProps?: Omit<
+    MRT_TableOptions<FieldArrayWithId<T, N>>,
+    "columns" | "data"
+  >;
+  //data: FieldArrayWithId<T, N>[];
   onCreate?: MRT_TableOptions<FieldArrayWithId<T, N>>["onCreatingRowSave"];
   onEdit?: MRT_TableOptions<FieldArrayWithId<T, N>>["onEditingRowSave"];
   onDelete?: (row: MRT_Row<FieldArrayWithId<T, N>>) => void;
@@ -38,21 +40,25 @@ export const MantineReactTableRHF = <
 >({
   //name,
   //control,
+  methods,
   columns,
-  data,
+  tableProps,
+  //data,
   onCreate,
   onEdit,
   onDelete,
 }: MantineReactTableRHFProps<T, N>) => {
-  if (name == null) throw new Error("'name' required");
-  //   const { fields, append, remove, } = useFieldArray({
+  const { fields, insert, append, update, remove } = methods;
+  //if (name == null) throw new Error("'name' required");
+  //   const { fields, append, remove } = useFieldArray({
   //     name,
   //     control,
   //   });
 
   const table = useMantineReactTable({
+    ...tableProps,
     columns,
-    data: data ?? [],
+    data: fields ?? [],
     createDisplayMode: "row", // ('modal', and 'custom' are also available)
     editDisplayMode: "row", // ('modal', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
@@ -70,7 +76,7 @@ export const MantineReactTableRHF = <
       <Button
         size="small"
         variant="subtle"
-        onClick={(event) => {
+        onClick={() => {
           table.setCreatingRow(true);
         }}
       >
@@ -85,18 +91,31 @@ export const MantineReactTableRHF = <
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Delete">
-          <ActionIcon color="red" onClick={() => onDelete?.(row)}>
+          <ActionIcon
+            color="red"
+            onClick={() => {
+              if (!window.confirm("Bạn chắc chắn muốn xóa?")) return;
+
+              remove(fields.findIndex((r) => r.id === row.original.id));
+              onDelete?.(row);
+            }}
+          >
             <IconTrash />
           </ActionIcon>
         </Tooltip>
       </Group>
     ),
-    onCreatingRowSave: ({ table, exitCreatingMode, ...rest }) => {
-      onCreate?.({ table, exitCreatingMode, ...rest });
+    onCreatingRowSave: ({ table, exitCreatingMode, values, ...rest }) => {
+      onCreate?.({ table, exitCreatingMode, values, ...rest });
+      append(values as FieldArrayWithId<T, N>);
       exitCreatingMode();
     },
-    onEditingRowSave: ({ table, exitEditingMode, ...rest }) => {
-      onEdit?.({ table, exitEditingMode, ...rest });
+    onEditingRowSave: ({ table, exitEditingMode, values, row, ...rest }) => {
+      update(
+        fields.findIndex((r) => r.id === row.original.id),
+        values as FieldArrayWithId<T, N>
+      );
+      onEdit?.({ table, exitEditingMode, values, row, ...rest });
       exitEditingMode();
     },
   });

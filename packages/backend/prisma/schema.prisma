@@ -114,9 +114,9 @@ model GlobalPostDetail {
 
 model GlobalPostType {
   Id          String      @id(map: "GlobalPostType_PK") @default(dbgenerated("newid()"), map: "DF__GlobalPostTy__Id__51300E55") @db.UniqueIdentifier
-  Idx         Int         @default(autoincrement())
   Name        String      @db.NVarChar(256)
-  CreatedDate DateTime?   @db.DateTimeOffset
+  CreatedDate DateTime?   @default(dbgenerated("sysdatetimeoffset()"), map: "DF__GlobalPos__Creat__6166761E") @db.DateTimeOffset
+  Idx         Int
   DraftPost   DraftPost[]
   Post        Post[]
 }

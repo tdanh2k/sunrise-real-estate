@@ -42,6 +42,10 @@ export default defineConfig({
         find: "@custom_types",
         replacement: path.resolve(__dirname, "src/custom_types"),
       },
+      {
+        find: "@sunrise-backend",
+        replacement: path.resolve(__dirname, "../backend"),
+      },
     ],
   },
 });
