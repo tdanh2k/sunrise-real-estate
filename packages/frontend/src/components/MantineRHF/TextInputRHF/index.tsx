@@ -19,7 +19,7 @@ export const TextInputRHF = <T extends FieldValues>({
   onBlur,
   ...textInputProps
 }: TextInputRHFProps<T>) => {
-  if (name == null || name == undefined) throw new Error("'name' required");
+  if (name == null || control == null) throw new Error("'name' and 'control' are required");
 
   const {
     field: { onChange: onFieldChange, onBlur: onFieldBlur, value, ref },
