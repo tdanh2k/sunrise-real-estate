@@ -43,22 +43,22 @@ export const Header: FC = () => {
                     About
                   </Link>
                 </li>
-                {/* <li className="nav-item">
-                  <Link className="nav-link" to="#">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
                     Category <i className="fas fa-chevron-down"></i>
                   </Link>
                   <ul className="sub-ul">
                     <li>
-                      <Link to="#">item</Link>
+                      <Link to="/">item</Link>
                     </li>
                     <li>
-                      <Link to="#">item</Link>
+                      <Link to="/">item</Link>
                     </li>
                     <li>
-                      <Link to="#">item</Link>
+                      <Link to="/">item</Link>
                     </li>
                   </ul>
-                </li> */}
+                </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/contact">
                     Contact
