@@ -44,40 +44,36 @@ export const Header: FC = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    Category <i className="fas fa-chevron-down"></i>
-                  </Link>
-                  <ul className="sub-ul">
-                    <li>
-                      <Link to="/">item</Link>
-                    </li>
-                    <li>
-                      <Link to="/">item</Link>
-                    </li>
-                    <li>
-                      <Link to="/">item</Link>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-item">
                   <Link className="nav-link" to="/contact">
                     Contact
                   </Link>
                 </li>
-                <li className="nav-item">
-                  {isAuthenticated ? (
-                    <button className="nav-link" onClick={() => logout()}>
-                      Logout
-                    </button>
-                  ) : (
+                {isAuthenticated ? (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/">
+                      Hello, Stranger <i className="fas fa-chevron-down"></i>
+                    </Link>
+                    <ul className="sub-ul">
+                      <li>
+                        <Link to="/management">Trang cá nhân</Link>
+                      </li>
+                      <li>
+                        <button className="nav-link logout" onClick={() => logout()}>
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
+                ) : (
+                  <li className="nav-item">
                     <button
                       className="nav-link"
                       onClick={() => loginWithRedirect()}
                     >
                       Login
                     </button>
-                  )}
-                </li>
+                  </li>
+                )}
               </ul>
             </div>
           </div>

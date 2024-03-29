@@ -1,12 +1,7 @@
 import { TextInputRHF } from "@components/MantineRHF/TextInputRHF";
-import { Button, Group, LoadingOverlay, Modal, Stack } from "@mantine/core";
+import { Button, LoadingOverlay, Stack } from "@mantine/core";
 import { FC } from "react";
-import {
-  Control,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { Control, SubmitHandler, useForm } from "react-hook-form";
 import {
   AddPostSchema,
   TypeAddPost,
@@ -74,7 +69,10 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           <Button variant="transparent" onClick={() => reset()}>
             Clear
           </Button>
-          <Button color="blue" onClick={handleSubmit(onSubmit)}>
+          <Button
+            color="blue"
+            onClick={handleSubmit(onSubmit, (error) => console.error(error))}
+          >
             Submit
           </Button>
         </>
@@ -112,14 +110,7 @@ const PostCurrentDetailTable: FC<{
 }> = ({ control }) => {
   const { data: postDetailResponse, isFetching } =
     trpc.global_post_detail.all.useQuery();
-
-  const methods = useFieldArray({
-    name: "PostCurrentDetail",
-    control,
-  });
-
-  const { fields, append, remove } = methods;
-
+ 
   return (
     <>
       <MantineReactTableRHF
@@ -139,6 +130,8 @@ const PostCurrentDetailTable: FC<{
                 label: item.Name,
                 value: item.Id,
               })),
+              //error:
+              //  control?._formState?.errors?.PostCurrentDetail?.[row.index]?.DetailId,
             }),
           },
           {
@@ -146,10 +139,17 @@ const PostCurrentDetailTable: FC<{
             header: "Value",
             mantineEditTextInputProps: ({ row }) => ({
               //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
+              //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
+              error:
+                control?._formState?.errors?.PostCurrentDetail?.[row.index]
+                  ?.Value?.message,
             }),
           },
         ]}
-        methods={methods}
+        externalLoading={isFetching}
+        name="PostCurrentDetail"
+        control={control}
+        //methods={methods}
         // onCreate={({ values }) => {
         //   append(values);
         // }}

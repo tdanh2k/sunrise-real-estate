@@ -14,7 +14,7 @@ import { ModalAddPostType } from "./-components/ModalAddPostType";
 
 const PostType: FC = () => {
   const [selectedId, setSelectedId] = useState<string | undefined>("");
-  const test = trpc.post.byPage.useQuery({}, { enabled: false });
+  
   const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
     useDisclosure(false);
   const [

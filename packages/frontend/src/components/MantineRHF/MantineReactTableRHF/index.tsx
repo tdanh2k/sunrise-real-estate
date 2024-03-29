@@ -1,4 +1,3 @@
-import { PickByType } from "@custom_types/PickByType";
 import { ActionIcon, Button, Group, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {
@@ -11,49 +10,57 @@ import {
 import { MRT_Localization_VI } from "mantine-react-table/locales/vi/index.esm.mjs";
 import {
   ArrayPath,
+  Control,
+  FieldArray,
   FieldArrayWithId,
   FieldValues,
-  UseFieldArrayReturn,
+  useFieldArray,
 } from "react-hook-form";
 
 type MantineReactTableRHFProps<
   T extends FieldValues,
-  N extends ArrayPath<T>,
+  //N extends ArrayPath<T>,
 > = {
-  //name: ArrayPath<T>;
-  //control?: Control<T>;
-  methods: UseFieldArrayReturn<T, N>;
-  columns: MRT_ColumnDef<FieldArrayWithId<T, N>>[];
+  name: ArrayPath<T>;
+  control?: Control<T>;
+  //methods: UseFieldArrayReturn<T, N>;
+  columns: MRT_ColumnDef<FieldArrayWithId<T, ArrayPath<T>>>[];
   tableProps?: Omit<
-    MRT_TableOptions<FieldArrayWithId<T, N>>,
+    MRT_TableOptions<FieldArrayWithId<T, ArrayPath<T>>>,
     "columns" | "data"
   >;
+  externalLoading?: boolean;
   //data: FieldArrayWithId<T, N>[];
-  onCreate?: MRT_TableOptions<FieldArrayWithId<T, N>>["onCreatingRowSave"];
-  onEdit?: MRT_TableOptions<FieldArrayWithId<T, N>>["onEditingRowSave"];
-  onDelete?: (row: MRT_Row<FieldArrayWithId<T, N>>) => void;
+  onCreate?: MRT_TableOptions<
+    FieldArrayWithId<T, ArrayPath<T>>
+  >["onCreatingRowSave"];
+  onEdit?: MRT_TableOptions<
+    FieldArrayWithId<T, ArrayPath<T>>
+  >["onEditingRowSave"];
+  onDelete?: (row: MRT_Row<FieldArrayWithId<T, ArrayPath<T>>>) => void;
 };
 
 export const MantineReactTableRHF = <
   T extends FieldValues,
-  N extends ArrayPath<T>,
+  //N extends ArrayPath<T>,
 >({
-  //name,
-  //control,
-  methods,
+  name,
+  control,
+  //methods,
   columns,
   tableProps,
   //data,
+  externalLoading,
   onCreate,
   onEdit,
   onDelete,
-}: MantineReactTableRHFProps<T, N>) => {
-  const { fields, insert, append, update, remove } = methods;
-  //if (name == null) throw new Error("'name' required");
-  //   const { fields, append, remove } = useFieldArray({
-  //     name,
-  //     control,
-  //   });
+}: MantineReactTableRHFProps<T>) => {
+  //const { fields, insert, append, update, remove } = methods;
+  if (name == null || control == null) throw new Error("'name' and 'control' required");
+  const { fields, insert, append, update, remove } = useFieldArray({
+    name,
+    control,
+  });
 
   const table = useMantineReactTable({
     ...tableProps,
@@ -66,12 +73,15 @@ export const MantineReactTableRHF = <
     positionGlobalFilter: "right",
     //onSortingChange:setSorting,
     localization: MRT_Localization_VI,
-    // state: {
-    //   isLoading: isFetching || externalLoading,
-    //   showSkeletons: isLoading || externalLoading,
-    //   showAlertBanner: isError || externalLoading,
-    //   showProgressBars: isFetching || externalLoading,
-    // },
+    state: {
+      isLoading: externalLoading,
+      showSkeletons: externalLoading,
+      showAlertBanner: externalLoading,
+      showProgressBars: externalLoading,
+    },
+    renderEditRowModalContent: ({ internalEditComponents }) => {
+      return <>{internalEditComponents}</>;
+    },
     renderTopToolbarCustomActions: ({ table }) => (
       <Button
         size="small"
@@ -107,13 +117,13 @@ export const MantineReactTableRHF = <
     ),
     onCreatingRowSave: ({ table, exitCreatingMode, values, ...rest }) => {
       onCreate?.({ table, exitCreatingMode, values, ...rest });
-      append(values as FieldArrayWithId<T, N>);
+      append(values as FieldArray<T, ArrayPath<T>>);
       exitCreatingMode();
     },
     onEditingRowSave: ({ table, exitEditingMode, values, row, ...rest }) => {
       update(
         fields.findIndex((r) => r.id === row.original.id),
-        values as FieldArrayWithId<T, N>
+        values as FieldArray<T, ArrayPath<T>>
       );
       onEdit?.({ table, exitEditingMode, values, row, ...rest });
       exitEditingMode();

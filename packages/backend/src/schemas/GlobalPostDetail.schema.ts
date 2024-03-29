@@ -1,6 +1,5 @@
 import { z } from "zod";
 import {
-  NonNegativeIntegerNumber,
   OptionalBoolean,
   OptionalJsDate,
   RequiredString,
@@ -15,3 +14,5 @@ export const GlobalPostDetailSchema = z.object({
   IsNumber: OptionalBoolean,
   CreatedDate: OptionalJsDate,
 });
+
+export type TypeGlobalPostDetail = z.infer<typeof GlobalPostDetailSchema>;
