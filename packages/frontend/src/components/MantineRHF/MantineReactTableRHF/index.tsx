@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Group, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Fieldset, Group, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
@@ -18,11 +18,12 @@ import {
 } from "react-hook-form";
 
 type MantineReactTableRHFProps<
-  T extends FieldValues,
+  T extends FieldValues
   //N extends ArrayPath<T>,
 > = {
   name: ArrayPath<T>;
   control?: Control<T>;
+  legendLabel?: string;
   //methods: UseFieldArrayReturn<T, N>;
   columns: MRT_ColumnDef<FieldArrayWithId<T, ArrayPath<T>>>[];
   tableProps?: Omit<
@@ -41,11 +42,12 @@ type MantineReactTableRHFProps<
 };
 
 export const MantineReactTableRHF = <
-  T extends FieldValues,
+  T extends FieldValues
   //N extends ArrayPath<T>,
 >({
   name,
   control,
+  legendLabel,
   //methods,
   columns,
   tableProps,
@@ -56,7 +58,8 @@ export const MantineReactTableRHF = <
   onDelete,
 }: MantineReactTableRHFProps<T>) => {
   //const { fields, insert, append, update, remove } = methods;
-  if (name == null || control == null) throw new Error("'name' and 'control' required");
+  if (name == null || control == null)
+    throw new Error("'name' and 'control' required");
   const { fields, insert, append, update, remove } = useFieldArray({
     name,
     control,
@@ -69,6 +72,7 @@ export const MantineReactTableRHF = <
     createDisplayMode: "row", // ('modal', and 'custom' are also available)
     editDisplayMode: "row", // ('modal', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
+    enableSorting: false,
     getRowId: (row) => row?.id as string,
     positionGlobalFilter: "right",
     //onSortingChange:setSorting,
@@ -79,9 +83,9 @@ export const MantineReactTableRHF = <
       showAlertBanner: externalLoading,
       showProgressBars: externalLoading,
     },
-    renderEditRowModalContent: ({ internalEditComponents }) => {
-      return <>{internalEditComponents}</>;
-    },
+    // renderEditRowModalContent: ({ internalEditComponents }) => {
+    //   return <>{internalEditComponents}</>;
+    // },
     renderTopToolbarCustomActions: ({ table }) => (
       <Button
         size="small"
@@ -130,5 +134,9 @@ export const MantineReactTableRHF = <
     },
   });
 
-  return <MantineReactTable table={table} />;
+  return (
+    <Fieldset legend={legendLabel}>
+      <MantineReactTable table={table} />
+    </Fieldset>
+  );
 };

@@ -26,7 +26,7 @@ export const AddPostSchema = z.object({
       IsNumber: OptionalBoolean,
       CreatedDate: OptionalDate,
     })
-  ),
+  ).optional(),
   PostFeature: z.array(
     z.object({
       Id: OptionalUUID,
@@ -34,7 +34,7 @@ export const AddPostSchema = z.object({
       Description: RequiredString,
       CreatedDate: OptionalDate,
     })
-  ),
+  ).optional(),
   PostImage: z.array(
     z.object({
       Id: OptionalUUID,
@@ -44,7 +44,7 @@ export const AddPostSchema = z.object({
       MimeType: OptionalString,
       CreatedDate: OptionalDate,
     })
-  ),
+  ).optional(),
 });
 
 export type TypeAddPost = z.infer<typeof AddPostSchema>;
