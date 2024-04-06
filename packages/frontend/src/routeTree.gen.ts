@@ -22,9 +22,12 @@ import { Route as ClientBlogIndexImport } from './routes/_client/blog/index'
 import { Route as ClientFlatIdImport } from './routes/_client/flat/$id'
 import { Route as ClientBlogIdImport } from './routes/_client/blog/$id'
 import { Route as ManagementUserPostsRouteImport } from './routes/_management/user/posts/route'
+import { Route as ManagementManagementUsersRouteImport } from './routes/_management/management/users/route'
 import { Route as ManagementManagementPostsRouteImport } from './routes/_management/management/posts/route'
+import { Route as ManagementManagementPostsIndexImport } from './routes/_management/management/posts/index'
 import { Route as ManagementUserPostsPostIndexImport } from './routes/_management/user/posts/post/index'
 import { Route as ManagementUserPostsDraftpostIndexImport } from './routes/_management/user/posts/draft_post/index'
+import { Route as ManagementManagementUsersUserIndexImport } from './routes/_management/management/users/user/index'
 import { Route as ManagementManagementPostsPosttypeIndexImport } from './routes/_management/management/posts/post_type/index'
 import { Route as ManagementManagementPostsPostdetailIndexImport } from './routes/_management/management/posts/post_detail/index'
 import { Route as ManagementManagementPostsPostIndexImport } from './routes/_management/management/posts/post/index'
@@ -87,10 +90,22 @@ const ManagementUserPostsRouteRoute = ManagementUserPostsRouteImport.update({
   getParentRoute: () => ManagementUserRouteRoute,
 } as any)
 
+const ManagementManagementUsersRouteRoute =
+  ManagementManagementUsersRouteImport.update({
+    path: '/users',
+    getParentRoute: () => ManagementManagementRouteRoute,
+  } as any)
+
 const ManagementManagementPostsRouteRoute =
   ManagementManagementPostsRouteImport.update({
     path: '/posts',
     getParentRoute: () => ManagementManagementRouteRoute,
+  } as any)
+
+const ManagementManagementPostsIndexRoute =
+  ManagementManagementPostsIndexImport.update({
+    path: '/',
+    getParentRoute: () => ManagementManagementPostsRouteRoute,
   } as any)
 
 const ManagementUserPostsPostIndexRoute =
@@ -103,6 +118,12 @@ const ManagementUserPostsDraftpostIndexRoute =
   ManagementUserPostsDraftpostIndexImport.update({
     path: '/draft_post/',
     getParentRoute: () => ManagementUserPostsRouteRoute,
+  } as any)
+
+const ManagementManagementUsersUserIndexRoute =
+  ManagementManagementUsersUserIndexImport.update({
+    path: '/user/',
+    getParentRoute: () => ManagementManagementUsersRouteRoute,
   } as any)
 
 const ManagementManagementPostsPosttypeIndexRoute =
@@ -165,6 +186,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementManagementPostsRouteImport
       parentRoute: typeof ManagementManagementRouteImport
     }
+    '/_management/management/users': {
+      preLoaderRoute: typeof ManagementManagementUsersRouteImport
+      parentRoute: typeof ManagementManagementRouteImport
+    }
     '/_management/user/posts': {
       preLoaderRoute: typeof ManagementUserPostsRouteImport
       parentRoute: typeof ManagementUserRouteImport
@@ -181,6 +206,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientBlogIndexImport
       parentRoute: typeof ClientImport
     }
+    '/_management/management/posts/': {
+      preLoaderRoute: typeof ManagementManagementPostsIndexImport
+      parentRoute: typeof ManagementManagementPostsRouteImport
+    }
     '/_management/management/posts/draft_post/': {
       preLoaderRoute: typeof ManagementManagementPostsDraftpostIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
@@ -196,6 +225,10 @@ declare module '@tanstack/react-router' {
     '/_management/management/posts/post_type/': {
       preLoaderRoute: typeof ManagementManagementPostsPosttypeIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
+    }
+    '/_management/management/users/user/': {
+      preLoaderRoute: typeof ManagementManagementUsersUserIndexImport
+      parentRoute: typeof ManagementManagementUsersRouteImport
     }
     '/_management/user/posts/draft_post/': {
       preLoaderRoute: typeof ManagementUserPostsDraftpostIndexImport
@@ -222,10 +255,14 @@ export const routeTree = rootRoute.addChildren([
   ManagementRoute.addChildren([
     ManagementManagementRouteRoute.addChildren([
       ManagementManagementPostsRouteRoute.addChildren([
+        ManagementManagementPostsIndexRoute,
         ManagementManagementPostsDraftpostIndexRoute,
         ManagementManagementPostsPostIndexRoute,
         ManagementManagementPostsPostdetailIndexRoute,
         ManagementManagementPostsPosttypeIndexRoute,
+      ]),
+      ManagementManagementUsersRouteRoute.addChildren([
+        ManagementManagementUsersUserIndexRoute,
       ]),
     ]),
     ManagementUserRouteRoute.addChildren([

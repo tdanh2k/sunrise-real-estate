@@ -31,7 +31,7 @@ app.use(
 );
 
 app.use(express.json());
-app.set("json spaces", 2);
+// app.set("json spaces", 2);
 
 app.use(
   helmet({

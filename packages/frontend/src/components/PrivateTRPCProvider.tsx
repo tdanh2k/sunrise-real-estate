@@ -45,11 +45,7 @@ export const PrivateTRPCProvider: FC<{
                   url: "http://localhost:3000/private",
                   // You can pass any HTTP headers you wish here
                   async headers() {
-                    const token = await getAccessTokenSilently({
-                      authorizationParams: {
-                        redirect_uri: window.location.origin,
-                      },
-                    });
+                    const token = await getAccessTokenSilently();
                     return {
                       authorization: `Bearer ${token}`,
                     };

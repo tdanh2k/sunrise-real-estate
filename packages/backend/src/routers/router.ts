@@ -13,7 +13,7 @@ export const trpcRouter = initTRPC
 export const publicProcedure = trpcRouter.procedure;
 
 export const protectedProcedure = trpcRouter.procedure.use(({ ctx, next }) => {
-  if (!ctx.auth || !ctx.userId) throw new TRPCError({ code: "UNAUTHORIZED" });
+  if (!ctx.userId) throw new TRPCError({ code: "UNAUTHORIZED" });
 
   return next({
     ctx,

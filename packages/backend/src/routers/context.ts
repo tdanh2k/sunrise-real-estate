@@ -6,7 +6,8 @@ export const createTRPCContext = ({
 }: trpcExpress.CreateExpressContextOptions) => {
   return ({
     userId: req.auth?.payload.sub,
-    auth: req.auth
+    token: req.auth?.token,
+    domain: req.auth?.payload?.iss
   })
 }; // no context
 

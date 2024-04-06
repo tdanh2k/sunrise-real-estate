@@ -41,11 +41,11 @@ model Post {
   Code              String?             @db.VarChar(100)
   Title             String?             @db.NVarChar(100)
   Description       String?             @db.NVarChar(Max)
-  UserId            String              @db.VarChar(255)
+  UserId            String              @db.VarChar(256)
   CreatedDate       DateTime?           @default(dbgenerated("sysdatetimeoffset()"), map: "DF__Post__CreatedDat__2BFE89A6") @db.DateTimeOffset
   TypeId            String              @db.UniqueIdentifier
-  Address           String              @db.NVarChar(255)
-  MapUrl            String              @db.VarChar(256)
+  Address           String              @db.NVarChar(Max)
+  MapUrl            String              @db.VarChar(Max)
   PostType          GlobalPostType      @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Post_PostType_FK")
   PostCurrentDetail PostCurrentDetail[]
   PostFeature       PostFeature[]
@@ -122,8 +122,59 @@ model GlobalPostType {
 }
 
 model GlobalBlogType {
-  Id          String    @id(map: "GlobalBlogType_PK") @default(dbgenerated("newid()"), map: "DF__GlobalBlogTy__Id__503BEA1C") @db.UniqueIdentifier
+  Id          String      @id(map: "GlobalBlogType_PK") @default(dbgenerated("newid()"), map: "DF__GlobalBlogTy__Id__503BEA1C") @db.UniqueIdentifier
   Idx         Int
-  Name        String    @db.NVarChar(256)
-  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__GlobalBlo__Creat__4F47C5E3") @db.DateTimeOffset
+  Name        String      @db.NVarChar(256)
+  CreatedDate DateTime?   @default(dbgenerated("sysdatetimeoffset()"), map: "DF__GlobalBlo__Creat__4F47C5E3") @db.DateTimeOffset
+  Blog        Blog[]
+  DraftBlog   DraftBlog[]
+}
+
+model Blog {
+  Id             String         @id(map: "Blog_PK") @default(dbgenerated("newid()"), map: "DF__Blog__Id__6442E2C9") @db.UniqueIdentifier
+  Idx            Int            @default(autoincrement())
+  Code           String?        @db.VarChar(256)
+  Title          String?        @db.NVarChar(256)
+  Description    String         @db.NVarChar(Max)
+  UserId         String         @db.VarChar(256)
+  TypeId         String         @db.UniqueIdentifier
+  Address        String?        @db.VarChar(Max)
+  CreatedDate    DateTime?      @default(dbgenerated("sysdatetimeoffset()"), map: "DF__Blog__CreatedDat__662B2B3B") @db.DateTimeOffset
+  GlobalBlogType GlobalBlogType @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Blog_GlobalBlogType_FK")
+  BlogImage      BlogImage[]
+}
+
+model BlogImage {
+  Id          String    @id(map: "BlogImage_PK") @default(dbgenerated("newid()"), map: "DF__BlogImage__Id__6CD828CA") @db.UniqueIdentifier
+  BlogId      String    @db.UniqueIdentifier
+  Name        String    @db.NVarChar(Max)
+  Size        Int?
+  Path        String    @db.NVarChar(Max)
+  MimeType    String?   @db.VarChar(256)
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__BlogImage__Creat__6DCC4D03") @db.DateTimeOffset
+  Blog        Blog      @relation(fields: [BlogId], references: [Id], onUpdate: NoAction, map: "BlogImage_Blog_FK")
+}
+
+model DraftBlog {
+  Id             String           @id(map: "DraftBlog_PK") @default(dbgenerated("newid()"), map: "DF__DraftBlog__Id__719CDDE7") @db.UniqueIdentifier
+  Idx            Int              @default(autoincrement())
+  Code           String           @db.VarChar(256)
+  Title          String           @db.NVarChar(256)
+  Description    String           @db.NVarChar(Max)
+  UserId         String           @db.NVarChar(256)
+  TypeId         String           @db.UniqueIdentifier
+  CreatedDate    DateTime?        @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftBlog__Creat__72910220") @db.DateTimeOffset
+  GlobalBlogType GlobalBlogType   @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "DraftBlog_GlobalBlogType_FK")
+  DraftBlogImage DraftBlogImage[]
+}
+
+model DraftBlogImage {
+  Id          String    @id(map: "DraftBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftBlogIma__Id__76619304") @db.UniqueIdentifier
+  DraftBlogId String    @db.UniqueIdentifier
+  Name        String    @db.NVarChar(Max)
+  Size        Int?
+  Path        String    @db.NVarChar(Max)
+  MimeType    String?   @db.VarChar(256)
+  CreatedDate DateTime? @default(dbgenerated("sysdatetimeoffset()"), map: "DF__DraftBlog__Creat__7755B73D") @db.DateTimeOffset
+  DraftBlog   DraftBlog @relation(fields: [DraftBlogId], references: [Id], onUpdate: NoAction, map: "DraftBlogImage_DraftBlog_FK")
 }
