@@ -1,9 +1,9 @@
 import { FC } from "react";
 import Slider, { Settings } from "react-slick";
 import { Title } from "./Title";
-import { BestFlatItem } from "./BestFlatItem";
+import { BestPostItem } from "./BestPostItem";
 
-export const BestFlatList: FC = () => {
+export const BestPostList: FC = () => {
   const title = {
     text: "Lorem Ipsum",
     description: "Lorem ipsum dolor sit ame",
@@ -45,12 +45,12 @@ export const BestFlatList: FC = () => {
           <div className="col-lg-12">
             <Title title={title.text} description={title.description} />
             <Slider {...settings}>
-              <BestFlatItem flatState="For Rent" />
-              <BestFlatItem flatState="For Sale" />
-              <BestFlatItem flatState="For Rent" />
-              <BestFlatItem flatState="For Rent" />
-              <BestFlatItem flatState="For Sale" />
-              <BestFlatItem flatState="For Rent" />
+              <BestPostItem flatState="For Rent" />
+              <BestPostItem flatState="For Sale" />
+              <BestPostItem flatState="For Rent" />
+              <BestPostItem flatState="For Rent" />
+              <BestPostItem flatState="For Sale" />
+              <BestPostItem flatState="For Rent" />
             </Slider>
           </div>
         </div>

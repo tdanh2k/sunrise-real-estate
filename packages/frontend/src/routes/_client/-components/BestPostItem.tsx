@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 
-export const BestFlatItem: FC<{ flatState?: string }> = ({ flatState }) => {
+export const BestPostItem: FC<{ flatState?: string }> = ({ flatState }) => {
   return (
     <div className="best-estate">
       <div className="best-estate-item">

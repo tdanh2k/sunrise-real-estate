@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 
-export const FlatItem: FC<{ data?: TypePost }> = ({ data }) => {
+export const PostItem: FC<{ data?: TypePost }> = ({ data }) => {
   return (
     <div className="text-center col-lg-4 col-12 col-md-6 ">
       <div className="item">

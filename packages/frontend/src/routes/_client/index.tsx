@@ -1,6 +1,6 @@
 import { Banner } from "./-components/Banner";
-import { BestFlatList } from "./-components/BestFlatList";
-import { FlatList } from "./-components/FlatList";
+import { BestPostList } from "./-components/BestPostList";
+import { PostList } from "./-components/PostList";
 import { References } from "./-components/References";
 import { Subscribe } from "./-components/Subscribe";
 import { TeamList } from "./-components/TeamList";
@@ -10,8 +10,8 @@ const Home = () => {
   return (
     <>
       <Banner />
-      <FlatList />
-      <BestFlatList />
+      <PostList />
+      <BestPostList />
       <Subscribe />
       <TeamList />
       <References />

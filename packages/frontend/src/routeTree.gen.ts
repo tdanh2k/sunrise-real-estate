@@ -19,7 +19,7 @@ import { Route as ClientAboutImport } from './routes/_client/about'
 import { Route as ManagementUserRouteImport } from './routes/_management/user/route'
 import { Route as ManagementManagementRouteImport } from './routes/_management/management/route'
 import { Route as ClientBlogIndexImport } from './routes/_client/blog/index'
-import { Route as ClientFlatIdImport } from './routes/_client/flat/$id'
+import { Route as ClientPostIdImport } from './routes/_client/post/$id'
 import { Route as ClientBlogIdImport } from './routes/_client/blog/$id'
 import { Route as ManagementUserPostsRouteImport } from './routes/_management/user/posts/route'
 import { Route as ManagementManagementUsersRouteImport } from './routes/_management/management/users/route'
@@ -75,8 +75,8 @@ const ClientBlogIndexRoute = ClientBlogIndexImport.update({
   getParentRoute: () => ClientRoute,
 } as any)
 
-const ClientFlatIdRoute = ClientFlatIdImport.update({
-  path: '/flat/$id',
+const ClientPostIdRoute = ClientPostIdImport.update({
+  path: '/post/$id',
   getParentRoute: () => ClientRoute,
 } as any)
 
@@ -198,8 +198,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientBlogIdImport
       parentRoute: typeof ClientImport
     }
-    '/_client/flat/$id': {
-      preLoaderRoute: typeof ClientFlatIdImport
+    '/_client/post/$id': {
+      preLoaderRoute: typeof ClientPostIdImport
       parentRoute: typeof ClientImport
     }
     '/_client/blog/': {
@@ -249,7 +249,7 @@ export const routeTree = rootRoute.addChildren([
     ClientContactRoute,
     ClientIndexRoute,
     ClientBlogIdRoute,
-    ClientFlatIdRoute,
+    ClientPostIdRoute,
     ClientBlogIndexRoute,
   ]),
   ManagementRoute.addChildren([

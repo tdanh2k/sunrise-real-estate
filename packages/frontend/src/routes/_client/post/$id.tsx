@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { FC } from "react";
 import ImageGallery from "react-image-gallery";
 
-export const FlatDetail: FC = () => {
+export const PostDetail: FC = () => {
   const { id } = Route.useParams();
 
   const images = [
@@ -248,6 +248,6 @@ export const FlatDetail: FC = () => {
   );
 };
 
-export const Route = createFileRoute("/_client/flat/$id")({
-  component: FlatDetail,
+export const Route = createFileRoute("/_client/post/$id")({
+  component: PostDetail,
 });

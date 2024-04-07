@@ -1,4 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import { useMantineRTInstance } from "@components/MantineRT";
 import {
   CustomActionMenuItemPropsType,
@@ -10,13 +9,10 @@ import { TypeAuth0User } from "@sunrise-backend/src/schemas/Auth0User.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import { useCallback, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_management/management/users/user/")({
   component: () => {
-    const { getAccessTokenSilently, getAccessTokenWithPopup, isLoading } =
-      useAuth0();
     const [selectedId, setSelectedId] = useState<string | undefined>("");
 
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
@@ -70,25 +66,6 @@ export const Route = createFileRoute("/_management/management/users/user/")({
           label: "Thêm",
           actionType: "Add",
           onClick: handleOpenModalAdd,
-        },
-        {
-          label: "TEST",
-          actionType: "Add",
-          onClick: () => {
-            getAccessTokenSilently().then((token) => {
-              console.log({ token });
-              axios<TypeAuth0User[]>({
-                url: `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/users`,
-                method: "GET",
-                params: {
-                  search_engine: "v3",
-                },
-                headers: {
-                  authorization: `Bearer ${token}`,
-                },
-              }).then((response) => console.log(response?.data));
-            });
-          },
         },
       ],
       [handleOpenModalAdd]

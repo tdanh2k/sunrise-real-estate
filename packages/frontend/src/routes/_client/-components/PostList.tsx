@@ -1,9 +1,9 @@
 import { Title } from "./Title";
-import { FlatItem } from "./FlatItem";
+import { PostItem } from "./PostItem";
 import { FC } from "react";
 import { publicRoute } from "@utils/trpc";
 
-export const FlatList: FC = () => {
+export const PostList: FC = () => {
   const { data } = publicRoute.topPost.useQuery();
   
   const title = {
@@ -15,13 +15,13 @@ export const FlatList: FC = () => {
       <div className="container">
         <Title title={title.text} description={title.description} />
         <div className="row">
-          {data?.data?.map((item) => <FlatItem key={item.Id} data={item} />)}
-          {/* <FlatItem slug="lorem-ipsum-1" />
-          <FlatItem slug="lorem-ipsum-2" />
-          <FlatItem slug="lorem-ipsum-3" />
-          <FlatItem slug="lorem-ipsum-4" />
-          <FlatItem slug="lorem-ipsum-5" />
-          <FlatItem slug="lorem-ipsum-6" /> */}
+          {data?.data?.map((item) => <PostItem key={item.Id} data={item} />)}
+          {/* <PostItem slug="lorem-ipsum-1" />
+          <PostItem slug="lorem-ipsum-2" />
+          <PostItem slug="lorem-ipsum-3" />
+          <PostItem slug="lorem-ipsum-4" />
+          <PostItem slug="lorem-ipsum-5" />
+          <PostItem slug="lorem-ipsum-6" /> */}
         </div>
       </div>
     </section>
