@@ -1,17 +1,18 @@
 import { FC } from "react";
-import { Header } from "./-components/Header";
-import { Footer } from "./-components/Footer";
+import { Header } from "./_client/-components/Header";
+import { Footer } from "./_client/-components/Footer";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { PublicTRPCProvider } from "@components/PublicTRPCProvider";
 
 import "./client.css";
 
 export const ClientLayout: FC = () => {
   return (
-    <>
+    <PublicTRPCProvider>
       <Header />
       <Outlet />
       <Footer />
-    </>
+    </PublicTRPCProvider>
   );
 };
 

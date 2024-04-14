@@ -3,6 +3,7 @@ import {
   NonNegativeIntegerNumber,
   OptionalBoolean,
   OptionalDate,
+  OptionalNumber,
   OptionalString,
   OptionalUUID,
   RequiredString,
@@ -17,6 +18,7 @@ export const AddPostSchema = z.object({
   CreatedDate: OptionalDate,
   TypeId: RequiredUUID,
   Address: RequiredString,
+  Price: OptionalNumber,
   MapUrl: RequiredURL,
   PostCurrentDetail: z.array(
     z.object({
@@ -26,7 +28,7 @@ export const AddPostSchema = z.object({
       IsNumber: OptionalBoolean,
       CreatedDate: OptionalDate,
     })
-  ),
+  ).optional(),
   PostFeature: z.array(
     z.object({
       Id: OptionalUUID,
@@ -34,7 +36,7 @@ export const AddPostSchema = z.object({
       Description: RequiredString,
       CreatedDate: OptionalDate,
     })
-  ),
+  ).optional(),
   PostImage: z.array(
     z.object({
       Id: OptionalUUID,
@@ -44,7 +46,7 @@ export const AddPostSchema = z.object({
       MimeType: OptionalString,
       CreatedDate: OptionalDate,
     })
-  ),
+  ).optional(),
 });
 
 export type TypeAddPost = z.infer<typeof AddPostSchema>;

@@ -14,7 +14,7 @@ export default defineConfig({
       generatedRouteTree: "./src/routeTree.gen.ts",
     }),
     mkcert({
-      autoUpgrade: true,
+      //autoUpgrade: true,
       //savePath: "./cert",
       keyFileName: "key.pem",
       certFileName: "cert.pem",

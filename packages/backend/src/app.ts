@@ -2,13 +2,21 @@ import express, { NextFunction, Request, Response } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import "dotenv/config.js";
 
-import { appRouter, openApiDocument } from "./routers/index.js";
+import {
+  appRouter,
+  openApiDocument,
+  publicAppRouter,
+} from "./routers/index.js";
 import helmet from "helmet";
 import cors from "cors";
 import { createTRPCContext } from "./routers/context";
 import swaggerUi from "swagger-ui-express";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/not-found.middleware.js";
+import {
+  checkRequiredPermissions,
+  validateAccessToken,
+} from "./middlewares/auth0.middleware.js";
 
 const app = express();
 const port = 3000;
@@ -21,6 +29,9 @@ app.use(
     maxAge: 86400,
   })
 );
+
+app.use(express.json());
+// app.set("json spaces", 2);
 
 app.use(
   helmet({
@@ -40,16 +51,24 @@ app.use(
   })
 );
 
-app.get("/", async (req, res) => {
-  res.json({ message: "this is a public route" });
-});
+// app.get("/", async (req, res) => {
+//   res.json({ message: "Test" });
+// });
 
 app.use(
-  "/trpc",
-  //validateAccessToken,
+  "/private",
+  validateAccessToken,
   //checkRequiredPermissions(["use:trpc"]),
   trpcExpress.createExpressMiddleware({
     router: appRouter,
+    createContext: createTRPCContext,
+  })
+);
+
+app.use(
+  "/public",
+  trpcExpress.createExpressMiddleware({
+    router: publicAppRouter,
     createContext: createTRPCContext,
   })
 );

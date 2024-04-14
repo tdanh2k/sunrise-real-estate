@@ -3,6 +3,7 @@ import {
   NonNegativeIntegerNumber,
   OptionalBoolean,
   OptionalJsDate,
+  OptionalNumber,
   OptionalString,
   RequiredString,
   RequiredURL,
@@ -17,6 +18,7 @@ export const DraftPostSchema = z.object({
   CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
   Address: RequiredString,
+  Price: OptionalNumber,
   MapUrl: RequiredURL,
   DraftCurrentDetail: z.array(
     z.object({

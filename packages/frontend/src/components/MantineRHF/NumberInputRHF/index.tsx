@@ -6,7 +6,7 @@ type NumberInputRHFProps<T extends FieldValues> = Omit<
   NumberInputProps,
   "ref" | "value" | "error" | "name"
 > & {
-  name?: Path<PickByType<T, number>>;
+  name?: Path<PickByType<T, number | undefined>>;
   //name: Path<T>;
   control?: Control<T>;
 };
