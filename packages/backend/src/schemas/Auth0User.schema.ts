@@ -8,7 +8,7 @@ import {
 } from "../utils/ZodUtils";
 
 export const Auth0UserSchema = z.object({
-  email: OptionalString,
+  email: RequiredString,
   email_verified: OptionalBoolean,
   username: OptionalString,
   phone_number: OptionalString,

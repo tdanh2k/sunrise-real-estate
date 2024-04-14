@@ -1,7 +1,11 @@
+import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 
-export const BestPostItem: FC<{ flatState?: string }> = ({ flatState }) => {
+export const BestPostItem: FC<{ flatState?: string; data?: TypePost }> = ({
+  flatState,
+  data,
+}) => {
   return (
     <div className="best-estate">
       <div className="best-estate-item">
@@ -11,13 +15,7 @@ export const BestPostItem: FC<{ flatState?: string }> = ({ flatState }) => {
             src="/images/product1.jpeg"
             alt="flat"
           />
-          <div
-            className={`best-estate-state ${
-              flatState === "For Rent" ? "bg-green" : "bg-red"
-            }`}
-          >
-            {flatState}
-          </div>
+          <div className={`best-estate-state bg-green`}>Best</div>
         </div>
         <div className="best-estate-content">
           <h4>
@@ -38,7 +36,7 @@ export const BestPostItem: FC<{ flatState?: string }> = ({ flatState }) => {
               <span>2 Bathrooms</span>
             </div>
           </div>
-          <h5 className="best-estate-price">$650</h5>
+          <h5 className="best-estate-price">{data?.price}</h5>
         </div>
       </div>
     </div>

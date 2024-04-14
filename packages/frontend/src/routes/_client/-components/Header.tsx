@@ -4,6 +4,7 @@ import { FC } from "react";
 
 export const Header: FC = () => {
   const { isAuthenticated, loginWithPopup, logout } = useAuth0();
+  console.log({ isAuthenticated });
   return (
     <div className="header">
       <div className="container">
@@ -58,7 +59,10 @@ export const Header: FC = () => {
                         <Link to="/management">Trang cá nhân</Link>
                       </li>
                       <li>
-                        <button className="nav-link logout" onClick={() => logout()}>
+                        <button
+                          className="nav-link logout"
+                          onClick={() => logout()}
+                        >
                           Logout
                         </button>
                       </li>

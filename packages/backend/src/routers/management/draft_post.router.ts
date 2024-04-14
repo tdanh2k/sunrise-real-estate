@@ -48,9 +48,9 @@ export const DraftPostRouter = trpcRouter.router({
           skip: page_index,
           take: page_size,
           include: {
-            DraftCurrentDetail: true,
+            DraftPostCurrentDetail: true,
             DraftPostImage: true,
-            DraftFeature: true,
+            DraftPostFeature: true,
           },
         }),
         dbContext.post.count(),
@@ -118,7 +118,7 @@ export const DraftPostRouter = trpcRouter.router({
         ctx,
         input: { DraftCurrentDetail, DraftFeature, DraftPostImage, ...rest },
       }) => {
-        if (ctx.userId == null)
+        if ((await ctx).userId == null)
           throw new TRPCError({
             code: "UNAUTHORIZED",
             message: ``,
@@ -127,8 +127,8 @@ export const DraftPostRouter = trpcRouter.router({
         const data = await dbContext.draftPost.create({
           data: {
             ...rest,
-            UserId: ctx.userId,
-            DraftCurrentDetail: {
+            UserId: (await ctx).userId ?? "",
+            DraftPostCurrentDetail: {
               createMany: {
                 data: DraftCurrentDetail,
               },
@@ -139,7 +139,7 @@ export const DraftPostRouter = trpcRouter.router({
               //   create: item,
               // })),
             },
-            DraftFeature: {
+            DraftPostFeature: {
               createMany: {
                 data: DraftFeature,
               },
@@ -210,7 +210,7 @@ export const DraftPostRouter = trpcRouter.router({
           },
           data: {
             ...rest,
-            DraftCurrentDetail: {
+            DraftPostCurrentDetail: {
               connectOrCreate: DraftCurrentDetail?.map((item) => ({
                 where: {
                   Id: item.Id,
@@ -218,7 +218,7 @@ export const DraftPostRouter = trpcRouter.router({
                 create: item,
               })),
             },
-            DraftFeature: {
+            DraftPostFeature: {
               connectOrCreate: DraftFeature?.map((item) => ({
                 where: {
                   Id: item.Id,

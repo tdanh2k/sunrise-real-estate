@@ -1,6 +1,6 @@
 import { TextInputRHF } from "@components/MantineRHF/TextInputRHF";
 import { Button, LoadingOverlay, Stack } from "@mantine/core";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   AddPostSchema,
@@ -13,6 +13,7 @@ import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
+import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -25,6 +26,7 @@ const defaultValues: TypeAddPost = {
   Title: "",
   Address: "",
   Description: "",
+  Price: 0,
   MapUrl: "",
   PostImage: [],
   PostCurrentDetail: [],
@@ -32,28 +34,60 @@ const defaultValues: TypeAddPost = {
 };
 
 export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
+  const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 
   const { data: postDetailResponse, isFetching } =
     privateRoute.user.global_post_detail.all.useQuery();
 
   const { handleSubmit, control, reset } = useForm({
-    resolver: zodResolver(AddPostSchema),
+    resolver: isDrafting ? zodResolver(AddPostSchema) : undefined,
     mode: "all",
     defaultValues,
   });
 
-  const { mutateAsync, isPending } = privateRoute.user.post.publish.useMutation({
-    onSuccess: () => {
-      utils.user.post.invalidate();
-    },
-  });
+  const { mutateAsync, isPending } = privateRoute.user.post.publish.useMutation(
+    {
+      onSuccess: () => {
+        utils.user.post.invalidate();
+      },
+    }
+  );
+
+  const { mutateAsync: mutateDraftAsync, isPending: isDraftPending } =
+    privateRoute.user.draft_post.create.useMutation({
+      onSuccess: () => {
+        utils.user.draft_post.invalidate();
+      },
+    });
 
   const onSubmit: SubmitHandler<TypeAddPost> = async (values) => {
+    if (!window.confirm("Bạn đã chắc chắn?")) return;
+
     await mutateAsync(values);
     handleClose();
     reset();
   };
+
+  const onDraftSubmit: SubmitHandler<TypeAddPost> = async ({
+    PostCurrentDetail,
+    PostFeature,
+    PostImage,
+    ...rest
+  }) => {
+    if (!window.confirm("Bạn đã chắc chắn?")) return;
+
+    await mutateDraftAsync({
+      ...rest,
+      DraftCurrentDetail: PostCurrentDetail ?? [],
+      DraftFeature: PostFeature ?? [],
+      DraftPostImage: PostImage ?? [],
+    });
+    handleClose();
+    reset();
+  };
+
+  const isLoading = isPending || isDraftPending;
 
   return (
     <CustomModal
@@ -66,7 +100,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Thêm bài đăng"
+      title="Tạo bài đăng"
       centered
       footer={
         <>
@@ -74,8 +108,20 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
             Clear
           </Button>
           <Button
+            color="green"
+            onClick={() => {
+              setIsDrafting(true);
+              handleSubmit(onDraftSubmit, (error) => console.error(error))();
+            }}
+          >
+            Lưu nháp
+          </Button>
+          <Button
             color="blue"
-            onClick={handleSubmit(onSubmit, (error) => console.error(error))}
+            onClick={() => {
+              setIsDrafting(false);
+              handleSubmit(onSubmit, (error) => console.error(error))();
+            }}
           >
             Submit
           </Button>
@@ -83,7 +129,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }
     >
       <LoadingOverlay
-        visible={isPending}
+        visible={isLoading}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
@@ -102,6 +148,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
         <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
+        <NumberInputRHF name="Price" label="Giá" control={control} />
         <TextInputRHF name="MapUrl" label="Url bản đồ" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
@@ -111,10 +158,10 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
               accessorKey: "DetailId",
               header: "DetailId",
               editVariant: "select",
-              mantineEditTextInputProps: ({ row }) => ({
-                // value: fields?.find((item) => item.Id === row.original.Id)
-                //   ?.DetailId,
-              }),
+              // mantineEditTextInputProps: ({ row }) => ({
+              //   // value: fields?.find((item) => item.Id === row.original.Id)
+              //   //   ?.DetailId,
+              // }),
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,

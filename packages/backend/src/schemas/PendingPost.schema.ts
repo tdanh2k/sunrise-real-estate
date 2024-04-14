@@ -10,7 +10,7 @@ import {
   RequiredUUID,
 } from "../utils/ZodUtils";
 
-export const DraftPostSchema = z.object({
+export const PendingPostSchema = z.object({
   Id: RequiredUUID,
   Code: RequiredString,
   Title: RequiredString,
@@ -19,27 +19,29 @@ export const DraftPostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   Price: OptionalNumber,
+  ApprovedBy: OptionalString,
+  ApprovedDate: OptionalJsDate,
   MapUrl: RequiredURL,
-  DraftCurrentDetail: z.array(
+  PendingPostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
-      DraftId: RequiredUUID,
+      PendingId: RequiredUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
       CreatedDate: OptionalJsDate,
     })
   ),
-  DraftFeature: z.array(
+  PendingPostFeature: z.array(
     z.object({
       Id: RequiredUUID,
-      DraftId: RequiredUUID,
+      PendingId: RequiredUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalJsDate,
     })
   ),
-  DraftPostImage: z.array(
+  PendingPostImage: z.array(
     z.object({
       Id: RequiredUUID,
       Name: RequiredString,
@@ -51,3 +53,5 @@ export const DraftPostSchema = z.object({
     })
   ),
 });
+
+export type TypePendingPost = z.infer<typeof PendingPostSchema>;

@@ -2,6 +2,7 @@ import { FC } from "react";
 import Slider, { Settings } from "react-slick";
 import { Title } from "./Title";
 import { BestPostItem } from "./BestPostItem";
+import { publicRoute } from "@utils/trpc";
 
 export const BestPostList: FC = () => {
   const title = {
@@ -38,6 +39,8 @@ export const BestPostList: FC = () => {
     ],
   };
 
+  const { data: response } = publicRoute.topPost.useQuery();
+
   return (
     <section className="section-best-estate">
       <div className="container">
@@ -45,12 +48,15 @@ export const BestPostList: FC = () => {
           <div className="col-lg-12">
             <Title title={title.text} description={title.description} />
             <Slider {...settings}>
-              <BestPostItem flatState="For Rent" />
+              {response?.data?.map((item) => (
+                <BestPostItem key={item.Id} flatState="For Rent" />
+              ))}
+              {/* <BestPostItem flatState="For Rent" />
               <BestPostItem flatState="For Sale" />
               <BestPostItem flatState="For Rent" />
               <BestPostItem flatState="For Rent" />
               <BestPostItem flatState="For Sale" />
-              <BestPostItem flatState="For Rent" />
+              <BestPostItem flatState="For Rent" /> */}
             </Slider>
           </div>
         </div>

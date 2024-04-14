@@ -7,6 +7,9 @@ import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { APIResponseSchema } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, trpcRouter } from "../router";
+import axios from "axios";
+import { TypeAuth0User } from "../../schemas/Auth0User.schema";
+import { DraftPostSchema } from "../../schemas/DraftPost.schema";
 
 export const PostRouter = trpcRouter.router({
   byPage: protectedProcedure
@@ -96,7 +99,26 @@ export const PostRouter = trpcRouter.router({
         ctx,
         input: { PostCurrentDetail, PostFeature, PostImage, ...rest },
       }) => {
-        if (ctx.userId == null)
+        if ((await ctx).userId == null)
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: ``,
+          });
+
+        const response = await axios<TypeAuth0User>({
+          url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
+          method: "GET",
+          params: {
+            search_engine: "v3",
+          },
+          headers: {
+            Authorization: `Bearer ${(await ctx).management_token}`,
+          },
+        });
+
+        const user = response?.data;
+
+        if (user == null)
           throw new TRPCError({
             code: "UNAUTHORIZED",
             message: ``,
@@ -105,7 +127,14 @@ export const PostRouter = trpcRouter.router({
         const result = await dbContext.post.create({
           data: {
             ...rest,
-            UserId: ctx.userId,
+            UserId: (await ctx).userId ?? "",
+            User_Email: user.email,
+            User_EmailVerified: user.email_verified,
+            User_Name: user.name,
+            User_Username: user.username,
+            User_PhoneNumber: user.phone_number,
+            User_PhoneVerified: user.phone_verified,
+            User_Picture: user.picture,
             PostCurrentDetail: {
               // connectOrCreate: PostCurrentDetail?.map((item) => ({
               //   where: {

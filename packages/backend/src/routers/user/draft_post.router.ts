@@ -16,7 +16,7 @@ export const DraftPostRouter = trpcRouter.router({
     .input(PaginationSchema)
     .output(APIResponseSchema(z.array(DraftPostSchema)))
     .query(async ({ ctx, input }) => {
-      if (ctx.userId == null)
+      if ((await ctx).userId == null)
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: ``,
@@ -28,14 +28,14 @@ export const DraftPostRouter = trpcRouter.router({
       const [data, row_count] = await dbContext.$transaction([
         dbContext.draftPost.findMany({
           where: {
-            UserId: ctx.userId,
+            UserId: (await ctx).userId,
           },
           skip: page_index,
           take: page_size,
           include: {
-            DraftCurrentDetail: true,
+            DraftPostCurrentDetail: true,
             DraftPostImage: true,
-            DraftFeature: true,
+            DraftPostFeature: true,
           },
         }),
         dbContext.post.count(),
@@ -101,53 +101,112 @@ export const DraftPostRouter = trpcRouter.router({
     .mutation(
       async ({
         ctx,
-        input: { DraftCurrentDetail, DraftFeature, DraftPostImage, ...rest },
+        input: {
+          Id,
+          DraftCurrentDetail,
+          DraftFeature,
+          DraftPostImage,
+          ...rest
+        },
       }) => {
-        if (ctx.userId == null)
+        if ((await ctx).userId == null)
           throw new TRPCError({
             code: "UNAUTHORIZED",
             message: ``,
           });
 
-        const data = await dbContext.draftPost.create({
-          data: {
+        const data = await dbContext.draftPost.upsert({
+          create: {
             ...rest,
-            UserId: ctx.userId,
-            DraftCurrentDetail: {
+            UserId: (await ctx).userId ?? "",
+            DraftPostCurrentDetail: {
               createMany: {
                 data: DraftCurrentDetail,
               },
-              // connectOrCreate: DraftCurrentDetail?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
             },
-            DraftFeature: {
+            DraftPostFeature: {
               createMany: {
                 data: DraftFeature,
               },
-              // connectOrCreate: DraftFeature?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
             },
             DraftPostImage: {
               createMany: {
                 data: DraftPostImage,
               },
-              // connectOrCreate: DraftPostImage?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
             },
           },
+          update: {
+            ...rest,
+            DraftPostCurrentDetail: {
+              connectOrCreate: DraftCurrentDetail?.map((item) => ({
+                where: {
+                  Id: item.Id,
+                },
+                create: item,
+              })),
+            },
+            DraftPostFeature: {
+              connectOrCreate: DraftFeature?.map((item) => ({
+                where: {
+                  Id: item.Id,
+                },
+                create: item,
+              })),
+            },
+            DraftPostImage: {
+              connectOrCreate: DraftPostImage?.map((item) => ({
+                where: {
+                  Id: item.Id,
+                },
+                create: item,
+              })),
+            },
+          },
+          where: {
+            Id,
+            UserId: (await ctx).userId,
+          },
         });
+
+        // const data = await dbContext.draftPost.create({
+        //   data: {
+        //     ...rest,
+        //     UserId: (await ctx).userId ?? "",
+        //     DraftCurrentDetail: {
+        //       createMany: {
+        //         data: DraftCurrentDetail,
+        //       },
+        //       // connectOrCreate: DraftCurrentDetail?.map((item) => ({
+        //       //   where: {
+        //       //     Id: item.Id,
+        //       //   },
+        //       //   create: item,
+        //       // })),
+        //     },
+        //     DraftFeature: {
+        //       createMany: {
+        //         data: DraftFeature,
+        //       },
+        //       // connectOrCreate: DraftFeature?.map((item) => ({
+        //       //   where: {
+        //       //     Id: item.Id,
+        //       //   },
+        //       //   create: item,
+        //       // })),
+        //     },
+        //     DraftPostImage: {
+        //       createMany: {
+        //         data: DraftPostImage,
+        //       },
+        //       // connectOrCreate: DraftPostImage?.map((item) => ({
+        //       //   where: {
+        //       //     Id: item.Id,
+        //       //   },
+        //       //   create: item,
+        //       // })),
+        //     },
+        //   },
+        // });
 
         return await APIResponseSchema(
           DraftPostSchema.omit({
@@ -195,7 +254,7 @@ export const DraftPostRouter = trpcRouter.router({
           },
           data: {
             ...rest,
-            DraftCurrentDetail: {
+            DraftPostCurrentDetail: {
               connectOrCreate: DraftCurrentDetail?.map((item) => ({
                 where: {
                   Id: item.Id,
@@ -203,7 +262,7 @@ export const DraftPostRouter = trpcRouter.router({
                 create: item,
               })),
             },
-            DraftFeature: {
+            DraftPostFeature: {
               connectOrCreate: DraftFeature?.map((item) => ({
                 where: {
                   Id: item.Id,

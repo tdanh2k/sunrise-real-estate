@@ -14,7 +14,7 @@ export const PostItem: FC<{ data?: TypePost }> = ({ data }) => {
             <span className="item-title">
               Lorem ipsum dolor sit amet consectetur adipiscing elit
             </span>
-            <span className="item-price">$1000</span>
+            <span className="item-price">{data?.Price}</span>
           </div>
           <div className="item-icon d-flex alig-items-center justify-content-between">
             <div>
@@ -25,7 +25,7 @@ export const PostItem: FC<{ data?: TypePost }> = ({ data }) => {
               <i className="fas fa-check-circle"></i> <span> Lorem </span>
             </div>
             <Link
-              to={`/flat/$id`}
+              to={`/post/$id`}
               params={{ id: data?.Id ?? "" }}
               className="item-title"
             >
