@@ -136,6 +136,7 @@ model Blog {
   CreatedDate    DateTime?      @default(now(), map: "DF__Blog__CreatedDat__11158940") @db.DateTime
   GlobalBlogType GlobalBlogType @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Blog_GlobalBlogType_FK")
   BlogImage      BlogImage[]
+  BlogStats      BlogStats[]
 }
 
 model BlogImage {
@@ -178,6 +179,7 @@ model BlogStats {
   BlogId      String   @db.UniqueIdentifier
   CreatedDate DateTime @db.DateTime
   ViewCount   Int?
+  Blog        Blog     @relation(fields: [BlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "BlogStats_Blog_FK")
 }
 
 model PostStats {

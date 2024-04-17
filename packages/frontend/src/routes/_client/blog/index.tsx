@@ -1,8 +1,11 @@
 import { FC } from "react";
 import { BlogItem } from "../-components/BlogItem";
 import { createFileRoute } from "@tanstack/react-router";
+import { publicRoute } from "@utils/trpc";
+import { TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 
 export const Blog: FC = () => {
+  const { data: response } = publicRoute.topBlogs.useQuery();
   return (
     <section className="blog">
       <div className="page-top">
@@ -18,42 +21,9 @@ export const Blog: FC = () => {
       <div className="page-content">
         <div className="container">
           <div className="row">
-            <BlogItem
-              link="blog-1"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-2"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-3"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-4"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-5"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-6"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-7"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-8"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
-            <BlogItem
-              link="blog-9"
-              title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            />
+            {response?.data?.map((item) => (
+              <BlogItem key={item.Id} data={item as TypeBlog} />
+            ))}
           </div>
         </div>
       </div>

@@ -1,8 +1,14 @@
 import z from "zod";
-import { PendingPostSchema } from "../../schemas/PendingPost.schema";
+import {
+  PendingPostSchema,
+  TypePendingPost,
+} from "../../schemas/PendingPost.schema";
 import { dbContext } from "../../utils/prisma";
 import { RequiredString } from "../../utils/ZodUtils";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
+import {
+  APIResponseSchema,
+  TypeAPIResponse,
+} from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
@@ -11,11 +17,8 @@ import { TypeAuth0User } from "../../schemas/Auth0User.schema";
 
 export const PendingPostRouter = trpcRouter.router({
   byPage: protectedProcedure
-    // .meta({
-    //   /* 👉 */ openapi: { method: "GET", path: "/user/post.byPage", tags: ["post"]  },
-    // })
     .input(PaginationSchema)
-    .output(APIResponseSchema(z.array(PendingPostSchema)))
+    //.output(APIResponseSchema(z.array(PendingPostSchema)))
     .query(async ({ ctx, input }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -42,29 +45,30 @@ export const PendingPostRouter = trpcRouter.router({
         dbContext.post.count(),
       ]);
 
-      return await APIResponseSchema(z.array(PendingPostSchema)).parseAsync({
+      return {
         data,
         paging: {
           page_index,
           page_size,
           row_count,
         },
-      });
+      } as TypeAPIResponse<TypePendingPost[]>;
+      // return await APIResponseSchema(z.array(PendingPostSchema)).parseAsync({
+      //   data,
+      //   paging: {
+      //     page_index,
+      //     page_size,
+      //     row_count,
+      //   },
+      // });
     }),
   byId: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "GET",
-        path: "/user/pending_post.byId",
-        tags: ["pending_post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(APIResponseSchema(PendingPostSchema.nullable()))
+    //.output(APIResponseSchema(PendingPostSchema.nullable()))
     .query(async ({ input }) => {
       const data = await dbContext.post.findFirst({
         where: {
@@ -77,32 +81,29 @@ export const PendingPostRouter = trpcRouter.router({
           PostFeature: true,
         },
       });
-      return await APIResponseSchema(PendingPostSchema.nullable()).parseAsync({
+
+      return {
         data,
-      });
+      } as TypeAPIResponse<TypePendingPost>;
+      // return await APIResponseSchema(PendingPostSchema.nullable()).parseAsync({
+      //   data,
+      // });
     }),
   approve: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "POST",
-        path: "/user/pending_post.approve",
-        tags: ["pending_post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(
-      APIResponseSchema(
-        PendingPostSchema.omit({
-          PendingCurrentDetail: true,
-          PendingFeature: true,
-          PendingPostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     PendingPostSchema.omit({
+    //       PendingCurrentDetail: true,
+    //       PendingFeature: true,
+    //       PendingPostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(async ({ ctx, input: { Id } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -134,7 +135,7 @@ export const PendingPostRouter = trpcRouter.router({
 
       const user = response?.data;
 
-      const result = await dbContext.$transaction([
+      const [updatedPendingPost, createdPost] = await dbContext.$transaction([
         dbContext.pendingPost.update({
           data: {
             ApprovedBy: (await ctx).userId,
@@ -194,36 +195,32 @@ export const PendingPostRouter = trpcRouter.router({
         }),
       ]);
 
-      return await APIResponseSchema(
-        PendingPostSchema.omit({
-          PendingCurrentDetail: true,
-          PendingFeature: true,
-          PendingPostImage: true,
-        }).nullable()
-      ).parseAsync({ data });
+      return {
+        data: updatedPendingPost,
+      };
+      // return await APIResponseSchema(
+      //   PendingPostSchema.omit({
+      //     PendingCurrentDetail: true,
+      //     PendingFeature: true,
+      //     PendingPostImage: true,
+      //   }).nullable()
+      // ).parseAsync({ data });
     }),
   reject: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "POST",
-        path: "/user/pending_post.reject",
-        tags: ["pending_post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(
-      APIResponseSchema(
-        PendingPostSchema.omit({
-          PendingCurrentDetail: true,
-          PendingFeature: true,
-          PendingPostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     PendingPostSchema.omit({
+    //       PendingCurrentDetail: true,
+    //       PendingFeature: true,
+    //       PendingPostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(async ({ ctx, input: { Id } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -296,12 +293,13 @@ export const PendingPostRouter = trpcRouter.router({
         }),
       ]);
 
-      return await APIResponseSchema(
-        PendingPostSchema.omit({
-          PendingCurrentDetail: true,
-          PendingFeature: true,
-          PendingPostImage: true,
-        }).nullable()
-      ).parseAsync({ data: pendingPost });
+      return { data: pendingPost };
+      // return await APIResponseSchema(
+      //   PendingPostSchema.omit({
+      //     PendingCurrentDetail: true,
+      //     PendingFeature: true,
+      //     PendingPostImage: true,
+      //   }).nullable()
+      // ).parseAsync({ data: pendingPost });
     }),
 });

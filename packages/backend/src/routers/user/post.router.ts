@@ -1,23 +1,22 @@
 import z from "zod";
-import { PostSchema } from "../../schemas/Post.schema";
+import { PostSchema, TypePost } from "../../schemas/Post.schema";
 import { dbContext } from "../../utils/prisma";
 import { RequiredString } from "../../utils/ZodUtils";
 import { AddPostSchema } from "../../schemas/AddPost.schema";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
+import {
+  APIResponseSchema,
+  TypeAPIResponse,
+} from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, trpcRouter } from "../router";
 import axios from "axios";
 import { TypeAuth0User } from "../../schemas/Auth0User.schema";
-import { DraftPostSchema } from "../../schemas/DraftPost.schema";
 
 export const PostRouter = trpcRouter.router({
   byPage: protectedProcedure
-    // .meta({
-    //   /* 👉 */ openapi: { method: "GET", path: "/user/post.byPage", tags: ["post"]  },
-    // })
     .input(PaginationSchema)
-    .output(APIResponseSchema(z.array(PostSchema)))
+    //.output(APIResponseSchema(z.array(PostSchema)))
     .query(async ({ input }) => {
       const page_index = input.paging.page_index ?? 1;
       const page_size = input.paging.page_size ?? 10;
@@ -36,29 +35,30 @@ export const PostRouter = trpcRouter.router({
         dbContext.post.count(),
       ]);
 
-      return await APIResponseSchema(z.array(PostSchema)).parseAsync({
+      return {
         data,
         paging: {
           page_index,
           page_size,
           row_count,
         },
-      });
+      } as TypeAPIResponse<TypePost[]>;
+      // return await APIResponseSchema(z.array(PostSchema)).parseAsync({
+      //   data,
+      //   paging: {
+      //     page_index,
+      //     page_size,
+      //     row_count,
+      //   },
+      // });
     }),
   byId: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "GET",
-        path: "/user/post.byId",
-        tags: ["post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(APIResponseSchema(PostSchema.nullable()))
+    //.output(APIResponseSchema(PostSchema.nullable()))
     .query(async ({ input }) => {
       const data = await dbContext.post.findFirst({
         where: {
@@ -72,28 +72,24 @@ export const PostRouter = trpcRouter.router({
         },
       });
 
-      return await APIResponseSchema(PostSchema.nullable()).parseAsync({
+      return {
         data,
-      });
+      } as TypeAPIResponse<TypePost>;
+      // return await APIResponseSchema(PostSchema.nullable()).parseAsync({
+      //   data,
+      // });
     }),
   publish: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "POST",
-        path: "/user/post.publish",
-        tags: ["post"],
-      },
-    })
     .input(AddPostSchema)
-    .output(
-      APIResponseSchema(
-        PostSchema.omit({
-          PostCurrentDetail: true,
-          PostFeature: true,
-          PostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     PostSchema.omit({
+    //       PostCurrentDetail: true,
+    //       PostFeature: true,
+    //       PostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
@@ -171,33 +167,27 @@ export const PostRouter = trpcRouter.router({
           },
         });
 
-        return await APIResponseSchema(
-          PostSchema.omit({
-            PostCurrentDetail: true,
-            PostFeature: true,
-            PostImage: true,
-          }).nullable()
-        ).parseAsync({ data: result });
+        return { data: result } as TypeAPIResponse<TypePost>;
+        // return await APIResponseSchema(
+        //   PostSchema.omit({
+        //     PostCurrentDetail: true,
+        //     PostFeature: true,
+        //     PostImage: true,
+        //   }).nullable()
+        // ).parseAsync({ data: result });
       }
     ),
   update: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "PUT",
-        path: "/user/post.update",
-        tags: ["post"],
-      },
-    })
     .input(PostSchema)
-    .output(
-      APIResponseSchema(
-        PostSchema.omit({
-          PostCurrentDetail: true,
-          PostFeature: true,
-          PostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     PostSchema.omit({
+    //       PostCurrentDetail: true,
+    //       PostFeature: true,
+    //       PostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
@@ -238,13 +228,14 @@ export const PostRouter = trpcRouter.router({
           },
         });
 
-        return await APIResponseSchema(
-          PostSchema.omit({
-            PostCurrentDetail: true,
-            PostFeature: true,
-            PostImage: true,
-          }).nullable()
-        ).parseAsync({ data: result });
+        return { data: result } as TypeAPIResponse<TypePost>;
+        // return await APIResponseSchema(
+        //   PostSchema.omit({
+        //     PostCurrentDetail: true,
+        //     PostFeature: true,
+        //     PostImage: true,
+        //   }).nullable()
+        // ).parseAsync({ data: result });
       }
     ),
 });

@@ -1,7 +1,11 @@
 import z from "zod";
 import { DraftPostSchema } from "../../schemas/DraftPost.schema";
 import { dbContext } from "../../utils/prisma";
-import { OptionalBoolean, RequiredString } from "../../utils/ZodUtils";
+import {
+  NonNegativeNumber,
+  OptionalBoolean,
+  RequiredString,
+} from "../../utils/ZodUtils";
 import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
 import { APIResponseSchema } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
@@ -10,11 +14,8 @@ import { protectedProcedure, trpcRouter } from "../router";
 
 export const DraftPostRouter = trpcRouter.router({
   byPage: protectedProcedure
-    // .meta({
-    //   /* 👉 */ openapi: { method: "GET", path: "/user/post.byPage", tags: ["post"]  },
-    // })
     .input(PaginationSchema)
-    .output(APIResponseSchema(z.array(DraftPostSchema)))
+    //.output(APIResponseSchema(z.array(DraftPostSchema)))
     .query(async ({ ctx, input }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -41,29 +42,30 @@ export const DraftPostRouter = trpcRouter.router({
         dbContext.post.count(),
       ]);
 
-      return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      return {
         data,
         paging: {
           page_index,
           page_size,
           row_count,
         },
-      });
+      };
+      // return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      //   data,
+      //   paging: {
+      //     page_index,
+      //     page_size,
+      //     row_count,
+      //   },
+      // });
     }),
   byId: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "GET",
-        path: "/user/draft_post.byId",
-        tags: ["draft_post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(APIResponseSchema(DraftPostSchema.nullable()))
+    //.output(APIResponseSchema(DraftPostSchema.nullable()))
     .query(async ({ input }) => {
       const data = await dbContext.post.findFirst({
         where: {
@@ -76,28 +78,29 @@ export const DraftPostRouter = trpcRouter.router({
           PostFeature: true,
         },
       });
-      return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+
+      return {
         data,
-      });
+      };
+      // return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+      //   data,
+      // });
     }),
   create: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "POST",
-        path: "/user/draft_post.create",
-        tags: ["draft_post"],
-      },
-    })
     .input(AddDraftPostSchema)
-    .output(
-      APIResponseSchema(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     DraftPostSchema.omit({
+    //       DraftCurrentDetail: true,
+    //       DraftFeature: true,
+    //       DraftPostImage: true,
+    //     })
+    //       .extend({
+    //         Price: NonNegativeNumber.optional(),
+    //       })
+    //       .nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
@@ -163,7 +166,7 @@ export const DraftPostRouter = trpcRouter.router({
             },
           },
           where: {
-            Id,
+            Id: Id ?? "00000000-0000-0000-0000-000000000000",
             UserId: (await ctx).userId,
           },
         });
@@ -208,33 +211,32 @@ export const DraftPostRouter = trpcRouter.router({
         //   },
         // });
 
-        return await APIResponseSchema(
-          DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          }).nullable()
-        ).parseAsync({ data });
+        return { data };
+
+        // return await APIResponseSchema(
+        //   DraftPostSchema.omit({
+        //     DraftCurrentDetail: true,
+        //     DraftFeature: true,
+        //     DraftPostImage: true,
+        //   })
+        //     .extend({
+        //       Price: NonNegativeNumber.optional(),
+        //     })
+        //     .nullable()
+        // ).parseAsync({ data });
       }
     ),
   update: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "PUT",
-        path: "/user/draft_post.update",
-        tags: ["draft_post"],
-      },
-    })
     .input(DraftPostSchema)
-    .output(
-      APIResponseSchema(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     DraftPostSchema.omit({
+    //       DraftCurrentDetail: true,
+    //       DraftFeature: true,
+    //       DraftPostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
@@ -246,11 +248,16 @@ export const DraftPostRouter = trpcRouter.router({
           ...rest
         },
       }) => {
-        //if (ctx.userId == null) return null;
+        if ((await ctx).userId == null)
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: ``,
+          });
 
         const result = await dbContext.draftPost.update({
           where: {
-            Id,
+            Id: Id ?? "00000000-0000-0000-0000-000000000000",
+            UserId: (await ctx).userId,
           },
           data: {
             ...rest,
@@ -281,37 +288,41 @@ export const DraftPostRouter = trpcRouter.router({
           },
         });
 
-        return await APIResponseSchema(
-          DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          })
-        ).parseAsync({ data: result });
+        return { data: result };
+
+        // return await APIResponseSchema(
+        //   DraftPostSchema.omit({
+        //     DraftCurrentDetail: true,
+        //     DraftFeature: true,
+        //     DraftPostImage: true,
+        //   })
+        // ).parseAsync({ data: result });
       }
     ),
 
   delete: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "DELETE",
-        path: "/user/draft_post.delete",
-        tags: ["draft_post"],
-      },
-    })
     .input(z.object({ Id: RequiredString }))
-    .output(APIResponseSchema(OptionalBoolean.nullable()))
+    //.output(APIResponseSchema(OptionalBoolean.nullable()))
     .mutation(async ({ ctx, input: { Id } }) => {
-      //if (ctx.userId == null) return null;
+      if ((await ctx).userId == null)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: ``,
+        });
 
       const result = await dbContext.draftPost.delete({
         where: {
-          Id,
+          Id: Id ?? "00000000-0000-0000-0000-000000000000",
+          UserId: (await ctx).userId,
         },
       });
 
-      return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
-        data: Boolean(result),
-      });
+      return {
+        data: result,
+      };
+
+      // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
+      //   data: Boolean(result),
+      // });
     }),
 });

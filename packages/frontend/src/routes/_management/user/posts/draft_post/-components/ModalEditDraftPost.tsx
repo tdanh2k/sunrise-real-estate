@@ -16,8 +16,9 @@ import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { useNavigate } from "@tanstack/react-router";
 
-type ModalAddProps = {
+type ModalEditDraftProps = {
   isOpen: boolean;
+  editId: string;
   handleClose: () => void;
 };
 
@@ -34,8 +35,12 @@ const defaultValues: TypeAddPost = {
   PostFeature: [],
 };
 
-export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
-  const navigate = useNavigate({ from: "/user/posts/post" });
+export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
+  isOpen,
+  editId,
+  handleClose,
+}) => {
+  const navigate = useNavigate({ from: "/user/posts/pending_posts" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 

@@ -39,7 +39,7 @@ export const BestPostList: FC = () => {
     ],
   };
 
-  const { data: response } = publicRoute.topPost.useQuery();
+  //const { data: response } = publicRoute.topPost.useQuery();
 
   return (
     <section className="section-best-estate">
@@ -48,9 +48,9 @@ export const BestPostList: FC = () => {
           <div className="col-lg-12">
             <Title title={title.text} description={title.description} />
             <Slider {...settings}>
-              {response?.data?.map((item) => (
-                <BestPostItem key={item.Id} flatState="For Rent" />
-              ))}
+              {/* {response?.data?.map((item) => (
+                <BestPostItem key={item.Id} data={item} />
+              ))} */}
               {/* <BestPostItem flatState="For Rent" />
               <BestPostItem flatState="For Sale" />
               <BestPostItem flatState="For Rent" />

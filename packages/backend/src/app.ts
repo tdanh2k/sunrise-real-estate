@@ -1,22 +1,14 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import "dotenv/config.js";
 
-import {
-  appRouter,
-  openApiDocument,
-  publicAppRouter,
-} from "./routers/index.js";
+import { appRouter, publicAppRouter } from "./routers/index.js";
 import helmet from "helmet";
 import cors from "cors";
 import { createTRPCContext } from "./routers/context";
-import swaggerUi from "swagger-ui-express";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/not-found.middleware.js";
-import {
-  checkRequiredPermissions,
-  validateAccessToken,
-} from "./middlewares/auth0.middleware.js";
+import { validateAccessToken } from "./middlewares/auth0.middleware.js";
 
 const app = express();
 const port = 3000;
@@ -74,17 +66,17 @@ app.use(
 );
 
 // Serve Swagger UI with our OpenAPI schema
-app.use(
-  "/api-docs",
-  (req: Request, res: Response, next: NextFunction) => {
-    res?.set("Content-Security-Policy", `script-src 'self'`);
-    next();
-  },
-  swaggerUi.serve,
-  swaggerUi.setup(openApiDocument, {
-    isExplorer: true,
-  })
-);
+// app.use(
+//   "/api-docs",
+//   (req: Request, res: Response, next: NextFunction) => {
+//     res?.set("Content-Security-Policy", `script-src 'self'`);
+//     next();
+//   },
+//   swaggerUi.serve,
+//   swaggerUi.setup(openApiDocument, {
+//     isExplorer: true,
+//   })
+// );
 
 app.use(errorHandler);
 app.use(notFoundHandler);
@@ -92,6 +84,6 @@ app.use(notFoundHandler);
 app.listen(port, () => {
   console.log(
     `- sunrise-real-estate-backend listening on http://localhost:${port}.
-- Access Swagger docs at http://localhost:${port}/api-docs`
+` //- Access Swagger docs at http://localhost:${port}/api-docs
   );
 });

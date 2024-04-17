@@ -26,6 +26,7 @@ import { Route as ManagementManagementUsersRouteImport } from './routes/_managem
 import { Route as ManagementManagementPostsRouteImport } from './routes/_management/management/posts/route'
 import { Route as ManagementManagementPostsIndexImport } from './routes/_management/management/posts/index'
 import { Route as ManagementUserPostsPostIndexImport } from './routes/_management/user/posts/post/index'
+import { Route as ManagementUserPostsPendingpostsIndexImport } from './routes/_management/user/posts/pending_posts/index'
 import { Route as ManagementUserPostsDraftpostIndexImport } from './routes/_management/user/posts/draft_post/index'
 import { Route as ManagementManagementUsersUserIndexImport } from './routes/_management/management/users/user/index'
 import { Route as ManagementManagementPostsPosttypeIndexImport } from './routes/_management/management/posts/post_type/index'
@@ -111,6 +112,12 @@ const ManagementManagementPostsIndexRoute =
 const ManagementUserPostsPostIndexRoute =
   ManagementUserPostsPostIndexImport.update({
     path: '/post/',
+    getParentRoute: () => ManagementUserPostsRouteRoute,
+  } as any)
+
+const ManagementUserPostsPendingpostsIndexRoute =
+  ManagementUserPostsPendingpostsIndexImport.update({
+    path: '/pending_posts/',
     getParentRoute: () => ManagementUserPostsRouteRoute,
   } as any)
 
@@ -234,6 +241,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementUserPostsDraftpostIndexImport
       parentRoute: typeof ManagementUserPostsRouteImport
     }
+    '/_management/user/posts/pending_posts/': {
+      preLoaderRoute: typeof ManagementUserPostsPendingpostsIndexImport
+      parentRoute: typeof ManagementUserPostsRouteImport
+    }
     '/_management/user/posts/post/': {
       preLoaderRoute: typeof ManagementUserPostsPostIndexImport
       parentRoute: typeof ManagementUserPostsRouteImport
@@ -268,6 +279,7 @@ export const routeTree = rootRoute.addChildren([
     ManagementUserRouteRoute.addChildren([
       ManagementUserPostsRouteRoute.addChildren([
         ManagementUserPostsDraftpostIndexRoute,
+        ManagementUserPostsPendingpostsIndexRoute,
         ManagementUserPostsPostIndexRoute,
       ]),
     ]),

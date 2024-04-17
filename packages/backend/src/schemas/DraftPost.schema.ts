@@ -51,3 +51,5 @@ export const DraftPostSchema = z.object({
     })
   ),
 });
+
+export type TypeDraftPost = z.infer<typeof DraftPostSchema>;
