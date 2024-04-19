@@ -1,19 +1,14 @@
 import z from "zod";
-import {
-  PendingPostSchema,
-  TypePendingPost,
-} from "../../schemas/PendingPost.schema";
+import { TypePendingPost } from "../../schemas/PendingPost.schema";
 import { dbContext } from "../../utils/prisma";
 import { RequiredString } from "../../utils/ZodUtils";
-import {
-  APIResponseSchema,
-  TypeAPIResponse,
-} from "../../schemas/APIResponse.schema";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
 import axios from "axios";
 import { TypeAuth0User } from "../../schemas/Auth0User.schema";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
 
 export const PendingPostRouter = trpcRouter.router({
   byPage: protectedProcedure
@@ -70,15 +65,15 @@ export const PendingPostRouter = trpcRouter.router({
     )
     //.output(APIResponseSchema(PendingPostSchema.nullable()))
     .query(async ({ input }) => {
-      const data = await dbContext.post.findFirst({
+      const data = await dbContext.pendingPost.findFirst({
         where: {
           Id: input.Id,
         },
         include: {
-          PostCurrentDetail: true,
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
+          PendingPostCurrentDetail: true,
+          PendingPostImage: true,
+          GlobalPostType: true,
+          PendingPostFeature: true,
         },
       });
 
@@ -89,6 +84,92 @@ export const PendingPostRouter = trpcRouter.router({
       //   data,
       // });
     }),
+  createFromDraft: protectedProcedure
+    .input(AddDraftPostSchema)
+    .mutation(
+      async ({
+        ctx,
+        input: {
+          Id,
+          DraftPostCurrentDetail,
+          DraftPostFeature,
+          DraftPostImage,
+          ...rest
+        },
+      }) => {
+        if ((await ctx).userId == null)
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: ``,
+          });
+
+        const response = await axios<TypeAuth0User>({
+          url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
+          method: "GET",
+          params: {
+            search_engine: "v3",
+          },
+          headers: {
+            Authorization: `Bearer ${(await ctx).management_token}`,
+          },
+        });
+
+        const user = response?.data;
+
+        const [createdPendingPost] = await dbContext.$transaction([
+          dbContext.pendingPost.create({
+            data: {
+              ...rest,
+              UserId: (await ctx).userId ?? "",
+              User_Email: user.email,
+              User_EmailVerified: user.email_verified,
+              User_Name: user.name,
+              User_Username: user.username,
+              User_PhoneNumber: user.phone_number,
+              User_PhoneVerified: user.phone_verified,
+              User_Picture: user.picture,
+              PendingPostCurrentDetail: {
+                createMany: {
+                  data: DraftPostCurrentDetail?.map((item) => ({
+                    ...item,
+                    Id: undefined,
+                  })),
+                },
+              },
+              PendingPostFeature: {
+                createMany: {
+                  data: DraftPostFeature?.map((item) => ({
+                    ...item,
+                    Id: undefined,
+                  })),
+                },
+              },
+              PendingPostImage: {
+                createMany: {
+                  data: DraftPostImage?.map((item) => ({
+                    ...item,
+                    Id: undefined,
+                  })),
+                },
+              },
+            },
+          }),
+          dbContext.draftPost.delete({
+            where: {
+              Id: Id ?? "00000000-0000-0000-0000-000000000000",
+              UserId: (await ctx).userId ?? "",
+            },
+            include: {
+              DraftPostCurrentDetail: true,
+              DraftPostFeature: true,
+              DraftPostImage: true,
+            },
+          }),
+        ]);
+
+        return { data: createdPendingPost };
+      }
+    ),
   approve: protectedProcedure
     .input(
       z.object({

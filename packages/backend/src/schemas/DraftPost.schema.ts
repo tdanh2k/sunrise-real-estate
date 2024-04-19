@@ -20,7 +20,15 @@ export const DraftPostSchema = z.object({
   Address: RequiredString,
   Price: OptionalNumber,
   MapUrl: RequiredURL,
-  DraftCurrentDetail: z.array(
+  GlobalPostType: z
+    .object({
+      Id: RequiredUUID,
+      Idx: NonNegativeIntegerNumber,
+      Name: RequiredString,
+      CreatedDate: OptionalJsDate,
+    })
+    .optional(),
+  DraftPostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
       DraftId: RequiredUUID,
@@ -30,7 +38,7 @@ export const DraftPostSchema = z.object({
       CreatedDate: OptionalJsDate,
     })
   ),
-  DraftFeature: z.array(
+  DraftPostFeature: z.array(
     z.object({
       Id: RequiredUUID,
       DraftId: RequiredUUID,
@@ -45,7 +53,7 @@ export const DraftPostSchema = z.object({
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
-      PostId: RequiredUUID,
+      DraftId: RequiredUUID,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,
     })

@@ -1,14 +1,12 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
-  OptionalBoolean,
   OptionalJsDate,
-  OptionalNumber,
   OptionalString,
   RequiredString,
-  RequiredURL,
   RequiredUUID,
 } from "../utils/ZodUtils";
+import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema";
 
 export const BlogSchema = z.object({
   Id: RequiredUUID,
@@ -17,7 +15,7 @@ export const BlogSchema = z.object({
   Description: RequiredString,
   CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
-  Address: RequiredString,
+  GlobalBlogType: GlobalBlogTypeSchema.optional(),
   BlogImage: z.array(
     z.object({
       Id: RequiredUUID,

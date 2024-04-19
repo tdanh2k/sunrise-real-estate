@@ -1,10 +1,7 @@
 import z from "zod";
 import { dbContext } from "../../utils/prisma";
-import { GlobalPostTypeSchema } from "../../schemas/GlobalPostType.schema";
 import { AddGlobalPostTypeSchema } from "../../schemas/AddGlobalPostType.schema";
-import { NonNegativeIntegerNumber } from "../../utils/ZodUtils";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
 import { protectedProcedure, trpcRouter } from "../router";
 
 export const GlobalPostTypeRouter = trpcRouter.router({

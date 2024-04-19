@@ -1,5 +1,8 @@
 import { useMantineRTInstance } from "@components/MantineRT";
-import { CustomActionMenuItemPropsType, RenderCustomActionMenuItems } from "@components/MantineRT/RenderCustomActionMenuItems";
+import {
+  CustomActionMenuItemPropsType,
+  RenderCustomActionMenuItems,
+} from "@components/MantineRT/RenderCustomActionMenuItems";
 import { CustomToolbarButtonsPropsType } from "@components/MantineRT/RenderCustomToolbarButton";
 import { useDisclosure } from "@mantine/hooks";
 import { TypeDraftPost } from "@sunrise-backend/src/schemas/DraftPost.schema";
@@ -7,6 +10,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
 import { FC, useCallback, useMemo, useState } from "react";
+import { ModalEditDraftPost } from "./-components/ModalEditDraftPost";
 
 export const Route = createFileRoute("/_management/user/posts/draft_post/")({
   component: () => {
@@ -115,6 +119,11 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
         /> */}
+        <ModalEditDraftPost
+          isOpen={openedModalUpdate}
+          editId={selectedId}
+          handleClose={handleCloseModalUpdate}
+        />
       </>
     );
   },

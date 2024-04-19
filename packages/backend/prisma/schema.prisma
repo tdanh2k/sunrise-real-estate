@@ -249,22 +249,22 @@ model Role {
 }
 
 model DraftPostCurrentDetail {
-  Id               String           @id(map: "DraftCurrentDetail_PK") @default(dbgenerated("newid()"), map: "DF__DraftCurrent__Id__3A4CA8FD") @db.UniqueIdentifier
+  Id               String           @id(map: "DraftPostCurrentDetail_PK") @default(dbgenerated("newid()"), map: "DF__DraftCurrent__Id__3A4CA8FD") @db.UniqueIdentifier
   DraftId          String           @db.UniqueIdentifier
   DetailId         String           @db.UniqueIdentifier
   Value            String           @db.NVarChar(255)
   CreatedDate      DateTime?        @default(now(), map: "DF__DraftCurr__Creat__0D44F85C") @db.DateTime
-  DraftPost        DraftPost        @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftCurrentDetail_DraftPost_FK")
-  GlobalPostDetail GlobalPostDetail @relation(fields: [DetailId], references: [Id], onUpdate: NoAction, map: "DraftCurrentDetail_GlobalPostDetail_FK")
+  DraftPost        DraftPost        @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftPostCurrentDetail_DraftPost_FK")
+  GlobalPostDetail GlobalPostDetail @relation(fields: [DetailId], references: [Id], onUpdate: NoAction, map: "DraftPostCurrentDetail_GlobalPostDetail_FK")
 }
 
 model DraftPostFeature {
-  Id          String    @id(map: "DraftFeature_PK") @default(dbgenerated("newid()"), map: "DF__DraftFeature__Id__40058253") @db.UniqueIdentifier
+  Id          String    @id(map: "DraftPostFeature_PK") @default(dbgenerated("newid()"), map: "DF__DraftPostFeature__Id__40058253") @db.UniqueIdentifier
   Title       String    @db.NVarChar(256)
   Description String    @db.NVarChar(Max)
   DraftId     String    @db.UniqueIdentifier
   CreatedDate DateTime? @default(now(), map: "DF__DraftFeat__Creat__0C50D423") @db.DateTime
-  DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftFeature_DraftPost_FK")
+  DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftPostFeature_DraftPost_FK")
 }
 
 model PendingBlog {

@@ -10,6 +10,6 @@ exports.AddPostSchema = zod_1.default.object({
     Code: ZodUtils_1.RequiredString,
     Title: ZodUtils_1.RequiredString,
     Description: ZodUtils_1.RequiredString,
-    CreatedDate: ZodUtils_1.OptionalDate,
+    CreatedDate: ZodUtils_1.OptionalJsDate,
     TypeId: ZodUtils_1.RequiredUUID,
 });

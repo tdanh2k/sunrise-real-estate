@@ -21,7 +21,7 @@ export const PublicTRPCProvider: FC<{
   // const match = useMatch({ from: "/_client" });
   return (
     <Auth0Context.Consumer>
-      {({ getAccessTokenSilently }) => (
+      {() => (
         <publicRoute.Provider
           client={publicRoute.createClient({
             links: [

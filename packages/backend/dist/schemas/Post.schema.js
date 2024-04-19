@@ -11,9 +11,10 @@ exports.PostSchema = zod_1.default.object({
     Code: ZodUtils_1.RequiredString,
     Title: ZodUtils_1.RequiredString,
     Description: ZodUtils_1.RequiredString,
-    CreatedDate: ZodUtils_1.OptionalDate,
+    CreatedDate: ZodUtils_1.OptionalJsDate,
     TypeId: ZodUtils_1.RequiredUUID,
     Address: ZodUtils_1.RequiredString,
+    Price: ZodUtils_1.OptionalNumber,
     MapUrl: ZodUtils_1.RequiredURL,
     PostCurrentDetail: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.RequiredUUID,
@@ -21,14 +22,14 @@ exports.PostSchema = zod_1.default.object({
         DetailId: ZodUtils_1.RequiredUUID,
         Value: ZodUtils_1.RequiredString,
         IsNumber: ZodUtils_1.OptionalBoolean,
-        CreatedDate: ZodUtils_1.OptionalDate,
+        CreatedDate: ZodUtils_1.OptionalJsDate,
     })),
     PostFeature: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.RequiredUUID,
         PostId: ZodUtils_1.RequiredUUID,
         Title: ZodUtils_1.RequiredString,
         Description: ZodUtils_1.RequiredString,
-        CreatedDate: ZodUtils_1.OptionalDate,
+        CreatedDate: ZodUtils_1.OptionalJsDate,
     })),
     PostImage: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.RequiredUUID,
@@ -37,6 +38,6 @@ exports.PostSchema = zod_1.default.object({
         Path: ZodUtils_1.RequiredString,
         PostId: ZodUtils_1.RequiredUUID,
         MimeType: ZodUtils_1.OptionalString,
-        CreatedDate: ZodUtils_1.OptionalDate,
+        CreatedDate: ZodUtils_1.OptionalJsDate,
     }))
 });

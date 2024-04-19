@@ -76,14 +76,16 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     PostCurrentDetail,
     PostFeature,
     PostImage,
+    Price,
     ...rest
   }) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateDraftAsync({
       ...rest,
-      DraftCurrentDetail: PostCurrentDetail ?? [],
-      DraftFeature: PostFeature ?? [],
+      Price: Price ?? 0,
+      DraftPostCurrentDetail: PostCurrentDetail ?? [],
+      DraftPostFeature: PostFeature ?? [],
       DraftPostImage: PostImage ?? [],
     });
     handleClose();

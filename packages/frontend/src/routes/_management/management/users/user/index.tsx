@@ -108,7 +108,7 @@ export const Route = createFileRoute("/_management/management/users/user/")({
         },
         {
           accessorKey: "phone_number",
-          header: "SỐ điện thoại",
+          header: "Số điện thoại",
           filterFn: "contains",
         },
       ],

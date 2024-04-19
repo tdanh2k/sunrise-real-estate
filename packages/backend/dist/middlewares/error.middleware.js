@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
 const express_oauth2_jwt_bearer_1 = require("express-oauth2-jwt-bearer");
 const errorHandler = (error, request, response, next) => {
+    //console.log({error})
     if (error instanceof express_oauth2_jwt_bearer_1.InsufficientScopeError) {
         const message = "Permission denied";
         response.status(error.status).json({ message });

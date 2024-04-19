@@ -8,7 +8,7 @@ export const GlobalPostDetailRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(GlobalPostDetailSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalPostDetail.findMany();
 
       return { data };

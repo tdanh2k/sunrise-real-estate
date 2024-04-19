@@ -25,7 +25,7 @@ export const AddPendingPostSchema = z.object({
   PendingCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
-      PendingId: RequiredUUID,
+      PendingPostId: RequiredUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
@@ -35,7 +35,7 @@ export const AddPendingPostSchema = z.object({
   PendingFeature: z.array(
     z.object({
       Id: RequiredUUID,
-      PendingId: RequiredUUID,
+      PendingPostId: RequiredUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalJsDate,

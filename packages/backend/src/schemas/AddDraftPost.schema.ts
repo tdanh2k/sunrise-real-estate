@@ -1,8 +1,9 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
-  OptionalDate,
+  OptionalJsDate,
   OptionalString,
   OptionalUUID,
   RequiredString,
@@ -15,25 +16,26 @@ export const AddDraftPostSchema = z.object({
   Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
-  CreatedDate: OptionalDate,
+  CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
   Address: RequiredString,
+  Price: NonNegativeNumber,
   MapUrl: RequiredURL,
-  DraftCurrentDetail: z.array(
+  DraftPostCurrentDetail: z.array(
     z.object({
       Id: OptionalUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
   ),
-  DraftFeature: z.array(
+  DraftPostFeature: z.array(
     z.object({
       Id: OptionalUUID,
       Title: RequiredString,
       Description: RequiredString,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
   ),
   DraftPostImage: z.array(
@@ -43,7 +45,7 @@ export const AddDraftPostSchema = z.object({
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
       MimeType: OptionalString,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
   ),
 });

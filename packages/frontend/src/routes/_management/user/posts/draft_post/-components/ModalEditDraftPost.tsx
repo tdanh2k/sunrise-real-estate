@@ -3,9 +3,9 @@ import { Button, LoadingOverlay, Stack } from "@mantine/core";
 import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  AddPostSchema,
-  TypeAddPost,
-} from "@sunrise-backend/src/schemas/AddPost.schema";
+  AddDraftPostSchema,
+  TypeAddDraftPost,
+} from "@sunrise-backend/src/schemas/AddDraftPost.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
 import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
@@ -15,14 +15,15 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { useNavigate } from "@tanstack/react-router";
+import { TypeDraftPost } from "@sunrise-backend/src/schemas/DraftPost.schema";
 
 type ModalEditDraftProps = {
   isOpen: boolean;
-  editId: string;
+  editId?: string;
   handleClose: () => void;
 };
 
-const defaultValues: TypeAddPost = {
+const defaultValues: TypeAddDraftPost = {
   TypeId: "",
   Code: "",
   Title: "",
@@ -30,9 +31,9 @@ const defaultValues: TypeAddPost = {
   Description: "",
   Price: 0,
   MapUrl: "",
-  PostImage: [],
-  PostCurrentDetail: [],
-  PostFeature: [],
+  DraftPostImage: [],
+  DraftPostCurrentDetail: [],
+  DraftPostFeature: [],
 };
 
 export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
@@ -40,36 +41,53 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
   editId,
   handleClose,
 }) => {
-  const navigate = useNavigate({ from: "/user/posts/pending_posts" });
+  const navigate = useNavigate({ from: "/user/posts/draft_post" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 
-  const { data: postDetailResponse, isFetching } =
-    privateRoute.user.global_post_detail.all.useQuery();
-
-  const { handleSubmit, control, reset } = useForm({
-    resolver: isDrafting ? zodResolver(AddPostSchema) : undefined,
-    mode: "all",
-    defaultValues,
+  const {
+    data: globalPostDetailResponse,
+    isFetching: isGetAllGlobalPostDetailFetching,
+  } = privateRoute.user.global_post_detail.all.useQuery(undefined, {
+    enabled: Boolean(editId),
   });
 
-  const { mutateAsync, isPending } = privateRoute.user.post.publish.useMutation(
+  const {
+    data: draftPostByIdResponse,
+    isFetching: isGetDraftPostByIdFetching,
+  } = privateRoute.user.draft_post.byId.useQuery(
+    { Id: editId ?? "" },
     {
+      enabled: Boolean(editId),
+    }
+  );
+
+  const { handleSubmit, control, reset } = useForm({
+    resolver: isDrafting ? zodResolver(AddDraftPostSchema) : undefined,
+    mode: "all",
+    defaultValues,
+    values: {
+      ...defaultValues,
+      ...draftPostByIdResponse?.data,
+    },
+  });
+
+  const { mutateAsync, isPending: isPostPending } =
+    privateRoute.user.pending_post.createFromDraft.useMutation({
       onSuccess: () => {
         utils.user.post.invalidate();
       },
-    }
-  );
+    });
 
   const { mutateAsync: mutateDraftAsync, isPending: isDraftPending } =
     privateRoute.user.draft_post.create.useMutation({
       onSuccess: () => {
         utils.user.draft_post.invalidate();
-        navigate({ to: "/user/posts/draft_post" });
+        navigate({ to: "/user/posts/pending_posts" });
       },
     });
 
-  const onSubmit: SubmitHandler<TypeAddPost> = async (values) => {
+  const onSubmit: SubmitHandler<TypeAddDraftPost> = async (values) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateAsync(values);
@@ -77,25 +95,29 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
     reset();
   };
 
-  const onDraftSubmit: SubmitHandler<TypeAddPost> = async ({
-    PostCurrentDetail,
-    PostFeature,
-    PostImage,
+  const onDraftSubmit: SubmitHandler<TypeAddDraftPost> = async ({
+    DraftPostCurrentDetail,
+    DraftPostFeature,
+    DraftPostImage,
     ...rest
   }) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateDraftAsync({
       ...rest,
-      DraftCurrentDetail: PostCurrentDetail ?? [],
-      DraftFeature: PostFeature ?? [],
-      DraftPostImage: PostImage ?? [],
+      DraftPostCurrentDetail: DraftPostCurrentDetail ?? [],
+      DraftPostFeature: DraftPostFeature ?? [],
+      DraftPostImage: DraftPostImage ?? [],
     });
     handleClose();
     reset();
   };
 
-  const isLoading = isPending || isDraftPending;
+  const isLoading =
+    isGetAllGlobalPostDetailFetching ||
+    isGetDraftPostByIdFetching ||
+    isDraftPending ||
+    isPostPending;
 
   return (
     <CustomModal
@@ -108,7 +130,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Tạo bài đăng"
+      title="Cập nhật bài nháp"
       centered
       footer={
         <>
@@ -143,7 +165,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
       />
 
       <Stack mb={10} style={{ overflow: "auto" }}>
-        <QuerySelectRHF<TypeAddPost, TypeGlobalPostType>
+        <QuerySelectRHF<TypeAddDraftPost, TypeGlobalPostType>
           name="TypeId"
           label="Loại bài đăng"
           useQuery={privateRoute.user.global_post_type.all.useQuery}
@@ -173,7 +195,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
-                data: postDetailResponse?.data?.map((item) => ({
+                data: globalPostDetailResponse?.data?.map((item) => ({
                   label: item.Name,
                   value: item.Id,
                 })),
@@ -188,13 +210,13 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
                 //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
                 //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
                 error:
-                  control?._formState?.errors?.PostCurrentDetail?.[row.index]
+                  control?._formState?.errors?.DraftPostCurrentDetail?.[row.index]
                     ?.Value?.message,
               }),
             },
           ]}
-          externalLoading={isFetching}
-          name="PostCurrentDetail"
+          externalLoading={isLoading}
+          name="DraftPostCurrentDetail"
           control={control}
           //methods={methods}
           // onCreate={({ values }) => {
@@ -214,14 +236,12 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
               mantineEditTextInputProps: ({ row }) => ({
                 //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
                 //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-                error:
-                  control?._formState?.errors?.PostCurrentDetail?.[row.index]
-                    ?.Value?.message,
+                error: control?._formState?.errors?.Description?.message,
               }),
             },
           ]}
-          externalLoading={isFetching}
-          name="PostFeature"
+          externalLoading={isLoading}
+          name="DraftPostFeature"
           control={control}
           //methods={methods}
           // onCreate={({ values }) => {
@@ -234,7 +254,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
 };
 
 // const PostCurrentDetailTable: FC<{
-//   control: Control<TypeAddPost>;
+//   control: Control<TypeAddDraftPost>;
 // }> = ({ control }) => {
 //   const { data: postDetailResponse, isFetching } =
 //     privateRoute.global_post_detail.all.useQuery();

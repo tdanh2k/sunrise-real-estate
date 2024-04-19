@@ -185,6 +185,11 @@ export const PostRouter = trpcRouter.router({
               },
             },
           },
+          include: {
+            PostCurrentDetail: true,
+            PostFeature: true,
+            PostImage: true,
+          },
         });
 
         return { data: result } as TypeAPIResponse<TypePost>;
@@ -245,6 +250,11 @@ export const PostRouter = trpcRouter.router({
                 create: item,
               })),
             },
+          },
+          include: {
+            PostCurrentDetail: true,
+            PostFeature: true,
+            PostImage: true,
           },
         });
 

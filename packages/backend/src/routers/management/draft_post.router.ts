@@ -1,9 +1,8 @@
 import z from "zod";
 import { DraftPostSchema } from "../../schemas/DraftPost.schema";
 import { dbContext } from "../../utils/prisma";
-import { OptionalBoolean, RequiredString } from "../../utils/ZodUtils";
+import { RequiredString } from "../../utils/ZodUtils";
 import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
@@ -98,8 +97,8 @@ export const DraftPostRouter = trpcRouter.router({
     // .output(
     //   APIResponseSchema(
     //     DraftPostSchema.omit({
-    //       DraftCurrentDetail: true,
-    //       DraftFeature: true,
+    //       DraftPostCurrentDetail: true,
+    //       DraftPostFeature: true,
     //       DraftPostImage: true,
     //     }).nullable()
     //   )
@@ -107,7 +106,12 @@ export const DraftPostRouter = trpcRouter.router({
     .mutation(
       async ({
         ctx,
-        input: { DraftCurrentDetail, DraftFeature, DraftPostImage, ...rest },
+        input: {
+          DraftPostCurrentDetail,
+          DraftPostFeature,
+          DraftPostImage,
+          ...rest
+        },
       }) => {
         if ((await ctx).userId == null)
           throw new TRPCError({
@@ -121,9 +125,9 @@ export const DraftPostRouter = trpcRouter.router({
             UserId: (await ctx).userId ?? "",
             DraftPostCurrentDetail: {
               createMany: {
-                data: DraftCurrentDetail,
+                data: DraftPostCurrentDetail,
               },
-              // connectOrCreate: DraftCurrentDetail?.map((item) => ({
+              // connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
               //   where: {
               //     Id: item.Id,
               //   },
@@ -132,9 +136,9 @@ export const DraftPostRouter = trpcRouter.router({
             },
             DraftPostFeature: {
               createMany: {
-                data: DraftFeature,
+                data: DraftPostFeature,
               },
-              // connectOrCreate: DraftFeature?.map((item) => ({
+              // connectOrCreate: DraftPostFeature?.map((item) => ({
               //   where: {
               //     Id: item.Id,
               //   },
@@ -158,20 +162,20 @@ export const DraftPostRouter = trpcRouter.router({
         return { data };
         // return await APIResponseSchema(
         //   DraftPostSchema.omit({
-        //     DraftCurrentDetail: true,
-        //     DraftFeature: true,
+        //     DraftPostCurrentDetail: true,
+        //     DraftPostFeature: true,
         //     DraftPostImage: true,
         //   }).nullable()
         // ).parseAsync({ data });
       }
     ),
   update: protectedProcedure
-    .input(DraftPostSchema)
+    .input(DraftPostSchema.omit({ GlobalPostType: true }))
     // .output(
     //   APIResponseSchema(
     //     DraftPostSchema.omit({
-    //       DraftCurrentDetail: true,
-    //       DraftFeature: true,
+    //       DraftPostCurrentDetail: true,
+    //       DraftPostFeature: true,
     //       DraftPostImage: true,
     //     }).nullable()
     //   )
@@ -181,8 +185,8 @@ export const DraftPostRouter = trpcRouter.router({
         ctx,
         input: {
           Id,
-          DraftCurrentDetail,
-          DraftFeature,
+          DraftPostCurrentDetail,
+          DraftPostFeature,
           DraftPostImage,
           ...rest
         },
@@ -196,7 +200,7 @@ export const DraftPostRouter = trpcRouter.router({
           data: {
             ...rest,
             DraftPostCurrentDetail: {
-              connectOrCreate: DraftCurrentDetail?.map((item) => ({
+              connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
                 where: {
                   Id: item.Id,
                 },
@@ -204,7 +208,7 @@ export const DraftPostRouter = trpcRouter.router({
               })),
             },
             DraftPostFeature: {
-              connectOrCreate: DraftFeature?.map((item) => ({
+              connectOrCreate: DraftPostFeature?.map((item) => ({
                 where: {
                   Id: item.Id,
                 },
@@ -225,8 +229,8 @@ export const DraftPostRouter = trpcRouter.router({
         return { data: result };
         // return await APIResponseSchema(
         //   DraftPostSchema.omit({
-        //     DraftCurrentDetail: true,
-        //     DraftFeature: true,
+        //     DraftPostCurrentDetail: true,
+        //     DraftPostFeature: true,
         //     DraftPostImage: true,
         //   })
         // ).parseAsync({ data: result });

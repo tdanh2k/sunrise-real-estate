@@ -4,7 +4,6 @@ import { FC } from "react";
 
 export const Header: FC = () => {
   const { isAuthenticated, loginWithPopup, logout } = useAuth0();
-  console.log({ isAuthenticated });
   return (
     <div className="header">
       <div className="container">

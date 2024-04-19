@@ -275,36 +275,36 @@ CREATE TABLE [sunrise-real-estate].dbo.PostStats (
 );
 
 
--- [sunrise-real-estate].dbo.DraftCurrentDetail definition
+-- [sunrise-real-estate].dbo.DraftPostCurrentDetail definition
 
 -- Drop table
 
--- DROP TABLE [sunrise-real-estate].dbo.DraftCurrentDetail;
+-- DROP TABLE [sunrise-real-estate].dbo.DraftPostCurrentDetail;
 
-CREATE TABLE [sunrise-real-estate].dbo.DraftCurrentDetail (
+CREATE TABLE [sunrise-real-estate].dbo.DraftPostCurrentDetail (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
 	DraftId uniqueidentifier NOT NULL,
 	DetailId uniqueidentifier NOT NULL,
 	Value nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
-	CONSTRAINT DraftCurrentDetail_PK PRIMARY KEY (Id),
-	CONSTRAINT DraftCurrentDetail_DraftPost_FK FOREIGN KEY (DraftId) REFERENCES [sunrise-real-estate].dbo.DraftPost(Id) ON DELETE CASCADE,
-	CONSTRAINT DraftCurrentDetail_GlobalPostDetail_FK FOREIGN KEY (DetailId) REFERENCES [sunrise-real-estate].dbo.GlobalPostDetail(Id)
+	CONSTRAINT DraftPostCurrentDetail_PK PRIMARY KEY (Id),
+	CONSTRAINT DraftPostCurrentDetail_DraftPost_FK FOREIGN KEY (DraftId) REFERENCES [sunrise-real-estate].dbo.DraftPost(Id) ON DELETE CASCADE,
+	CONSTRAINT DraftPostCurrentDetail_GlobalPostDetail_FK FOREIGN KEY (DetailId) REFERENCES [sunrise-real-estate].dbo.GlobalPostDetail(Id)
 );
 
 
--- [sunrise-real-estate].dbo.DraftFeature definition
+-- [sunrise-real-estate].dbo.DraftPostFeature definition
 
 -- Drop table
 
--- DROP TABLE [sunrise-real-estate].dbo.DraftFeature;
+-- DROP TABLE [sunrise-real-estate].dbo.DraftPostFeature;
 
-CREATE TABLE [sunrise-real-estate].dbo.DraftFeature (
+CREATE TABLE [sunrise-real-estate].dbo.DraftPostFeature (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
 	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	DraftId uniqueidentifier NOT NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
-	CONSTRAINT DraftFeature_PK PRIMARY KEY (Id),
-	CONSTRAINT DraftFeature_DraftPost_FK FOREIGN KEY (DraftId) REFERENCES [sunrise-real-estate].dbo.DraftPost(Id) ON DELETE CASCADE
+	CONSTRAINT DraftPostFeature_PK PRIMARY KEY (Id),
+	CONSTRAINT DraftPostFeature_DraftPost_FK FOREIGN KEY (DraftId) REFERENCES [sunrise-real-estate].dbo.DraftPost(Id) ON DELETE CASCADE
 );
