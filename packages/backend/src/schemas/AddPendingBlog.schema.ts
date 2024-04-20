@@ -3,31 +3,29 @@ import {
   NonNegativeIntegerNumber,
   OptionalJsDate,
   OptionalString,
-  OptionalUUID,
   RequiredString,
   RequiredUUID,
 } from "../utils/ZodUtils";
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema";
 
-export const DraftBlogSchema = z.object({
-  Id: RequiredUUID,
+export const AddPendingBlogSchema = z.object({
   Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
   GlobalBlogType: GlobalBlogTypeSchema.optional(),
-  DraftBlogImage: z.array(
+  PendingBlogImage: z.array(
     z.object({
-      Id: OptionalUUID,
+      Id: RequiredUUID,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
-      BlogId: OptionalUUID,
+      BlogId: RequiredUUID,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),
 });
 
-export type TypeDraftBlog = z.infer<typeof DraftBlogSchema>;
+export type TypeAddPendingBlog = z.infer<typeof AddPendingBlogSchema>;

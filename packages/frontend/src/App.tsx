@@ -19,6 +19,13 @@ declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
+  interface StaticDataRouteOption {
+    routeName?: string;
+    icon?: JSX.Element;
+    // icon?: ForwardRefExoticComponent<
+    //   Omit<IconProps, "ref"> & RefAttributes<Icon>
+    // >;
+  }
 }
 
 function App() {

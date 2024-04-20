@@ -1,6 +1,6 @@
 import { Auth0ContextInterface, User } from "@auth0/auth0-react";
 import { createRootRouteWithContext } from "@tanstack/react-router";
-import { createRootRoute, Outlet, RouteContext } from "@tanstack/react-router";
+import { Outlet, RouteContext } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 
 const TanStackRouterDevtools =

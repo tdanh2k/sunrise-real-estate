@@ -15,7 +15,6 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { useNavigate } from "@tanstack/react-router";
-import { TypeDraftPost } from "@sunrise-backend/src/schemas/DraftPost.schema";
 
 type ModalEditDraftProps = {
   isOpen: boolean;

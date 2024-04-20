@@ -12,11 +12,12 @@ import {
 } from "@mantine/core";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import {
-  IconChevronRight,
+  IconLogout,
   IconMessageCircle,
   IconPhoto,
   IconSettings,
 } from "@tabler/icons-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface UserButtonProps extends ComponentPropsWithoutRef<"button"> {
   image: string;
@@ -59,6 +60,7 @@ export const Header: FC<{ opened: boolean; toggle: () => void }> = ({
   opened,
   toggle,
 }) => {
+  const { user, logout } = useAuth0();
   return (
     <AppShell.Header>
       <Group h="100%" px="md" justify="space-between">
@@ -69,13 +71,18 @@ export const Header: FC<{ opened: boolean; toggle: () => void }> = ({
         <Menu withArrow>
           <Menu.Target>
             <UserButton
-              image="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-              name="Harriette Spoonlicker"
-              email="hspoonlicker@outlook.com"
+              //image="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+              image={
+                user?.picture ??
+                "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+              }
+              //name={`${user?.family_name} ${user?.given_name}`}
+              name={`Xin chào, ${user?.name}`}
+              email={user?.email ?? ""}
             />
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item
+            {/* <Menu.Item
               leftSection={
                 <IconSettings style={{ width: rem(14), height: rem(14) }} />
               }
@@ -90,13 +97,18 @@ export const Header: FC<{ opened: boolean; toggle: () => void }> = ({
               }
             >
               Messages
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
               leftSection={
-                <IconPhoto style={{ width: rem(14), height: rem(14) }} />
+                <IconLogout style={{ width: rem(14), height: rem(14) }} />
               }
+              onClick={() => {
+                if (!window.confirm("Bạn muốn đăng xuất?")) return;
+
+                logout({ logoutParams: { federated: true } });
+              }}
             >
-              Gallery
+              Đăng xuất
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

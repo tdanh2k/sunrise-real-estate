@@ -7,8 +7,15 @@ import { MantineReactTable } from "mantine-react-table";
 import { useCallback, useMemo } from "react";
 import { TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 import { ModalAddBlog } from "./-components/ModalAddBlog";
+import { nprogress } from "@mantine/nprogress";
 
-export const Route = createFileRoute("/_management/user/posts/post/")({
+export const Route = createFileRoute("/_management/user/blogs/blog/")({
+  onEnter: () => {
+    nprogress.complete();
+  },
+  onLeave: () => {
+    nprogress.start();
+  },
   component: () => {
     //const [selectedId, setSelectedId] = useState<string | undefined>("");
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =

@@ -9,7 +9,7 @@ import {
 } from "../utils/ZodUtils";
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema";
 
-export const DraftBlogSchema = z.object({
+export const PendingBlogSchema = z.object({
   Id: RequiredUUID,
   Code: RequiredString,
   Title: RequiredString,
@@ -17,9 +17,9 @@ export const DraftBlogSchema = z.object({
   CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
   GlobalBlogType: GlobalBlogTypeSchema.optional(),
-  DraftBlogImage: z.array(
+  PendingBlogImage: z.array(
     z.object({
-      Id: OptionalUUID,
+      Id: RequiredUUID,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
@@ -30,4 +30,4 @@ export const DraftBlogSchema = z.object({
   ),
 });
 
-export type TypeDraftBlog = z.infer<typeof DraftBlogSchema>;
+export type TypePendingBlog = z.infer<typeof PendingBlogSchema>;

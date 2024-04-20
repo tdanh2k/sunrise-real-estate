@@ -31,9 +31,13 @@ const NestedMenu: FC<{
     <NavLink
       key={`${treeItem?.id}-${index}`}
       href={treeItem?.to ?? treeItem?.path ?? "#"}
-      leftSection={<IconGauge size="1rem" stroke={1.5} />}
-      label={treeItem?.to ?? treeItem?.path}
-      title={treeItem?.to ?? treeItem?.path}
+      leftSection={
+        treeItem?.options?.staticData?.icon ?? (
+          <IconGauge size="1rem" stroke={1.5} />
+        )
+      }
+      label={treeItem?.options?.staticData?.routeName ?? treeItem?.path}
+      title={treeItem?.options?.staticData?.routeName ?? treeItem?.path}
       renderRoot={(props) => (
         <Link to={treeItem?.to ?? treeItem?.path} {...props} />
       )}

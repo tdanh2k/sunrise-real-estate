@@ -7,8 +7,20 @@ import { MantineReactTable } from "mantine-react-table";
 import { useCallback, useMemo } from "react";
 import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 import { ModalAddPost } from "./-components/ModalAddPost";
+import { nprogress } from "@mantine/nprogress";
+import { IconNews } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_management/user/posts/post/")({
+  onEnter: () => {
+    nprogress.complete();
+  },
+  onLeave: () => {
+    nprogress.start();
+  },
+  staticData: {
+    routeName: "Bài đăng",
+    icon: <IconNews />,
+  },
   component: () => {
     //const [selectedId, setSelectedId] = useState<string | undefined>("");
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =

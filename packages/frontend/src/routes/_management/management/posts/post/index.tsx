@@ -11,8 +11,15 @@ import { MantineReactTable } from "mantine-react-table";
 import { useCallback, useMemo, useState } from "react";
 import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 import { ModalAddPost } from "./-components/ModalAddPost";
+import { nprogress } from "@mantine/nprogress";
 
 export const Route = createFileRoute("/_management/management/posts/post/")({
+  onEnter: () => {
+    nprogress.complete();
+  },
+  onLeave: () => {
+    nprogress.start();
+  },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =

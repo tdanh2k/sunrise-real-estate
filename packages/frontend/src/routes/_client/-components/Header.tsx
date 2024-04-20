@@ -3,7 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 
 export const Header: FC = () => {
-  const { isAuthenticated, loginWithPopup, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
   return (
     <div className="header">
       <div className="container">
@@ -60,7 +61,9 @@ export const Header: FC = () => {
                       <li>
                         <button
                           className="nav-link logout"
-                          onClick={() => logout()}
+                          onClick={() =>
+                            logout({ logoutParams: { federated: true } })
+                          }
                         >
                           Logout
                         </button>
@@ -71,7 +74,7 @@ export const Header: FC = () => {
                   <li className="nav-item">
                     <button
                       className="nav-link"
-                      onClick={() => loginWithPopup()}
+                      onClick={() => loginWithRedirect()}
                     >
                       Login
                     </button>

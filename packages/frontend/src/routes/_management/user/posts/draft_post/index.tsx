@@ -3,16 +3,22 @@ import {
   CustomActionMenuItemPropsType,
   RenderCustomActionMenuItems,
 } from "@components/MantineRT/RenderCustomActionMenuItems";
-import { CustomToolbarButtonsPropsType } from "@components/MantineRT/RenderCustomToolbarButton";
 import { useDisclosure } from "@mantine/hooks";
 import { TypeDraftPost } from "@sunrise-backend/src/schemas/DraftPost.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
-import { FC, useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { ModalEditDraftPost } from "./-components/ModalEditDraftPost";
+import { nprogress } from "@mantine/nprogress";
 
 export const Route = createFileRoute("/_management/user/posts/draft_post/")({
+  onEnter: () => {
+    nprogress.complete();
+  },
+  onLeave: () => {
+    nprogress.start();
+  },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =

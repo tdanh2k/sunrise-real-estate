@@ -5,13 +5,20 @@ import {
 } from "@components/MantineRT/RenderCustomActionMenuItems";
 import { CustomToolbarButtonsPropsType } from "@components/MantineRT/RenderCustomToolbarButton";
 import { useDisclosure } from "@mantine/hooks";
+import { nprogress } from "@mantine/nprogress";
 import { TypeAuth0User } from "@sunrise-backend/src/schemas/Auth0User.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
 import { useCallback, useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_management/management/users/user/")({
+export const Route = createFileRoute("/_management/management/user/")({
+  onEnter: () => {
+    nprogress.complete();
+  },
+  onLeave: () => {
+    nprogress.start();
+  },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
 
