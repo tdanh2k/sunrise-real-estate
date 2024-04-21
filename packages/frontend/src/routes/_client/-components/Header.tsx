@@ -61,9 +61,10 @@ export const Header: FC = () => {
                       <li>
                         <button
                           className="nav-link logout"
-                          onClick={() =>
-                            logout({ logoutParams: { federated: true } })
-                          }
+                          onClick={() => {
+                            window.localStorage.clear()
+                            logout({ logoutParams: { federated: true } });
+                          }}
                         >
                           Logout
                         </button>

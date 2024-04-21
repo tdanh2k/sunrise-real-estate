@@ -12,12 +12,16 @@ export const DraftPostRouter = trpcRouter.router({
     .input(z.void())
     //.output(APIResponseSchema(z.array(DraftPostSchema)))
     .query(async (opt) => {
-      const data = await dbContext.post.findMany({
+      const data = await dbContext.draftPost.findMany({
         include: {
-          PostCurrentDetail: true,
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
+          DraftPostCurrentDetail: {
+            include: {
+              GlobalPostDetail: true,
+            },
+          },
+          DraftPostImage: true,
+          GlobalPostType: true,
+          DraftPostFeature: true,
         },
       });
 
@@ -40,12 +44,16 @@ export const DraftPostRouter = trpcRouter.router({
           skip: page_index,
           take: page_size,
           include: {
-            DraftPostCurrentDetail: true,
+            DraftPostCurrentDetail: {
+              include: {
+                GlobalPostDetail: true,
+              },
+            },
             DraftPostImage: true,
             DraftPostFeature: true,
           },
         }),
-        dbContext.post.count(),
+        dbContext.draftPost.count(),
       ]);
 
       return {
@@ -73,15 +81,19 @@ export const DraftPostRouter = trpcRouter.router({
     )
     //.output(APIResponseSchema(DraftPostSchema.nullable()))
     .query(async ({ input }) => {
-      const data = await dbContext.post.findFirst({
+      const data = await dbContext.draftPost.findFirst({
         where: {
           Id: input.Id,
         },
         include: {
-          PostCurrentDetail: true,
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
+          DraftPostCurrentDetail: {
+            include: {
+              GlobalPostDetail: true,
+            },
+          },
+          DraftPostImage: true,
+          GlobalPostType: true,
+          DraftPostFeature: true,
         },
       });
 

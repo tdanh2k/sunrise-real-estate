@@ -3,55 +3,50 @@ import { Button, LoadingOverlay, Stack } from "@mantine/core";
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  AddPostSchema,
-  TypeAddPost,
-} from "@sunrise-backend/src/schemas/AddPost.schema";
+  AddBlogSchema,
+  TypeAddBlog,
+} from "@sunrise-backend/src/schemas/AddBlog.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
 import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
-import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
+import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
-import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 
 type ModalAddProps = {
   isOpen: boolean;
   handleClose: () => void;
 };
 
-const defaultValues: TypeAddPost = {
+const defaultValues: TypeAddBlog = {
   TypeId: "",
   Code: "",
   Title: "",
-  Address: "",
   Description: "",
-  Price: 0,
-  MapUrl: "",
-  PostImage: [],
-  PostCurrentDetail: [],
-  PostFeature: [],
+  BlogImage: [],
 };
 
-export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
+export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
   const utils = privateRoute.useUtils();
 
-  const { data: postDetailResponse, isFetching } =
-    privateRoute.management.global_post_detail.all.useQuery();
+  const { data: blogDetailResponse, isFetching } =
+    privateRoute.management.global_blog_detail.all.useQuery();
 
   const { handleSubmit, control, reset } = useForm({
-    resolver: zodResolver(AddPostSchema),
+    resolver: zodResolver(AddBlogSchema),
     mode: "all",
     defaultValues,
   });
 
-  const { mutateAsync, isPending } = privateRoute.management.post.publish.useMutation({
-    onSuccess: () => {
-      utils.management.post.invalidate();
-    },
-  });
+  const { mutateAsync, isPending } =
+    privateRoute.management.blog.publish.useMutation({
+      onSuccess: () => {
+        utils.management.blog.invalidate();
+      },
+    });
 
-  const onSubmit: SubmitHandler<TypeAddPost> = async (values) => {
+  const onSubmit: SubmitHandler<TypeAddBlog> = async (values) => {
     await mutateAsync(values);
     handleClose();
     reset();
@@ -91,10 +86,10 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       />
 
       <Stack mb={10} style={{ overflow: "auto" }}>
-        <QuerySelectRHF<TypeAddPost, TypeGlobalPostType>
+        <QuerySelectRHF<TypeAddBlog, TypeGlobalBlogType>
           name="TypeId"
           label="Loại bài đăng"
-          useQuery={privateRoute.management.global_post_type.all.useQuery}
+          useQuery={privateRoute.management.global_blog_type.all.useQuery}
           mapOption={(item) => ({
             label: item.Name,
             value: item.Id,
@@ -103,13 +98,21 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
         />
         <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
-        <TextInputRHF name="Address" label="Địa chỉ" control={control} />
-        <TextInputRHF name="MapUrl" label="Url bản đồ" control={control} />
-        <NumberInputRHF name="Price" label="Giá" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
-          legendLabel="Chi tiết bất động sản"
+          legendLabel="Hình ảnh"
           columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              mantineEditTextInputProps: ({ row }) => ({
+                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
+                //error: control?._formState?.errors?.BlogCurrentDetail?.[0]?.Value,
+                error:
+                  control?._formState?.errors?.BlogImage?.[row.index]?.Name
+                    ?.message,
+              }),
+            },
             {
               accessorKey: "DetailId",
               header: "DetailId",
@@ -121,55 +124,17 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
-                data: postDetailResponse?.data?.map((item) => ({
+                data: blogDetailResponse?.data?.map((item) => ({
                   label: item.Name,
                   value: item.Id,
                 })),
                 //error:
-                //  control?._formState?.errors?.PostCurrentDetail?.[row.index]?.DetailId,
-              }),
-            },
-            {
-              accessorKey: "Value",
-              header: "Value",
-              mantineEditTextInputProps: ({ row }) => ({
-                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-                //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-                error:
-                  control?._formState?.errors?.PostCurrentDetail?.[row.index]
-                    ?.Value?.message,
+                //  control?._formState?.errors?.BlogCurrentDetail?.[row.index]?.DetailId,
               }),
             },
           ]}
           externalLoading={isFetching}
-          name="PostCurrentDetail"
-          control={control}
-          //methods={methods}
-          // onCreate={({ values }) => {
-          //   append(values);
-          // }}
-        />
-        <MantineReactTableRHF
-          legendLabel="Điểm đặc biệt của bất động sản"
-          columns={[
-            {
-              accessorKey: "Title",
-              header: "Tiêu đề",
-            },
-            {
-              accessorKey: "Description",
-              header: "Mô tả",
-              mantineEditTextInputProps: ({ row }) => ({
-                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-                //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-                error:
-                  control?._formState?.errors?.PostCurrentDetail?.[row.index]
-                    ?.Value?.message,
-              }),
-            },
-          ]}
-          externalLoading={isFetching}
-          name="PostFeature"
+          name="BlogImage"
           control={control}
           //methods={methods}
           // onCreate={({ values }) => {
@@ -181,11 +146,11 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
   );
 };
 
-// const PostCurrentDetailTable: FC<{
-//   control: Control<TypeAddPost>;
+// const BlogCurrentDetailTable: FC<{
+//   control: Control<TypeAddBlog>;
 // }> = ({ control }) => {
-//   const { data: postDetailResponse, isFetching } =
-//     privateRoute.global_post_detail.all.useQuery();
+//   const { data: blogDetailResponse, isFetching } =
+//     privateRoute.global_blog_detail.all.useQuery();
 
 //   return (
 //     <>
@@ -203,12 +168,12 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
 //             mantineEditSelectProps: ({ row }) => ({
 //               // value: fields?.find((item) => item.Id === row.original.Id)
 //               //   ?.DetailId,
-//               data: postDetailResponse?.data?.map((item) => ({
+//               data: blogDetailResponse?.data?.map((item) => ({
 //                 label: item.Name,
 //                 value: item.Id,
 //               })),
 //               //error:
-//               //  control?._formState?.errors?.PostCurrentDetail?.[row.index]?.DetailId,
+//               //  control?._formState?.errors?.BlogCurrentDetail?.[row.index]?.DetailId,
 //             }),
 //           },
 //           {
@@ -216,15 +181,15 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
 //             header: "Value",
 //             mantineEditTextInputProps: ({ row }) => ({
 //               //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-//               //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
+//               //error: control?._formState?.errors?.BlogCurrentDetail?.[0]?.Value,
 //               error:
-//                 control?._formState?.errors?.PostCurrentDetail?.[row.index]
+//                 control?._formState?.errors?.BlogCurrentDetail?.[row.index]
 //                   ?.Value?.message,
 //             }),
 //           },
 //         ]}
 //         externalLoading={isFetching}
-//         name="PostCurrentDetail"
+//         name="BlogCurrentDetail"
 //         control={control}
 //         //methods={methods}
 //         // onCreate={({ values }) => {

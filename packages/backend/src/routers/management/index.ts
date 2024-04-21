@@ -8,6 +8,9 @@ import { AdminUserRouter } from "./user.router";
 import { RequiredString } from "../../utils/ZodUtils";
 import { TRPCError } from "@trpc/server";
 import axios from "axios";
+import { BlogRouter } from "./blog.router";
+import { DraftBlogRouter } from "./draft_blog.router";
+import { GlobalBlogTypeRouter } from "./global_blog_type.router";
 
 export const managementRouter = trpcRouter.router({
   post: PostRouter,
@@ -15,6 +18,9 @@ export const managementRouter = trpcRouter.router({
   global_post_type: GlobalPostTypeRouter,
   global_post_detail: GlobalPostDetailRouter,
   admin_user: AdminUserRouter,
+  blog: BlogRouter,
+  draft_blog: DraftBlogRouter,
+  global_blog_type: GlobalBlogTypeRouter,
   verifyRoles: publicProcedure
     .input(
       z.object({

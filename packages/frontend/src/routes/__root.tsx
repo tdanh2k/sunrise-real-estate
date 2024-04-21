@@ -1,7 +1,13 @@
 import { Auth0ContextInterface, User } from "@auth0/auth0-react";
+import { MantineProvider } from "@mantine/core";
 import { createRootRouteWithContext } from "@tanstack/react-router";
 import { Outlet, RouteContext } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
+
+import "@mantine/core/styles.css"; //import Mantine V7 styles needed by MRT
+import "@mantine/dates/styles.css"; //if using mantine date picker features
+import "@mantine/nprogress/styles.css";
+import "mantine-react-table/styles.css"; //import MRT styles
 
 const TanStackRouterDevtools =
   //process.env?.NODE_ENV === "production"
@@ -22,12 +28,12 @@ type RootRouteContext = RouteContext & {
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({
   component: () => (
-    <>
+    <MantineProvider>
       <Outlet />
       {/* <TanStackRouterDevtools /> */}
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
-    </>
+    </MantineProvider>
   ),
 });

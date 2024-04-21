@@ -10,3 +10,5 @@ export const AddGlobalBlogTypeSchema = z.object({
   Name: RequiredString,
   CreatedDate: OptionalJsDate,
 });
+
+export type TypeAddGlobalBlogType = z.infer<typeof AddGlobalBlogTypeSchema>;

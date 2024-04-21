@@ -105,6 +105,7 @@ export const Header: FC<{ opened: boolean; toggle: () => void }> = ({
               onClick={() => {
                 if (!window.confirm("Bạn muốn đăng xuất?")) return;
 
+                window.localStorage.clear();
                 logout({ logoutParams: { federated: true } });
               }}
             >

@@ -3,12 +3,6 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import "@mantine/core/styles.css"; //import Mantine V7 styles needed by MRT
-import "@mantine/dates/styles.css"; //if using mantine date picker features
-import "@mantine/nprogress/styles.css";
-import "mantine-react-table/styles.css"; //import MRT styles
-
-import { MantineProvider } from "@mantine/core";
 import { Header } from "./_management/-components/Header";
 import { NavBar } from "./_management/-components/NavBar";
 import { PrivateTRPCProvider } from "@components/PrivateTRPCProvider";
@@ -21,25 +15,23 @@ export const ManagementLayout: FC = () => {
 
   return (
     <PrivateTRPCProvider>
-      <MantineProvider>
-        <AppShell
-          header={{ height: 60 }}
-          navbar={{
-            width: 300,
-            breakpoint: "sm",
-            collapsed: { mobile: !opened },
-          }}
-          padding="md"
-        >
-          <NavigationProgress />
-          <Header opened={opened} toggle={toggle} />
+      <AppShell
+        header={{ height: 60 }}
+        navbar={{
+          width: 300,
+          breakpoint: "sm",
+          collapsed: { mobile: !opened },
+        }}
+        padding="md"
+      >
+        <NavigationProgress />
+        <Header opened={opened} toggle={toggle} />
 
-          <NavBar />
-          <AppShell.Main>
-            <Outlet />
-          </AppShell.Main>
-        </AppShell>
-      </MantineProvider>
+        <NavBar />
+        <AppShell.Main>
+          <Outlet />
+        </AppShell.Main>
+      </AppShell>
     </PrivateTRPCProvider>
   );
 };

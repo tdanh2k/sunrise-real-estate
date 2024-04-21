@@ -13,7 +13,11 @@ export const PublicRouter = trpcRouter.router({
       const data = await dbContext.post.findMany({
         take: 5,
         include: {
-          PostCurrentDetail: true,
+          PostCurrentDetail: {
+            include: {
+              PostDetail: true,
+            },
+          },
           PostImage: true,
           PostType: true,
           PostFeature: true,
@@ -45,7 +49,11 @@ export const PublicRouter = trpcRouter.router({
           Id: input.id,
         },
         include: {
-          PostCurrentDetail: true,
+          PostCurrentDetail: {
+            include: {
+              PostDetail: true,
+            },
+          },
           PostImage: true,
           PostType: true,
           PostFeature: true,

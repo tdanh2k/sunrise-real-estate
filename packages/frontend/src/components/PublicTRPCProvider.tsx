@@ -6,7 +6,7 @@ import { publicRoute } from "@utils/trpc";
 import { FC } from "react";
 import SuperJSON from "superjson";
 
-const queryClient = new QueryClient({
+export const publicQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: false,
@@ -42,9 +42,9 @@ export const PublicTRPCProvider: FC<{
               }),
             ],
           })}
-          queryClient={queryClient}
+          queryClient={publicQueryClient}
         >
-          <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={publicQueryClient}>
             {children}
             {/* {match && <ReactQueryDevtools />} */}
           </QueryClientProvider>
