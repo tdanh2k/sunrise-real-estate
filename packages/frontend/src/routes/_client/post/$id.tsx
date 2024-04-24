@@ -1,8 +1,6 @@
 import { LoadingOverlay } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { publicRoute } from "@utils/trpc";
-import { FC } from "react";
 import ImageGallery from "react-image-gallery";
 
 export const Route = createFileRoute("/_client/post/$id")({

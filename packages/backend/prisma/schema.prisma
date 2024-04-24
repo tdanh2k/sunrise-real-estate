@@ -79,8 +79,8 @@ model PostCurrentDetail {
   DetailId    String           @db.UniqueIdentifier
   Value       String           @db.NVarChar(255)
   CreatedDate DateTime?        @default(now(), map: "DF__PostCurre__Creat__04AFB25B") @db.DateTime
-  PostDetail  GlobalPostDetail @relation(fields: [DetailId], references: [Id], onUpdate: NoAction, map: "PostCurrentDetail_PostDetail_FK")
   Post        Post             @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostCurrentDetail_Post_FK")
+  PostDetail  GlobalPostDetail @relation(fields: [DetailId], references: [Id], onUpdate: NoAction, map: "PostCurrentDetail_PostDetail_FK")
 }
 
 model PostFeature {
@@ -171,7 +171,7 @@ model DraftBlogImage {
   Path        String    @db.NVarChar(Max)
   MimeType    String?   @db.VarChar(256)
   CreatedDate DateTime? @default(now(), map: "DF__DraftBlog__Creat__1209AD79") @db.DateTime
-  DraftBlog   DraftBlog @relation(fields: [DraftBlogId], references: [Id], onUpdate: NoAction, map: "DraftBlogImage_DraftBlog_FK")
+  DraftBlog   DraftBlog @relation(fields: [DraftBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftBlogImage_DraftBlog_FK")
 }
 
 model BlogStats {
@@ -249,7 +249,7 @@ model Role {
 }
 
 model DraftPostCurrentDetail {
-  Id               String           @id(map: "DraftPostCurrentDetail_PK") @default(dbgenerated("newid()"), map: "DF__DraftCurrent__Id__3A4CA8FD") @db.UniqueIdentifier
+  Id               String           @id(map: "DraftCurrentDetail_PK") @default(dbgenerated("newid()"), map: "DF__DraftCurrent__Id__3A4CA8FD") @db.UniqueIdentifier
   DraftId          String           @db.UniqueIdentifier
   DetailId         String           @db.UniqueIdentifier
   Value            String           @db.NVarChar(255)

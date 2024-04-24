@@ -4,27 +4,26 @@ import {
   OptionalJsDate,
   OptionalString,
   OptionalUUID,
-  RequiredString,
-  RequiredUUID,
 } from "../utils/ZodUtils";
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema";
 
 export const AddDraftBlogSchema = z.object({
   Id: OptionalUUID,
-  Code: RequiredString,
-  Title: RequiredString,
-  Description: RequiredString,
+  Code: OptionalString,
+  Title: OptionalString,
+  Description: OptionalString,
   CreatedDate: OptionalJsDate,
-  TypeId: RequiredUUID,
+  TypeId: OptionalUUID,
   GlobalBlogType: GlobalBlogTypeSchema.optional(),
   DraftBlogImage: z.array(
     z.object({
       Id: OptionalUUID,
-      Name: RequiredString,
+      Name: OptionalString,
       Size: NonNegativeIntegerNumber,
-      Path: RequiredString,
-      BlogId: RequiredUUID,
+      Path: OptionalString,
+      BlogId: OptionalUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),

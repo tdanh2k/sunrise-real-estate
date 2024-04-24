@@ -2,8 +2,6 @@ import z from "zod";
 import { dbContext } from "../utils/prisma";
 import { publicProcedure, trpcRouter } from "./router";
 import { RequiredString } from "../utils/ZodUtils";
-import axios from "axios";
-import { TRPCError } from "@trpc/server";
 
 export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure

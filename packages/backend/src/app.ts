@@ -9,9 +9,17 @@ import { createTRPCContext } from "./routers/context";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/not-found.middleware.js";
 import { validateAccessToken } from "./middlewares/auth0.middleware.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const app = express();
 const port = 3000;
+
+cloudinary.config({
+  cloud_name: "dxzztk8fb",
+  api_key: "962616593344436",
+  api_secret: "UnUg9cxJUsQxOcLuLxMIH0eHo8o",
+  secure: true
+});
 
 app.use(
   cors({
@@ -22,7 +30,9 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({
+  limit: "100mb"
+}));
 // app.set("json spaces", 2);
 
 app.use(

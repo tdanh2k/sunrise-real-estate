@@ -18,12 +18,13 @@ import {
 } from "react-hook-form";
 
 type MantineReactTableRHFProps<
-  T extends FieldValues
+  T extends FieldValues,
   //N extends ArrayPath<T>,
 > = {
   name: ArrayPath<T>;
   control?: Control<T>;
   legendLabel?: string;
+  disableEdit?: boolean;
   //methods: UseFieldArrayReturn<T, N>;
   columns: MRT_ColumnDef<FieldArrayWithId<T, ArrayPath<T>>>[];
   tableProps?: Omit<
@@ -42,7 +43,7 @@ type MantineReactTableRHFProps<
 };
 
 export const MantineReactTableRHF = <
-  T extends FieldValues
+  T extends FieldValues,
   //N extends ArrayPath<T>,
 >({
   name,
@@ -52,6 +53,7 @@ export const MantineReactTableRHF = <
   columns,
   tableProps,
   //data,
+  disableEdit,
   externalLoading,
   onCreate,
   onEdit,
@@ -60,7 +62,7 @@ export const MantineReactTableRHF = <
   //const { fields, insert, append, update, remove } = methods;
   if (name == null || control == null)
     throw new Error("'name' and 'control' required");
-  const { fields, insert, append, update, remove } = useFieldArray({
+  const { fields, append, update, remove } = useFieldArray({
     name,
     control,
   });
@@ -82,6 +84,7 @@ export const MantineReactTableRHF = <
       showSkeletons: externalLoading,
       showAlertBanner: externalLoading,
       showProgressBars: externalLoading,
+      columnVisibility: {},
     },
     // renderEditRowModalContent: ({ internalEditComponents }) => {
     //   return <>{internalEditComponents}</>;
@@ -99,11 +102,13 @@ export const MantineReactTableRHF = <
     ),
     renderRowActions: ({ row, table }) => (
       <Group>
-        <Tooltip label="Edit">
-          <ActionIcon onClick={() => table.setEditingRow(row)}>
-            <IconEdit />
-          </ActionIcon>
-        </Tooltip>
+        {!disableEdit && (
+          <Tooltip label="Edit">
+            <ActionIcon onClick={() => table.setEditingRow(row)}>
+              <IconEdit />
+            </ActionIcon>
+          </Tooltip>
+        )}
         <Tooltip label="Delete">
           <ActionIcon
             color="red"

@@ -29,13 +29,16 @@ const defaultValues: TypeAddDraftBlog = {
   DraftBlogImage: [],
 };
 
-export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
+export const ModalAddDraftBlog: FC<ModalAddProps> = ({
+  isOpen,
+  handleClose,
+}) => {
   const navigate = useNavigate({ from: "/user/blogs/blog" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 
   const { handleSubmit, control, reset } = useForm({
-    resolver: isDrafting ? zodResolver(AddDraftBlogSchema) : undefined,
+    //resolver: isDrafting ? zodResolver(AddDraftBlogSchema) : undefined,
     mode: "all",
     defaultValues,
   });
@@ -51,7 +54,8 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     privateRoute.user.draft_blog.create.useMutation({
       onSuccess: () => {
         utils.user.draft_blog.invalidate();
-        navigate({ to: "/user/blogs/pending_blog" });
+        //navigate({ to: "/user/blogs/pending_blog" });
+        handleClose();
       },
     });
 
@@ -90,15 +94,20 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Cập nhật bài nháp"
+      title="Tạo bài nháp"
       centered
       footer={
         <>
-          <Button variant="transparent" onClick={() => reset()}>
+          <Button
+            variant="transparent"
+            loading={isLoading}
+            onClick={() => reset()}
+          >
             Clear
           </Button>
           <Button
             color="green"
+            loading={isLoading}
             onClick={() => {
               setIsDrafting(true);
               handleSubmit(onDraftSubmit, (error) => console.error(error))();
@@ -108,6 +117,7 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           </Button>
           <Button
             color="blue"
+            loading={isLoading}
             onClick={() => {
               setIsDrafting(false);
               handleSubmit(onSubmit, (error) => console.error(error))();

@@ -37,7 +37,7 @@ export const errorHandler = (
   }
 
   const status = 500;
-  const message = "Internal Server Error";
+  const message = error;
 
   response.status(status).json({ message });
 };

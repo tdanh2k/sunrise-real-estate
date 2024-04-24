@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
 import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { v2 as cloudinary } from "cloudinary";
 
 export const DraftBlogRouter = trpcRouter.router({
   byPage: protectedProcedure
@@ -101,24 +102,62 @@ export const DraftBlogRouter = trpcRouter.router({
           message: ``,
         });
 
+      const AddImages: Omit<(typeof DraftBlogImage)[number], "Base64Data">[] =
+        [];
+
+      for (const { Base64Data, ...blogImage } of DraftBlogImage) {
+        if (blogImage.Id) {
+          AddImages.push(blogImage);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
+            },
+            (error, result) => {
+              console.log(result);
+
+              AddImages.push({
+                ...blogImage,
+                Path: result?.secure_url,
+                Size: result?.bytes ?? blogImage?.Size,
+              });
+            }
+          );
+        }
+      }
+
       const data = await dbContext.draftBlog.upsert({
         create: {
           ...rest,
+          TypeId: rest.TypeId ?? "",
+          Code: rest.Code ?? "",
+          Title: rest.Title ?? "",
+          Description: rest.Description ?? "",
           UserId: (await ctx).userId ?? "",
           DraftBlogImage: {
             createMany: {
-              data: DraftBlogImage,
+              data: AddImages?.map((item) => ({
+                ...item,
+                Name: item.Name ?? "",
+                Path: item.Path ?? "",
+              })), //DraftBlogImage,
             },
           },
         },
         update: {
           ...rest,
           DraftBlogImage: {
-            connectOrCreate: DraftBlogImage?.map((item) => ({
+            connectOrCreate: AddImages?.map((item) => ({
               where: {
-                Id: item.Id,
+                Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
               },
-              create: item,
+              create: {
+                ...item,
+                Name: item.Name ?? "",
+                Path: item.Path ?? "",
+              },
             })),
           },
         },
