@@ -20,6 +20,7 @@ export const PendingBlogSchema = z.object({
   PendingBlogImage: z.array(
     z.object({
       Id: RequiredUUID,
+      Code: OptionalString,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,

@@ -20,11 +20,13 @@ export const DraftBlogSchema = z.object({
   DraftBlogImage: z.array(
     z.object({
       Id: OptionalUUID,
+      Code: OptionalString,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
       BlogId: OptionalUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),

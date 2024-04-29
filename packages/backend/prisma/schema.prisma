@@ -11,14 +11,15 @@ model DraftPost {
   Id                     String                   @id(map: "DraftPost_PK") @default(dbgenerated("newid()"), map: "DF__DraftPost__Id__2180FB33") @db.UniqueIdentifier
   Idx                    Int                      @default(autoincrement())
   Code                   String?                  @db.VarChar(100)
-  Title                  String                   @db.NVarChar(255)
+  Title                  String                   @db.NVarChar(256)
   Description            String                   @db.NVarChar(Max)
-  UserId                 String                   @db.VarChar(255)
+  UserId                 String                   @db.VarChar(256)
   TypeId                 String                   @db.UniqueIdentifier
   CreatedDate            DateTime?                @default(now(), map: "DF__DraftPost__Creat__0B5CAFEA") @db.DateTime
-  Address                String                   @db.NVarChar(255)
+  Address                String                   @db.NVarChar(256)
   MapUrl                 String                   @db.VarChar(256)
   Price                  Float?
+  Auth0Profile           Auth0Profile             @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "DraftPost_Auth0Profile_FK")
   GlobalPostType         GlobalPostType           @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "DraftPost_GlobalPostType_FK")
   DraftPostCurrentDetail DraftPostCurrentDetail[]
   DraftPostFeature       DraftPostFeature[]
@@ -27,39 +28,34 @@ model DraftPost {
 
 model DraftPostImage {
   Id          String    @id(map: "DraftPostImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftPostIma__Id__2645B050") @db.UniqueIdentifier
-  Name        String    @db.NVarChar(255)
+  Name        String?   @db.NVarChar(255)
   Size        Int?
   MimeType    String?   @db.VarChar(100)
-  Path        String    @db.NVarChar(255)
+  Path        String?   @db.NVarChar(255)
   DraftId     String    @db.UniqueIdentifier
   CreatedDate DateTime? @default(now(), map: "DF__DraftPost__Creat__0A688BB1") @db.DateTime
+  Code        String?   @db.VarChar(100)
   DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onUpdate: NoAction, map: "DraftPostImage_DraftPost_FK")
 }
 
 model Post {
-  Id                 String              @id(map: "Post_PK") @default(dbgenerated("newid()"), map: "DF__Post__Id__2B0A656D") @db.UniqueIdentifier
-  Idx                Int                 @default(autoincrement())
-  Code               String?             @db.VarChar(100)
-  Title              String?             @db.NVarChar(100)
-  Description        String?             @db.NVarChar(Max)
-  UserId             String              @db.VarChar(256)
-  CreatedDate        DateTime?           @default(now(), map: "DF__Post__CreatedDat__05A3D694") @db.DateTime
-  TypeId             String              @db.UniqueIdentifier
-  Address            String              @db.NVarChar(Max)
-  MapUrl             String              @db.VarChar(Max)
-  User_Email         String              @map("User.Email") @db.VarChar(256)
-  User_EmailVerified Boolean?            @map("User.EmailVerified")
-  User_Username      String?             @map("User.Username") @db.VarChar(256)
-  User_PhoneNumber   String?             @map("User.PhoneNumber") @db.VarChar(50)
-  User_PhoneVerified Boolean?            @map("User.PhoneVerified")
-  User_Name          String?             @map("User.Name") @db.NVarChar(256)
-  User_Picture       String?             @map("User.Picture") @db.NVarChar(Max)
-  Price              Float?
-  PostType           GlobalPostType      @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Post_PostType_FK")
-  PostCurrentDetail  PostCurrentDetail[]
-  PostFeature        PostFeature[]
-  PostImage          PostImage[]
-  PostStats          PostStats[]
+  Id                String              @id(map: "Post_PK") @default(dbgenerated("newid()"), map: "DF__Post__Id__2B0A656D") @db.UniqueIdentifier
+  Idx               Int                 @default(autoincrement())
+  Code              String?             @db.VarChar(100)
+  Title             String?             @db.NVarChar(100)
+  Description       String?             @db.NVarChar(Max)
+  UserId            String              @db.VarChar(256)
+  CreatedDate       DateTime?           @default(now(), map: "DF__Post__CreatedDat__05A3D694") @db.DateTime
+  TypeId            String              @db.UniqueIdentifier
+  Address           String              @db.NVarChar(Max)
+  MapUrl            String              @db.VarChar(Max)
+  Price             Float?
+  Auth0Profile      Auth0Profile        @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "Post_Auth0Profile_FK")
+  PostType          GlobalPostType      @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Post_PostType_FK")
+  PostCurrentDetail PostCurrentDetail[]
+  PostFeature       PostFeature[]
+  PostImage         PostImage[]
+  PostStats         PostStats[]
 }
 
 model PostImage {
@@ -134,6 +130,7 @@ model Blog {
   TypeId         String         @db.UniqueIdentifier
   Address        String?        @db.VarChar(Max)
   CreatedDate    DateTime?      @default(now(), map: "DF__Blog__CreatedDat__11158940") @db.DateTime
+  Auth0Profile   Auth0Profile   @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "Blog_Auth0Profile_FK")
   GlobalBlogType GlobalBlogType @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Blog_GlobalBlogType_FK")
   BlogImage      BlogImage[]
   BlogStats      BlogStats[]
@@ -142,11 +139,12 @@ model Blog {
 model BlogImage {
   Id          String    @id(map: "BlogImage_PK") @default(dbgenerated("newid()"), map: "DF__BlogImage__Id__6CD828CA") @db.UniqueIdentifier
   BlogId      String    @db.UniqueIdentifier
-  Name        String    @db.NVarChar(Max)
+  Name        String?   @db.NVarChar(Max)
   Size        Int?
-  Path        String    @db.NVarChar(Max)
+  Path        String?   @db.NVarChar(Max)
   MimeType    String?   @db.VarChar(256)
   CreatedDate DateTime? @default(now(), map: "DF__BlogImage__Creat__10216507") @db.DateTime
+  Code        String?   @db.VarChar(100)
   Blog        Blog      @relation(fields: [BlogId], references: [Id], onUpdate: NoAction, map: "BlogImage_Blog_FK")
 }
 
@@ -156,9 +154,10 @@ model DraftBlog {
   Code           String           @db.VarChar(256)
   Title          String           @db.NVarChar(256)
   Description    String           @db.NVarChar(Max)
-  UserId         String           @db.NVarChar(256)
+  UserId         String           @db.VarChar(256)
   TypeId         String           @db.UniqueIdentifier
   CreatedDate    DateTime?        @default(now(), map: "DF__DraftBlog__Creat__0F2D40CE") @db.DateTime
+  Auth0Profile   Auth0Profile     @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "DraftBlog_Auth0Profile_FK")
   GlobalBlogType GlobalBlogType   @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "DraftBlog_GlobalBlogType_FK")
   DraftBlogImage DraftBlogImage[]
 }
@@ -166,11 +165,12 @@ model DraftBlog {
 model DraftBlogImage {
   Id          String    @id(map: "DraftBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftBlogIma__Id__76619304") @db.UniqueIdentifier
   DraftBlogId String    @db.UniqueIdentifier
-  Name        String    @db.NVarChar(Max)
+  Name        String?   @db.NVarChar(Max)
   Size        Int?
-  Path        String    @db.NVarChar(Max)
+  Path        String?   @db.NVarChar(Max)
   MimeType    String?   @db.VarChar(256)
   CreatedDate DateTime? @default(now(), map: "DF__DraftBlog__Creat__1209AD79") @db.DateTime
+  Code        String?   @db.VarChar(100)
   DraftBlog   DraftBlog @relation(fields: [DraftBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftBlogImage_DraftBlog_FK")
 }
 
@@ -188,64 +188,6 @@ model PostStats {
   CreatedDate DateTime @db.DateTime
   ViewCount   Int?
   Post        Post     @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostStats_Post_FK")
-}
-
-model Menu {
-  Id          String     @id(map: "Menu_PK") @default(dbgenerated("newid()"), map: "DF__Menu__Id__18B6AB08") @db.UniqueIdentifier
-  Code        String     @db.VarChar(100)
-  Name        String     @db.NVarChar(256)
-  Idx         Int?
-  CreatedDate DateTime?  @default(now(), map: "DF__Menu__CreatedDat__19AACF41") @db.DateTime
-  IsNavItem   Boolean?
-  MenuRole    MenuRole[]
-}
-
-model MenuRole {
-  MenuId      String    @db.UniqueIdentifier
-  RoleId      String    @db.UniqueIdentifier
-  CreatedDate DateTime? @default(now(), map: "DF__MenuRole__Create__251C81ED") @db.DateTime
-  Menu        Menu      @relation(fields: [MenuId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "MenuRole_Menu_FK")
-  Role        Role      @relation(fields: [RoleId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "MenuRole_Role_FK")
-
-  @@id([MenuId, RoleId], map: "MenuRole_PK")
-}
-
-model Profile {
-  Id             String        @id(map: "Profile_PK") @default(dbgenerated("newid()"), map: "DF__Profile__Id__14E61A24") @db.UniqueIdentifier
-  Username       String        @db.VarChar(256)
-  HashedPassword String        @db.NVarChar(500)
-  Email          String        @db.VarChar(100)
-  PhoneNumber    String        @db.VarChar(50)
-  FirstName      String?       @db.NVarChar(256)
-  LastName       String?       @db.NVarChar(256)
-  Age            Int
-  Gender         Boolean
-  NIN            String        @db.VarChar(100)
-  AddressLine1   String        @db.NVarChar(500)
-  AddressLine2   String?       @db.NVarChar(500)
-  CreatedDate    DateTime?     @default(now(), map: "DF__Profile__Created__15DA3E5D") @db.DateTime
-  ProfileRole    ProfileRole[]
-}
-
-model ProfileRole {
-  RoleId      String    @db.UniqueIdentifier
-  ProfileId   String    @db.UniqueIdentifier
-  CreatedDate DateTime? @default(now(), map: "DF__ProfileRo__Creat__2057CCD0") @db.DateTime
-  Profile     Profile   @relation(fields: [ProfileId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "ProfileRole_Profile_FK")
-  Role        Role      @relation(fields: [RoleId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "ProfileRole_Role_FK")
-
-  @@id([RoleId, ProfileId], map: "ProfileRole_PK")
-}
-
-model Role {
-  Id          String        @id(map: "Role_PK") @default(dbgenerated("newid()"), map: "DF__Role__Id__1C873BEC") @db.UniqueIdentifier
-  Idx         Int?
-  Code        String        @db.VarChar(100)
-  Name        String?       @db.NVarChar(100)
-  IsDisabled  Int?
-  CreatedDate DateTime?     @default(now(), map: "DF__Role__CreatedDat__1D7B6025") @db.DateTime
-  MenuRole    MenuRole[]
-  ProfileRole ProfileRole[]
 }
 
 model DraftPostCurrentDetail {
@@ -279,6 +221,7 @@ model PendingBlog {
   ApprovedBy       String?            @db.VarChar(256)
   ApprovedDate     DateTime?          @db.DateTime
   CreatedDate      DateTime?          @default(now(), map: "DF__PendingBl__Creat__43A1090D") @db.DateTime
+  Auth0Profile     Auth0Profile       @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "PendingBlog_Auth0Profile_FK")
   GlobalBlogType   GlobalBlogType     @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingBlog_GlobalBlogType_FK")
   PendingBlogImage PendingBlogImage[]
 }
@@ -286,11 +229,12 @@ model PendingBlog {
 model PendingBlogImage {
   Id            String      @id(map: "PendingBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__PendingBlogI__Id__477199F1") @db.UniqueIdentifier
   PendingBlogId String      @db.UniqueIdentifier
-  Name          String      @db.NVarChar(Max)
+  Name          String?     @db.NVarChar(Max)
   Size          Int?
-  Path          String      @db.NVarChar(Max)
+  Path          String?     @db.NVarChar(Max)
   MimeType      String?     @db.VarChar(256)
   CreatedDate   DateTime?   @default(now(), map: "DF__PendingBl__Creat__4865BE2A") @db.DateTime
+  Code          String?     @db.VarChar(100)
   PendingBlog   PendingBlog @relation(fields: [PendingBlogId], references: [Id], onUpdate: NoAction, map: "PendingBlogImage_PendingBlog_FK")
 }
 
@@ -305,16 +249,10 @@ model PendingPost {
   TypeId                   String                     @db.UniqueIdentifier
   Address                  String                     @db.NVarChar(Max)
   MapUrl                   String                     @db.VarChar(Max)
-  User_Email               String                     @map("User.Email") @db.VarChar(256)
-  User_EmailVerified       Boolean?                   @map("User.EmailVerified")
-  User_Username            String?                    @map("User.Username") @db.VarChar(256)
-  User_PhoneNumber         String?                    @map("User.PhoneNumber") @db.VarChar(50)
-  User_PhoneVerified       Boolean?                   @map("User.PhoneVerified")
-  User_Name                String?                    @map("User.Name") @db.NVarChar(256)
-  User_Picture             String?                    @map("User.Picture") @db.NVarChar(Max)
   Price                    Float?
   ApprovedBy               String?                    @db.VarChar(256)
   ApprovedDate             DateTime?                  @db.DateTime
+  Auth0Profile             Auth0Profile               @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "PendingPost_Auth0Profile_FK")
   GlobalPostType           GlobalPostType             @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingPost_GlobalPostType_FK")
   PendingPostCurrentDetail PendingPostCurrentDetail[]
   PendingPostFeature       PendingPostFeature[]
@@ -342,11 +280,36 @@ model PendingPostFeature {
 
 model PendingPostImage {
   Id            String      @id(map: "PendingPostImage_PK") @default(dbgenerated("newid()"), map: "DF__PendingPostI__Id__32767D0B") @db.UniqueIdentifier
-  Name          String      @db.NVarChar(255)
+  Name          String?     @db.NVarChar(255)
   Size          Int?
-  Path          String      @db.NVarChar(255)
+  Path          String?     @db.NVarChar(255)
   PendingPostId String      @db.UniqueIdentifier
   CreatedDate   DateTime?   @default(now(), map: "DF__PendingPo__Creat__336AA144") @db.DateTime
   MimeType      String?     @db.VarChar(100)
+  Code          String?     @db.VarChar(100)
   PendingPost   PendingPost @relation(fields: [PendingPostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PendingPostImage_PendingPost_FK")
+}
+
+model Auth0Profile {
+  UserId        String        @id(map: "Auth0Profile_PK") @db.VarChar(256)
+  Username      String?       @db.NVarChar(256)
+  Email         String        @db.NVarChar(256)
+  EmailVerified Boolean?
+  PhoneNumber   String?       @db.VarChar(100)
+  PhoneVerified Boolean?
+  Name          String?       @db.NVarChar(256)
+  Picture       String?       @db.NVarChar(Max)
+  Nickname      String?       @db.NVarChar(256)
+  GivenName     String?       @db.NVarChar(256)
+  FamilyName    String?       @db.NVarChar(256)
+  LastIp        String?       @db.VarChar(100)
+  LastLogin     DateTime?     @db.DateTime
+  LoginsCount   Int?
+  Blocked       Boolean?
+  Blog          Blog[]
+  DraftBlog     DraftBlog[]
+  DraftPost     DraftPost[]
+  PendingBlog   PendingBlog[]
+  PendingPost   PendingPost[]
+  Post          Post[]
 }

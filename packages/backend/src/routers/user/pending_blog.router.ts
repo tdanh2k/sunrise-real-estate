@@ -6,9 +6,8 @@ import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
-import axios from "axios";
-import { TypeAuth0User } from "../../schemas/Auth0User.schema";
 import { AddDraftBlogSchema } from "../../schemas/AddDraftBlog.schema";
+import { v2 as cloudinary } from "cloudinary";
 
 export const PendingBlogRouter = trpcRouter.router({
   byPage: protectedProcedure
@@ -90,38 +89,52 @@ export const PendingBlogRouter = trpcRouter.router({
           message: ``,
         });
 
-      const response = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
-        method: "GET",
-        params: {
-          search_engine: "v3",
-        },
-        headers: {
-          Authorization: `Bearer ${(await ctx).management_token}`,
-        },
-      });
+      const AddImages: Omit<(typeof DraftBlogImage)[number], "Base64Data">[] =
+        [];
 
-      const user = response?.data;
+      for (const { Base64Data, ...metadata } of DraftBlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
+            },
+            (error, result) => {
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url,
+                  Size: result?.bytes ?? metadata?.Size,
+                });
+            }
+          );
+        }
+      }
 
       const [createdPendingBlog] = await dbContext.$transaction([
         dbContext.pendingBlog.create({
           data: {
             ...rest,
             UserId: (await ctx).userId ?? "",
-            //   User_Email: user.email,
-            //   User_EmailVerified: user.email_verified,
-            //   User_Name: user.name,
-            //   User_Username: user.username,
-            //   User_PhoneNumber: user.phone_number,
-            //   User_PhoneVerified: user.phone_verified,
-            //   User_Picture: user.picture,
+            TypeId: rest.TypeId ?? "",
+            Description: rest.Description ?? "",
             PendingBlogImage: {
-              createMany: {
-                data: DraftBlogImage?.map((item) => ({
-                  ...item,
-                  Id: undefined,
-                })),
-              },
+              // createMany: {
+              //   data: DraftBlogImage?.map((item) => ({
+              //     ...item,
+              //     Id: undefined,
+              //   })),
+              // },
+              connectOrCreate: AddImages?.map((item) => ({
+                create: item,
+                where: {
+                  Id: item?.Id ?? "00000000-0000-0000-0000-000000000000",
+                },
+              })),
             },
           },
         }),
@@ -130,10 +143,10 @@ export const PendingBlogRouter = trpcRouter.router({
             Id: Id ?? "00000000-0000-0000-0000-000000000000",
             UserId: (await ctx).userId ?? "",
           },
-          include: {
-            DraftBlogImage: true,
-            GlobalBlogType: true,
-          },
+          // include: {
+          //   DraftBlogImage: true,
+          //   GlobalBlogType: true,
+          // },
         }),
       ]);
 
@@ -167,22 +180,21 @@ export const PendingBlogRouter = trpcRouter.router({
         },
         include: {
           PendingBlogImage: true,
-          GlobalBlogType: true,
         },
       });
 
-      const response = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
-        method: "GET",
-        params: {
-          search_engine: "v3",
-        },
-        headers: {
-          Authorization: `Bearer ${(await ctx).management_token}`,
-        },
-      });
+      // const response = await axios<TypeAuth0User>({
+      //   url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
+      //   method: "GET",
+      //   params: {
+      //     search_engine: "v3",
+      //   },
+      //   headers: {
+      //     Authorization: `Bearer ${(await ctx).management_token}`,
+      //   },
+      // });
 
-      const user = response?.data;
+      // const user = response?.data;
 
       const [updatedPendingBlog, createdBlog] = await dbContext.$transaction([
         dbContext.pendingBlog.update({
@@ -203,13 +215,6 @@ export const PendingBlogRouter = trpcRouter.router({
             Address: data?.Address ?? "",
             TypeId: data?.TypeId ?? "",
             UserId: data?.UserId ?? (await ctx).userId ?? "",
-            // User_Email: user.email,
-            // User_EmailVerified: user.email_verified,
-            // User_Name: user.name,
-            // User_Username: user.username,
-            // User_PhoneNumber: user.phone_number,
-            // User_PhoneVerified: user.phone_verified,
-            // User_Picture: user.picture,
             BlogImage: {
               createMany: {
                 data:
@@ -262,7 +267,6 @@ export const PendingBlogRouter = trpcRouter.router({
         },
         include: {
           PendingBlogImage: true,
-          GlobalBlogType: true,
         },
       });
 
@@ -274,7 +278,7 @@ export const PendingBlogRouter = trpcRouter.router({
             Title: data?.Title ?? "",
             Description: data?.Description ?? "",
             TypeId: data?.TypeId ?? "",
-            UserId: data?.UserId ?? (await ctx).userId ?? "",
+            UserId: data?.UserId ?? "",
             DraftBlogImage: {
               createMany: {
                 data:
@@ -289,10 +293,6 @@ export const PendingBlogRouter = trpcRouter.router({
         dbContext.pendingBlog.delete({
           where: {
             Id,
-          },
-          include: {
-            PendingBlogImage: true,
-            GlobalBlogType: true,
           },
         }),
       ]);

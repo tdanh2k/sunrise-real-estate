@@ -34,6 +34,25 @@ export const PublicRouter = trpcRouter.router({
       //   data,
       // });
     }),
+  topPosts: publicProcedure.input(z.void()).query(async () => {
+    const data = await dbContext.post.findMany({
+      take: 5,
+      include: {
+        PostImage: true,
+        PostFeature: true,
+        PostType: true,
+        Auth0Profile: true,
+        PostCurrentDetail: true,
+        PostStats: {
+          orderBy: {
+            ViewCount: "desc",
+          },
+        },
+      },
+    });
+
+    return { data };
+  }),
   getPostById: publicProcedure
     .input(
       z.object({
@@ -56,6 +75,7 @@ export const PublicRouter = trpcRouter.router({
           PostType: true,
           PostFeature: true,
           PostStats: true,
+          Auth0Profile: true,
         },
       });
 
@@ -65,6 +85,40 @@ export const PublicRouter = trpcRouter.router({
       // return await APIResponseSchema(PostSchema).parseAsync({
       //   data,
       // });
+    }),
+  searchPosts: publicProcedure
+    .input(
+      z.object({
+        keyword: RequiredString,
+      })
+    )
+    //.output(APIResponseSchema(PostSchema))
+    .query(async ({ input }) => {
+      const response = await dbContext.post.findMany({
+        include: {
+          Auth0Profile: true,
+          PostImage: true,
+          PostFeature: true,
+          PostType: true,
+        },
+        where: {
+          OR: [
+            {
+              Title: {
+                contains: input.keyword,
+              },
+            },
+            {
+              Description: {
+                contains: input.keyword,
+              },
+            },
+          ],
+        },
+        take: 20,
+      });
+
+      return { data: response };
     }),
   topBlogs: publicProcedure.input(z.void()).query(async () => {
     const data = await dbContext.blog.findMany({
@@ -81,4 +135,62 @@ export const PublicRouter = trpcRouter.router({
 
     return { data };
   }),
+  getBlogById:
+    //.output(APIResponseSchema(PostSchema))
+    publicProcedure
+      .input(
+        z.object({
+          id: RequiredString,
+        })
+      )
+      .query(async ({ input }) => {
+        const data = await dbContext.blog.findFirst({
+          where: {
+            Id: input.id,
+          },
+          include: {
+            BlogImage: true,
+            GlobalBlogType: true,
+            BlogStats: true,
+            Auth0Profile: true,
+          },
+        });
+
+        return {
+          data,
+        };
+      }),
+  searchBlogs: publicProcedure
+    .input(
+      z.object({
+        keyword: RequiredString,
+      })
+    )
+    //.output(APIResponseSchema(PostSchema))
+    .query(async ({ input }) => {
+      const response = await dbContext.blog.findMany({
+        include: {
+          Auth0Profile: true,
+          BlogImage: true,
+          GlobalBlogType: true,
+        },
+        where: {
+          OR: [
+            {
+              Title: {
+                contains: input.keyword,
+              },
+            },
+            {
+              Description: {
+                contains: input.keyword,
+              },
+            },
+          ],
+        },
+        take: 20,
+      });
+
+      return { data: response };
+    }),
 });

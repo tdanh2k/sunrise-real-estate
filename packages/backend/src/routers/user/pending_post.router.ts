@@ -104,7 +104,7 @@ export const PendingPostRouter = trpcRouter.router({
           });
 
         const response = await axios<TypeAuth0User>({
-          url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
+          url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
           method: "GET",
           params: {
             search_engine: "v3",
@@ -121,13 +121,6 @@ export const PendingPostRouter = trpcRouter.router({
             data: {
               ...rest,
               UserId: (await ctx).userId ?? "",
-              User_Email: user.email,
-              User_EmailVerified: user.email_verified,
-              User_Name: user.name,
-              User_Username: user.username,
-              User_PhoneNumber: user.phone_number,
-              User_PhoneVerified: user.phone_verified,
-              User_Picture: user.picture,
               PendingPostCurrentDetail: {
                 createMany: {
                   data: DraftPostCurrentDetail?.map((item) => ({
@@ -204,7 +197,7 @@ export const PendingPostRouter = trpcRouter.router({
       });
 
       const response = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
+        url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
         method: "GET",
         params: {
           search_engine: "v3",
@@ -237,13 +230,6 @@ export const PendingPostRouter = trpcRouter.router({
             Price: data?.Price,
             TypeId: data?.TypeId ?? "",
             UserId: data?.UserId ?? (await ctx).userId ?? "",
-            User_Email: user.email,
-            User_EmailVerified: user.email_verified,
-            User_Name: user.name,
-            User_Username: user.username,
-            User_PhoneNumber: user.phone_number,
-            User_PhoneVerified: user.phone_verified,
-            User_Picture: user.picture,
             PostCurrentDetail: {
               createMany: {
                 data:

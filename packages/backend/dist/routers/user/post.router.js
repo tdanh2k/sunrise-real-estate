@@ -92,7 +92,7 @@ exports.PostRouter = router_1.trpcRouter.router({
                 message: ``,
             });
         const response = await (0, axios_1.default)({
-            url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
+            url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
             method: "GET",
             params: {
                 search_engine: "v3",

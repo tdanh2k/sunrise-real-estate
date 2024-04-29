@@ -18,6 +18,7 @@ export const AddDraftBlogSchema = z.object({
   DraftBlogImage: z.array(
     z.object({
       Id: OptionalUUID,
+      Code: OptionalString,
       Name: OptionalString,
       Size: NonNegativeIntegerNumber,
       Path: OptionalString,

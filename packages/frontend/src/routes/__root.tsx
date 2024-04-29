@@ -8,6 +8,7 @@ import "@mantine/core/styles.css"; //import Mantine V7 styles needed by MRT
 import "@mantine/dates/styles.css"; //if using mantine date picker features
 import "@mantine/nprogress/styles.css";
 import "mantine-react-table/styles.css"; //import MRT styles
+import { NotFoundComponent } from "./_management/-components/NotFound";
 
 const TanStackRouterDevtools =
   //process.env?.NODE_ENV === "production"
@@ -27,6 +28,7 @@ type RootRouteContext = RouteContext & {
 };
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({
+  notFoundComponent: () => <NotFoundComponent />,
   component: () => (
     <MantineProvider>
       <Outlet />

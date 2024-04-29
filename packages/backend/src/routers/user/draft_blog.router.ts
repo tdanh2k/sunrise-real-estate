@@ -105,9 +105,9 @@ export const DraftBlogRouter = trpcRouter.router({
       const AddImages: Omit<(typeof DraftBlogImage)[number], "Base64Data">[] =
         [];
 
-      for (const { Base64Data, ...blogImage } of DraftBlogImage) {
-        if (blogImage.Id) {
-          AddImages.push(blogImage);
+      for (const { Base64Data, ...metadata } of DraftBlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
         } else if (Base64Data != null) {
           await cloudinary.uploader.upload(
             Base64Data,
@@ -116,13 +116,13 @@ export const DraftBlogRouter = trpcRouter.router({
               access_mode: "public",
             },
             (error, result) => {
-              console.log(result);
-
-              AddImages.push({
-                ...blogImage,
-                Path: result?.secure_url,
-                Size: result?.bytes ?? blogImage?.Size,
-              });
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url,
+                  Size: result?.bytes ?? metadata?.Size,
+                });
             }
           );
         }
@@ -138,11 +138,7 @@ export const DraftBlogRouter = trpcRouter.router({
           UserId: (await ctx).userId ?? "",
           DraftBlogImage: {
             createMany: {
-              data: AddImages?.map((item) => ({
-                ...item,
-                Name: item.Name ?? "",
-                Path: item.Path ?? "",
-              })), //DraftBlogImage,
+              data: AddImages,
             },
           },
         },
@@ -150,15 +146,18 @@ export const DraftBlogRouter = trpcRouter.router({
           ...rest,
           DraftBlogImage: {
             connectOrCreate: AddImages?.map((item) => ({
+              create: item,
               where: {
                 Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
               },
-              create: {
-                ...item,
-                Name: item.Name ?? "",
-                Path: item.Path ?? "",
-              },
             })),
+            deleteMany: AddImages?.some((r) => r.Id)
+              ? {
+                  Id: {
+                    notIn: AddImages?.map((r) => r.Id) as string[],
+                  },
+                }
+              : undefined,
           },
         },
         include: {
@@ -170,46 +169,6 @@ export const DraftBlogRouter = trpcRouter.router({
           UserId: (await ctx).userId,
         },
       });
-
-      // const data = await dbContext.draftBlog.create({
-      //   data: {
-      //     ...rest,
-      //     UserId: (await ctx).userId ?? "",
-      //     DraftBlogCurrentDetail: {
-      //       createMany: {
-      //         data: DraftBlogCurrentDetail,
-      //       },
-      //       // connectOrCreate: DraftBlogCurrentDetail?.map((item) => ({
-      //       //   where: {
-      //       //     Id: item.Id,
-      //       //   },
-      //       //   create: item,
-      //       // })),
-      //     },
-      //     DraftBlogFeature: {
-      //       createMany: {
-      //         data: DraftBlogFeature,
-      //       },
-      //       // connectOrCreate: DraftBlogFeature?.map((item) => ({
-      //       //   where: {
-      //       //     Id: item.Id,
-      //       //   },
-      //       //   create: item,
-      //       // })),
-      //     },
-      //     DraftBlogImage: {
-      //       createMany: {
-      //         data: DraftBlogImage,
-      //       },
-      //       // connectOrCreate: DraftBlogImage?.map((item) => ({
-      //       //   where: {
-      //       //     Id: item.Id,
-      //       //   },
-      //       //   create: item,
-      //       // })),
-      //     },
-      //   },
-      // });
 
       return { data };
 
@@ -243,29 +202,117 @@ export const DraftBlogRouter = trpcRouter.router({
           message: ``,
         });
 
-      const result = await dbContext.draftBlog.update({
-        where: {
-          Id: Id ?? "00000000-0000-0000-0000-000000000000",
-          UserId: (await ctx).userId,
-        },
-        include: {
-          DraftBlogImage: true,
-          GlobalBlogType: true,
-        },
-        data: {
-          ...rest,
-          DraftBlogImage: {
-            connectOrCreate: DraftBlogImage?.map((item) => ({
-              where: {
-                Id: item.Id,
-              },
-              create: item,
-            })),
-          },
-        },
-      });
+      const AddImages: Omit<(typeof DraftBlogImage)[number], "Base64Data">[] =
+        [];
 
-      return { data: result };
+      for (const { Base64Data, ...metadata } of DraftBlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
+            },
+            (error, result) => {
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url ?? "",
+                  Size: result?.bytes ?? metadata?.Size,
+                });
+            }
+          );
+        }
+      }
+
+      // const result = await dbContext.draftBlog.update({
+      //   where: {
+      //     Id: Id ?? "00000000-0000-0000-0000-000000000000",
+      //     UserId: (await ctx).userId,
+      //   },
+      //   include: {
+      //     DraftBlogImage: true,
+      //     GlobalBlogType: true,
+      //   },
+      //   data: {
+      //     ...rest,
+      //     DraftBlogImage: {
+      //       connectOrCreate: AddImages?.map((item) => ({
+      //         where: {
+      //           Id: item.Id,
+      //         },
+      //         create: item,
+      //       })),
+      //       deleteMany: AddImages?.some((r) => r.Id)
+      //         ? {
+      //             Id: {
+      //               notIn: AddImages?.map((r) => r.Id) as string[],
+      //             },
+      //           }
+      //         : undefined,
+      //     },
+      //   },
+      // });
+
+      const [updatedDraftBlog, deletedImages, { count }] =
+        await dbContext.$transaction([
+          dbContext.draftBlog.update({
+            where: {
+              Id: Id ?? "00000000-0000-0000-0000-000000000000",
+              UserId: (await ctx).userId,
+            },
+            include: {
+              DraftBlogImage: true,
+              GlobalBlogType: true,
+            },
+            data: {
+              ...rest,
+              DraftBlogImage: {
+                connectOrCreate: AddImages?.map((item) => ({
+                  where: {
+                    Id: item.Id,
+                  },
+                  create: item,
+                })),
+                // deleteMany: AddImages?.some((r) => r.Id)
+                //   ? {
+                //       Id: {
+                //         notIn: AddImages?.map((r) => r.Id) as string[],
+                //       },
+                //     }
+                //   : undefined,
+              },
+            },
+          }),
+          dbContext.draftBlogImage.findMany({
+            where: {
+              Id: {
+                notIn: AddImages?.map((r) => r.Id) as string[],
+              },
+              DraftBlogId: Id,
+            },
+          }),
+          dbContext.draftBlogImage.deleteMany({
+            where: {
+              Id: {
+                notIn: AddImages?.map((r) => r.Id) as string[],
+              },
+              DraftBlogId: Id,
+            },
+          }),
+        ]);
+
+      if (deletedImages?.some((r) => r.Code) && count > 0) {
+        await cloudinary.api.delete_resources(
+          deletedImages?.filter((r) => r.Code)?.map((r) => r.Code) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
+
+      return { data: updatedDraftBlog };
 
       // return await APIResponseSchema(
       //   DraftBlogSchema.omit({
@@ -286,15 +333,32 @@ export const DraftBlogRouter = trpcRouter.router({
           message: ``,
         });
 
-      const result = await dbContext.draftBlog.delete({
-        where: {
-          Id: Id ?? "00000000-0000-0000-0000-000000000000",
-          UserId: (await ctx).userId,
-        },
-      });
+      const [images, deletedDraftBlog] = await dbContext.$transaction([
+        dbContext.draftBlogImage.findMany({
+          where: {
+            DraftBlogId: Id,
+            DraftBlog: {
+              UserId: (await ctx).userId,
+            },
+          },
+        }),
+        dbContext.draftBlog.delete({
+          where: {
+            Id: Id ?? "00000000-0000-0000-0000-000000000000",
+            UserId: (await ctx).userId,
+          },
+        }),
+      ]);
+
+      if (images?.some((r) => r.Code)) {
+        await cloudinary.api.delete_resources(
+          images?.filter((r) => r.Code)?.map((r) => r.Code) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
 
       return {
-        data: result,
+        data: deletedDraftBlog,
       };
 
       // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({

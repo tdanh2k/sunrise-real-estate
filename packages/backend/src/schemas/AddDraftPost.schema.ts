@@ -41,6 +41,7 @@ export const AddDraftPostSchema = z.object({
   DraftPostImage: z.array(
     z.object({
       Id: OptionalUUID,
+      Code: OptionalString,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,

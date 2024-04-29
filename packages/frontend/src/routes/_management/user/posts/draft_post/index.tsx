@@ -11,6 +11,7 @@ import { MantineReactTable } from "mantine-react-table";
 import { useCallback, useState } from "react";
 import { ModalEditDraftPost } from "./-components/ModalEditDraftPost";
 import { nprogress } from "@mantine/nprogress";
+import { IconNewsOff } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_management/user/posts/draft_post/")({
   onEnter: () => {
@@ -18,6 +19,10 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Bài nháp",
+    icon: <IconNewsOff />,
   },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");

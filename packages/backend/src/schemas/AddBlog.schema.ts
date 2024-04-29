@@ -16,6 +16,7 @@ export const AddBlogSchema = z.object({
   BlogImage: z.array(
     z.object({
       Id: RequiredUUID,
+      Code: OptionalString,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,

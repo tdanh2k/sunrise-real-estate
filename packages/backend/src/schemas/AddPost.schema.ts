@@ -20,33 +20,40 @@ export const AddPostSchema = z.object({
   Address: RequiredString,
   Price: OptionalNumber,
   MapUrl: RequiredURL,
-  PostCurrentDetail: z.array(
-    z.object({
-      Id: OptionalUUID,
-      DetailId: RequiredUUID,
-      Value: RequiredString,
-      IsNumber: OptionalBoolean,
-      CreatedDate: OptionalJsDate,
-    })
-  ).optional(),
-  PostFeature: z.array(
-    z.object({
-      Id: OptionalUUID,
-      Title: RequiredString,
-      Description: RequiredString,
-      CreatedDate: OptionalJsDate,
-    })
-  ).optional(),
-  PostImage: z.array(
-    z.object({
-      Id: OptionalUUID,
-      Name: RequiredString,
-      Size: NonNegativeIntegerNumber,
-      Path: RequiredString,
-      MimeType: OptionalString,
-      CreatedDate: OptionalJsDate,
-    })
-  ).optional(),
+  PostCurrentDetail: z
+    .array(
+      z.object({
+        Id: OptionalUUID,
+        DetailId: RequiredUUID,
+        Value: RequiredString,
+        IsNumber: OptionalBoolean,
+        CreatedDate: OptionalJsDate,
+      })
+    )
+    .optional(),
+  PostFeature: z
+    .array(
+      z.object({
+        Id: OptionalUUID,
+        Title: RequiredString,
+        Description: RequiredString,
+        CreatedDate: OptionalJsDate,
+      })
+    )
+    .optional(),
+  PostImage: z
+    .array(
+      z.object({
+        Id: OptionalUUID,
+        Code: OptionalString,
+        Name: RequiredString,
+        Size: NonNegativeIntegerNumber,
+        Path: RequiredString,
+        MimeType: OptionalString,
+        CreatedDate: OptionalJsDate,
+      })
+    )
+    .optional(),
 });
 
 export type TypeAddPost = z.infer<typeof AddPostSchema>;

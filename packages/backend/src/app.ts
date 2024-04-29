@@ -15,10 +15,10 @@ const app = express();
 const port = 3000;
 
 cloudinary.config({
-  cloud_name: "dxzztk8fb",
-  api_key: "962616593344436",
-  api_secret: "UnUg9cxJUsQxOcLuLxMIH0eHo8o",
-  secure: true
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 app.use(
@@ -30,9 +30,11 @@ app.use(
   })
 );
 
-app.use(express.json({
-  limit: "100mb"
-}));
+app.use(
+  express.json({
+    limit: "100mb",
+  })
+);
 // app.set("json spaces", 2);
 
 app.use(

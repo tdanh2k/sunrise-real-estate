@@ -39,15 +39,18 @@ export const PostSchema = z.object({
       CreatedDate: OptionalJsDate,
     })
   ),
-  PostImage: z.array(z.object({
-    Id: RequiredUUID,
-    Name: RequiredString,
-    Size: NonNegativeIntegerNumber,
-    Path: RequiredString,
-    PostId: RequiredUUID,
-    MimeType: OptionalString,
-    CreatedDate: OptionalJsDate,
-  }))
+  PostImage: z.array(
+    z.object({
+      Id: RequiredUUID,
+      Code: OptionalString,
+      Name: RequiredString,
+      Size: NonNegativeIntegerNumber,
+      Path: RequiredString,
+      PostId: RequiredUUID,
+      MimeType: OptionalString,
+      CreatedDate: OptionalJsDate,
+    })
+  ),
 });
 
 export type TypePost = z.infer<typeof PostSchema>;

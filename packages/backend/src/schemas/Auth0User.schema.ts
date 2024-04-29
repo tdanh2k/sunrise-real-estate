@@ -28,12 +28,12 @@ export const Auth0UserSchema = z.object({
   // "user_metadata": {},
   picture: OptionalString,
   name: OptionalString,
-  // "nickname": "",
+  nickname: OptionalString,
   // "multifactor": [
   //   ""
   // ],
-  // "last_ip": "",
-  // "last_login": "",
+  last_ip: OptionalString,
+  last_login: OptionalString,
   logins_count: NonNegativeIntegerNumber,
   blocked: OptionalBoolean,
   given_name: OptionalString,

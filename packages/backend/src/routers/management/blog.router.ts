@@ -109,7 +109,7 @@ export const BlogRouter = trpcRouter.router({
         });
 
       const response = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/user/${(await ctx).userId}`,
+        url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
         method: "GET",
         params: {
           search_engine: "v3",
@@ -131,13 +131,6 @@ export const BlogRouter = trpcRouter.router({
         data: {
           ...rest,
           UserId: (await ctx).userId ?? "",
-          // User_Email: user.email,
-          // User_EmailVerified: user.email_verified,
-          // User_Name: user.name,
-          // User_Username: user.username,
-          // User_PhoneNumber: user.phone_number,
-          // User_PhoneVerified: user.phone_verified,
-          // User_Picture: user.picture,
           BlogImage: {
             // connectOrCreate: BlogImage?.map((item) => ({
             //   where: {

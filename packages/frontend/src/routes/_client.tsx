@@ -5,6 +5,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { PublicTRPCProvider } from "@components/PublicTRPCProvider";
 
 import "./client.css";
+import { NotFoundComponent } from "./_management/-components/NotFound";
 
 export const ClientLayout: FC = () => {
   return (
@@ -18,5 +19,5 @@ export const ClientLayout: FC = () => {
 
 export const Route = createFileRoute("/_client")({
   component: ClientLayout,
-  notFoundComponent: () => <h1>Not found</h1>,
+  notFoundComponent: () => <NotFoundComponent />,
 });

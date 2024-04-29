@@ -38,7 +38,7 @@ export const ManagementLayout: FC = () => {
 
 export const Route = createFileRoute("/_management")({
   component: withAuthenticationRequired(ManagementLayout, {
-    returnTo: "/_management/management",
+    returnTo: "/",
     onRedirecting: () => <div>Redirecting...</div>,
   }),
   notFoundComponent: () => <NotFoundComponent />,
