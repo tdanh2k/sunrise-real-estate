@@ -4,14 +4,10 @@ import { dbContext } from "../../utils/prisma";
 import { RequiredString } from "../../utils/ZodUtils";
 import { AddPostSchema } from "../../schemas/AddPost.schema";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
-import {
-  APIResponseSchema,
-  TypeAPIResponse,
-} from "../../schemas/APIResponse.schema";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, trpcRouter } from "../router";
-import axios from "axios";
-import { TypeAuth0User } from "../../schemas/Auth0User.schema";
+import { v2 as cloudinary } from "cloudinary";
 
 export const PostRouter = trpcRouter.router({
   all: protectedProcedure
@@ -121,24 +117,30 @@ export const PostRouter = trpcRouter.router({
             message: ``,
           });
 
-        const response = await axios<TypeAuth0User>({
-          url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-          method: "GET",
-          params: {
-            search_engine: "v3",
-          },
-          headers: {
-            Authorization: `Bearer ${(await ctx).management_token}`,
-          },
-        });
+        const AddImages: Omit<(typeof PostImage)[number], "Base64Data">[] = [];
 
-        const user = response?.data;
-
-        if (user == null)
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: ``,
-          });
+        for (const { Base64Data, ...metadata } of PostImage ?? []) {
+          if (metadata.Id) {
+            AddImages.push(metadata);
+          } else if (Base64Data != null) {
+            await cloudinary.uploader.upload(
+              Base64Data,
+              {
+                use_filename: true,
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (!error)
+                  AddImages.push({
+                    ...metadata,
+                    Code: result?.public_id,
+                    Path: result?.secure_url ?? "",
+                    Size: result?.bytes ?? metadata?.Size,
+                  });
+              }
+            );
+          }
+        }
 
         const result = await dbContext.post.create({
           data: {
@@ -174,7 +176,7 @@ export const PostRouter = trpcRouter.router({
               //   create: item,
               // })),
               createMany: {
-                data: PostImage ?? [],
+                data: AddImages ?? [],
               },
             },
           },

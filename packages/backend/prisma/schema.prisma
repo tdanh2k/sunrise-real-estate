@@ -17,7 +17,7 @@ model DraftPost {
   TypeId                 String                   @db.UniqueIdentifier
   CreatedDate            DateTime?                @default(now(), map: "DF__DraftPost__Creat__0B5CAFEA") @db.DateTime
   Address                String                   @db.NVarChar(256)
-  MapUrl                 String                   @db.VarChar(256)
+  MapUrl                 String                   @db.VarChar(Max)
   Price                  Float?
   Auth0Profile           Auth0Profile             @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "DraftPost_Auth0Profile_FK")
   GlobalPostType         GlobalPostType           @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "DraftPost_GlobalPostType_FK")
@@ -42,7 +42,7 @@ model Post {
   Id                String              @id(map: "Post_PK") @default(dbgenerated("newid()"), map: "DF__Post__Id__2B0A656D") @db.UniqueIdentifier
   Idx               Int                 @default(autoincrement())
   Code              String?             @db.VarChar(100)
-  Title             String?             @db.NVarChar(100)
+  Title             String?             @db.NVarChar(256)
   Description       String?             @db.NVarChar(Max)
   UserId            String              @db.VarChar(256)
   CreatedDate       DateTime?           @default(now(), map: "DF__Post__CreatedDat__05A3D694") @db.DateTime
@@ -60,12 +60,13 @@ model Post {
 
 model PostImage {
   Id          String    @id(map: "PostImage_PK") @default(dbgenerated("newid()"), map: "DF__PostImage__Id__2FCF1A8A") @db.UniqueIdentifier
-  Name        String    @db.NVarChar(255)
+  Name        String?   @db.NVarChar(255)
   Size        Int?
-  Path        String    @db.NVarChar(255)
+  Path        String?   @db.NVarChar(255)
   PostId      String    @db.UniqueIdentifier
   CreatedDate DateTime? @default(now(), map: "DF__PostImage__Creat__0697FACD") @db.DateTime
   MimeType    String?   @db.VarChar(100)
+  Code        String?   @db.VarChar(100)
   Post        Post      @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostImage_Post_FK")
 }
 
@@ -242,7 +243,7 @@ model PendingPost {
   Id                       String                     @id(map: "PendingPost_PK") @default(dbgenerated("newid()"), map: "DF__PendingPost__Id__2DB1C7EE") @db.UniqueIdentifier
   Idx                      Int                        @default(autoincrement())
   Code                     String?                    @db.VarChar(100)
-  Title                    String                     @db.NVarChar(100)
+  Title                    String                     @db.NVarChar(256)
   Description              String                     @db.NVarChar(Max)
   UserId                   String                     @db.VarChar(256)
   CreatedDate              DateTime?                  @default(now(), map: "DF__PendingPo__Creat__2EA5EC27") @db.DateTime

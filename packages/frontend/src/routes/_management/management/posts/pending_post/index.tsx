@@ -1,32 +1,24 @@
 import { useMantineRTInstance } from "@components/MantineRT";
-import {
-  CustomActionMenuItemPropsType,
-  RenderCustomActionMenuItems,
-} from "@components/MantineRT/RenderCustomActionMenuItems";
-import { CustomToolbarButtonsPropsType } from "@components/MantineRT/RenderCustomToolbarButton";
+import { CustomActionMenuItemPropsType, RenderCustomActionMenuItems } from "@components/MantineRT/RenderCustomActionMenuItems";
 import { useDisclosure } from "@mantine/hooks";
 import { nprogress } from "@mantine/nprogress";
-import { TypeAuth0User } from "@sunrise-backend/src/schemas/Auth0User.schema";
-import { IconUsers } from "@tabler/icons-react";
+import { TypePendingPost } from "@sunrise-backend/src/schemas/PendingPost.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
-export const Route = createFileRoute("/_management/management/user/")({
+export const Route = createFileRoute(
+  "/_management/management/posts/pending_post/"
+)({
   onEnter: () => {
     nprogress.complete();
   },
   onLeave: () => {
     nprogress.start();
   },
-  staticData: {
-    routeName: "Quản lý tài khoản",
-    icon: <IconUsers />,
-  },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
-
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
       useDisclosure(false);
     const [
@@ -72,65 +64,55 @@ export const Route = createFileRoute("/_management/management/user/")({
       closeModalDelete();
     };
 
-    const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
-      () => [
-        {
-          label: "Thêm",
-          actionType: "Add",
-          onClick: handleOpenModalAdd,
-        },
-      ],
-      [handleOpenModalAdd]
-    );
+    // const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
+    //   () => [
+    //     {
+    //       label: "Thêm",
+    //       actionType: "Add",
+    //       onClick: handleOpenModalAdd,
+    //     },
+    //   ],
+    //   [handleOpenModalAdd]
+    // );
 
     const tableRowActions = useCallback(
       (Id: string | undefined): CustomActionMenuItemPropsType[] => [
         {
           id: "Update",
-          label: "Cập nhật",
+          label: "Duyệt",
           actionType: "Update",
           onClick: handleOpenModalUpdate(Id),
         },
-        {
-          id: "Remove",
-          label: "Xóa",
-          actionType: "Delete",
-          onClick: handleOpenModalDelete(Id),
-        },
+        // {
+        //   id: "Remove",
+        //   label: "Xóa",
+        //   actionType: "Delete",
+        //   onClick: handleOpenModalDelete(Id),
+        // },
       ],
       [handleOpenModalUpdate, handleOpenModalDelete]
     );
 
-    const table = useMantineRTInstance<TypeAuth0User>({
+    const table = useMantineRTInstance<TypePendingPost>({
       columns: [
         {
-          accessorKey: "username",
-          header: "Username",
+          accessorKey: "Id",
+          header: "Id",
           filterFn: "contains",
         },
         {
-          accessorKey: "email",
-          header: "Email",
-          filterFn: "contains",
-        },
-        {
-          accessorKey: "name",
-          header: "Tên",
-          filterFn: "contains",
-        },
-        {
-          accessorKey: "phone_number",
-          header: "Số điện thoại",
+          accessorKey: "Code",
+          header: "Mã quản lý",
           filterFn: "contains",
         },
       ],
-      useQuery: privateRoute.management.admin_user.byPage.useQuery,
-      topToolbarActionObjectList: tableActions,
+      useQuery: privateRoute.management.post.byPage.useQuery,
+      //topToolbarActionObjectList: tableActions,
       tableProps: {
         enableGrouping: false,
         enableRowSelection: false,
         enableMultiRowSelection: false,
-        getRowId: (row) => row.user_id,
+        getRowId: (row) => row.Id,
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) =>
           RenderCustomActionMenuItems({
@@ -144,7 +126,7 @@ export const Route = createFileRoute("/_management/management/user/")({
     return (
       <>
         <MantineReactTable table={table} />
-        {/* <ModalAddPostType
+        {/* <ModalAddPost
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
         /> */}

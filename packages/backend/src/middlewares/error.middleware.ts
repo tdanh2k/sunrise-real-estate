@@ -38,6 +38,7 @@ export const errorHandler = (
 
   const status = 500;
   const message = error;
+  console.log({message})
 
   response.status(status).json({ message });
 };

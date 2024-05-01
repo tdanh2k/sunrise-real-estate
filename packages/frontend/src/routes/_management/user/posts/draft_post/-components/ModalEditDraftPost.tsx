@@ -15,10 +15,11 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { useNavigate } from "@tanstack/react-router";
+import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
 
 type ModalEditDraftProps = {
   isOpen: boolean;
-  editId?: string;
+  draftPostId?: string;
   handleClose: () => void;
 };
 
@@ -37,7 +38,7 @@ const defaultValues: TypeAddDraftPost = {
 
 export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
   isOpen,
-  editId,
+  draftPostId,
   handleClose,
 }) => {
   const navigate = useNavigate({ from: "/user/posts/draft_post" });
@@ -48,16 +49,16 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
     data: globalPostDetailResponse,
     isFetching: isGetAllGlobalPostDetailFetching,
   } = privateRoute.user.global_post_detail.all.useQuery(undefined, {
-    enabled: Boolean(editId),
+    enabled: Boolean(draftPostId),
   });
 
   const {
     data: draftPostByIdResponse,
     isFetching: isGetDraftPostByIdFetching,
   } = privateRoute.user.draft_post.byId.useQuery(
-    { Id: editId ?? "" },
+    { Id: draftPostId ?? "" },
     {
-      enabled: Boolean(editId),
+      enabled: Boolean(draftPostId),
     }
   );
 
@@ -185,12 +186,20 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
           columns={[
             {
               accessorKey: "DetailId",
-              header: "DetailId",
+              header: "Loại chi tiết",
               editVariant: "select",
               // mantineEditTextInputProps: ({ row }) => ({
               //   // value: fields?.find((item) => item.Id === row.original.Id)
               //   //   ?.DetailId,
               // }),
+              Cell: ({ cell, table, renderedCellValue, row }) =>
+                table.getState()?.editingCell?.id === cell.id
+                  ? renderedCellValue
+                  : cell.getValue<string>()
+                    ? globalPostDetailResponse?.data?.find(
+                        (r) => r.Id === row.original.Id
+                      )?.Name
+                    : null,
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
@@ -209,8 +218,9 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
                 //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
                 //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
                 error:
-                  control?._formState?.errors?.DraftPostCurrentDetail?.[row.index]
-                    ?.Value?.message,
+                  control?._formState?.errors?.DraftPostCurrentDetail?.[
+                    row.index
+                  ]?.Value?.message,
               }),
             },
           ]}
@@ -248,6 +258,52 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
           // }}
         />
       </Stack>
+      <MantineReactTableRHF
+        legendLabel="Hình ảnh"
+        externalLoading={isLoading}
+        disableEdit
+        name="DraftPostImage"
+        control={control}
+        columns={[
+          {
+            accessorKey: "Name",
+            header: "Tên file",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "MimeType",
+            header: "MIME",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "Size",
+            header: "Kích thước",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "Base64Data",
+            header: "Upload",
+            Cell: ({ cell, table, renderedCellValue }) =>
+              table.getState()?.editingCell?.id === cell.id
+                ? renderedCellValue
+                : cell.getValue<string>()
+                  ? "Có dữ liệu"
+                  : null,
+            Edit: ({ cell, row, table }) => (
+              <MRT_EditCellFileInput
+                cell={cell}
+                table={table}
+                onChange={(file) => {
+                  if (!file) return;
+                  row._valuesCache["Name"] = file?.name;
+                  row._valuesCache["MimeType"] = file?.type;
+                  row._valuesCache["Size"] = file?.size;
+                }}
+              />
+            ),
+          },
+        ]}
+      />
     </CustomModal>
   );
 };

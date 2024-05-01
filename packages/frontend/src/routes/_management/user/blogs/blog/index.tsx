@@ -8,6 +8,7 @@ import { useCallback, useMemo } from "react";
 import { TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 import { ModalAddBlog } from "./-components/ModalAddBlog";
 import { nprogress } from "@mantine/nprogress";
+import { IconBrandBlogger } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_management/user/blogs/blog/")({
   onEnter: () => {
@@ -15,6 +16,10 @@ export const Route = createFileRoute("/_management/user/blogs/blog/")({
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Blog",
+    icon: <IconBrandBlogger />,
   },
   component: () => {
     //const [selectedId, setSelectedId] = useState<string | undefined>("");

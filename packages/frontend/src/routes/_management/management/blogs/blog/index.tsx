@@ -99,11 +99,6 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
     const table = useMantineRTInstance<TypeBlog>({
       columns: [
         {
-          accessorKey: "Id",
-          header: "Id",
-          filterFn: "contains",
-        },
-        {
           accessorKey: "Code",
           header: "Mã quản lý",
           filterFn: "contains",
@@ -118,11 +113,11 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
           header: "Loại",
           filterFn: "contains",
         },
-        {
-          accessorKey: "CreatedDate",
-          header: "Ngày tạo",
-          filterFn: "contains",
-        },
+        // {
+        //   accessorKey: "CreatedDate",
+        //   header: "Ngày tạo",
+        //   filterFn: "contains",
+        // },
       ],
       useQuery: privateRoute.management.blog.byPage.useQuery,
       topToolbarActionObjectList: tableActions,

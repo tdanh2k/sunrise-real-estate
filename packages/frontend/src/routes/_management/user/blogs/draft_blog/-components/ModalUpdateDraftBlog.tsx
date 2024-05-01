@@ -18,6 +18,7 @@ import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInp
 
 type ModalAddProps = {
   isOpen: boolean;
+  blogId: string;
   handleClose: () => void;
 };
 
@@ -29,18 +30,30 @@ const defaultValues: TypeAddDraftBlog = {
   DraftBlogImage: [],
 };
 
-export const ModalAddDraftBlog: FC<ModalAddProps> = ({
+export const ModalUpdateDraftBlog: FC<ModalAddProps> = ({
   isOpen,
+  blogId,
   handleClose,
 }) => {
   const navigate = useNavigate({ from: "/user/blogs/draft_blog" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 
+  const {
+    data: draftBlogByIdResponse,
+    isFetching: isGetDraftBlogByIdFetching,
+  } = privateRoute.user.draft_blog.byId.useQuery(
+    { Id: blogId },
+    { enabled: Boolean(blogId) }
+  );
+
   const { handleSubmit, control, reset } = useForm({
     resolver: isDrafting ? zodResolver(AddDraftBlogSchema) : undefined,
     mode: "all",
-    defaultValues,
+    values: {
+      ...defaultValues,
+      ...draftBlogByIdResponse?.data,
+    },
   });
 
   const { mutateAsync, isPending: isBlogPending } =
@@ -63,6 +76,7 @@ export const ModalAddDraftBlog: FC<ModalAddProps> = ({
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateAsync(values);
+    setIsDrafting(false);
     handleClose();
     reset();
   };
@@ -77,11 +91,13 @@ export const ModalAddDraftBlog: FC<ModalAddProps> = ({
       ...rest,
       DraftBlogImage: DraftBlogImage ?? [],
     });
+    setIsDrafting(false);
     handleClose();
     reset();
   };
 
-  const isLoading = isDraftPending || isBlogPending;
+  const isLoading =
+    isDraftPending || isBlogPending || isGetDraftBlogByIdFetching;
 
   return (
     <CustomModal

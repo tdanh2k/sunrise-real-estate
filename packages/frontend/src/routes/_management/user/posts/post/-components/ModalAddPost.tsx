@@ -68,6 +68,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateAsync(values);
+    setIsDrafting(false);
     handleClose();
     reset();
   };
@@ -88,6 +89,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       DraftPostFeature: PostFeature ?? [],
       DraftPostImage: PostImage ?? [],
     });
+    setIsDrafting(false);
     handleClose();
     reset();
   };
@@ -161,12 +163,16 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           columns={[
             {
               accessorKey: "DetailId",
-              header: "DetailId",
+              header: "Loại chi tiết",
               editVariant: "select",
-              // mantineEditTextInputProps: ({ row }) => ({
-              //   // value: fields?.find((item) => item.Id === row.original.Id)
-              //   //   ?.DetailId,
-              // }),
+              Cell: ({ cell, table, renderedCellValue, row }) =>
+                table.getState()?.editingCell?.id === cell.id
+                  ? renderedCellValue
+                  : cell.getValue<string>()
+                    ? postDetailResponse?.data?.find(
+                        (r) => r.Id === row.original.Id
+                      )?.Name
+                    : null,
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,

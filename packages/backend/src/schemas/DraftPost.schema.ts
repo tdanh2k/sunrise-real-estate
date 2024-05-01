@@ -56,6 +56,7 @@ export const DraftPostSchema = z.object({
       Path: RequiredString,
       DraftId: RequiredUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),

@@ -13,19 +13,19 @@ import {
 
 export const AddDraftPostSchema = z.object({
   Id: OptionalUUID,
-  Code: RequiredString,
-  Title: RequiredString,
-  Description: RequiredString,
+  Code: OptionalString,
+  Title: OptionalString,
+  Description: OptionalString,
   CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
-  Address: RequiredString,
+  Address: OptionalString,
   Price: NonNegativeNumber,
-  MapUrl: RequiredURL,
+  MapUrl: OptionalString,
   DraftPostCurrentDetail: z.array(
     z.object({
       Id: OptionalUUID,
       DetailId: RequiredUUID,
-      Value: RequiredString,
+      Value: OptionalString,
       IsNumber: OptionalBoolean,
       CreatedDate: OptionalJsDate,
     })
@@ -45,6 +45,7 @@ export const AddDraftPostSchema = z.object({
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
+      Base64Data: OptionalString,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,
     })

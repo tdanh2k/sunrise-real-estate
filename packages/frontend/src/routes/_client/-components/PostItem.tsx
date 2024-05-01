@@ -11,10 +11,16 @@ export const PostItem: FC<{ data?: TypePost }> = ({ data }) => {
         </div>
         <div className="item-description">
           <div className="d-flex justify-content-between mb-3">
-            <span className="item-title">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit
+            <span className="item-title">{data?.Title}</span>
+            <span className="item-price">
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+                compactDisplay: "short",
+
+                //maximumFractionDigits: 9,
+              }).format(data?.Price ?? 0)}
             </span>
-            <span className="item-price">{data?.Price}</span>
           </div>
           <div className="item-icon d-flex alig-items-center justify-content-between">
             <div>

@@ -5,24 +5,22 @@ import {
 } from "@components/MantineRT/RenderCustomActionMenuItems";
 import { CustomToolbarButtonsPropsType } from "@components/MantineRT/RenderCustomToolbarButton";
 import { useDisclosure } from "@mantine/hooks";
-import { nprogress } from "@mantine/nprogress";
-import { TypeAuth0User } from "@sunrise-backend/src/schemas/Auth0User.schema";
-import { IconUsers } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
 import { useCallback, useMemo, useState } from "react";
+import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
+import { ModalAddBlogType } from "./-components/ModalAddBlogType";
+import { nprogress } from "@mantine/nprogress";
 
-export const Route = createFileRoute("/_management/management/user/")({
+export const Route = createFileRoute(
+  "/_management/management/blogs/blog_type/"
+)({
   onEnter: () => {
     nprogress.complete();
   },
   onLeave: () => {
     nprogress.start();
-  },
-  staticData: {
-    routeName: "Quản lý tài khoản",
-    icon: <IconUsers />,
   },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
@@ -101,36 +99,31 @@ export const Route = createFileRoute("/_management/management/user/")({
       [handleOpenModalUpdate, handleOpenModalDelete]
     );
 
-    const table = useMantineRTInstance<TypeAuth0User>({
+    const table = useMantineRTInstance<TypeGlobalBlogType>({
       columns: [
         {
-          accessorKey: "username",
-          header: "Username",
+          accessorKey: "Id",
+          header: "Id",
           filterFn: "contains",
         },
         {
-          accessorKey: "email",
-          header: "Email",
+          accessorKey: "Idx",
+          header: "Thứ tự",
           filterFn: "contains",
         },
         {
-          accessorKey: "name",
+          accessorKey: "Name",
           header: "Tên",
           filterFn: "contains",
         },
-        {
-          accessorKey: "phone_number",
-          header: "Số điện thoại",
-          filterFn: "contains",
-        },
       ],
-      useQuery: privateRoute.management.admin_user.byPage.useQuery,
+      useQuery: privateRoute.management.global_blog_type.byPage.useQuery,
       topToolbarActionObjectList: tableActions,
       tableProps: {
         enableGrouping: false,
         enableRowSelection: false,
         enableMultiRowSelection: false,
-        getRowId: (row) => row.user_id,
+        getRowId: (row) => row.Id,
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) =>
           RenderCustomActionMenuItems({
@@ -144,10 +137,10 @@ export const Route = createFileRoute("/_management/management/user/")({
     return (
       <>
         <MantineReactTable table={table} />
-        {/* <ModalAddPostType
+        <ModalAddBlogType
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
-        /> */}
+        />
       </>
     );
   },

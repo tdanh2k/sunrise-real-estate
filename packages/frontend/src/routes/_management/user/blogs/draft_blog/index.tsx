@@ -13,6 +13,8 @@ import {
   RenderCustomActionMenuItems,
 } from "@components/MantineRT/RenderCustomActionMenuItems";
 import { CustomDeleteModal } from "@components/MantineRHF/CustomModal/delete";
+import { IconBrandBlogger } from "@tabler/icons-react";
+import { ModalUpdateDraftBlog } from "./-components/ModalUpdateDraftBlog";
 
 export const Route = createFileRoute("/_management/user/blogs/draft_blog/")({
   onEnter: () => {
@@ -20,6 +22,10 @@ export const Route = createFileRoute("/_management/user/blogs/draft_blog/")({
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Bản nháp",
+    icon: <IconBrandBlogger />,
   },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
@@ -135,6 +141,11 @@ export const Route = createFileRoute("/_management/user/blogs/draft_blog/")({
         <ModalAddDraftBlog
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
+        />
+        <ModalUpdateDraftBlog
+          isOpen={openedModalUpdate}
+          blogId={selectedId ?? ""}
+          handleClose={handleCloseModalUpdate}
         />
         <CustomDeleteModal
           isOpen={openedModalDelete}

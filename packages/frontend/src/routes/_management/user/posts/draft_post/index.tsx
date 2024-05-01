@@ -117,7 +117,7 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
         renderRowActionMenuItems: ({ row }) =>
           RenderCustomActionMenuItems({
             rowId: row.id,
-            actionList: tableRowActions(row.id),
+            actionList: tableRowActions(row.original.Id),
             //onClickAction: closeMenu,
           }),
       },
@@ -132,7 +132,7 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
         /> */}
         <ModalEditDraftPost
           isOpen={openedModalUpdate}
-          editId={selectedId}
+          draftPostId={selectedId}
           handleClose={handleCloseModalUpdate}
         />
       </>

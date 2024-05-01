@@ -11,15 +11,19 @@ import axios from "axios";
 import { BlogRouter } from "./blog.router";
 import { DraftBlogRouter } from "./draft_blog.router";
 import { GlobalBlogTypeRouter } from "./global_blog_type.router";
+import { PendingBlogRouter } from "./pending_blog.router";
+import { PendingPostRouter } from "./pending_post.router";
 
 export const managementRouter = trpcRouter.router({
   post: PostRouter,
   draft_post: DraftPostRouter,
+  pending_post: PendingPostRouter,
   global_post_type: GlobalPostTypeRouter,
   global_post_detail: GlobalPostDetailRouter,
   admin_user: AdminUserRouter,
   blog: BlogRouter,
   draft_blog: DraftBlogRouter,
+  pending_blog: PendingBlogRouter,
   global_blog_type: GlobalBlogTypeRouter,
   verifyRoles: publicProcedure
     .input(

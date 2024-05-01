@@ -2,16 +2,9 @@ import z from "zod";
 import { PostSchema, TypePost } from "../../schemas/Post.schema";
 import { dbContext } from "../../utils/prisma";
 import { RequiredString } from "../../utils/ZodUtils";
-import { AddPostSchema } from "../../schemas/AddPost.schema";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
-import {
-  APIResponseSchema,
-  TypeAPIResponse,
-} from "../../schemas/APIResponse.schema";
-import { TRPCError } from "@trpc/server";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
 import { protectedProcedure, trpcRouter } from "../router";
-import axios from "axios";
-import { TypeAuth0User } from "../../schemas/Auth0User.schema";
 
 export const PostRouter = trpcRouter.router({
   byPage: protectedProcedure
@@ -79,102 +72,6 @@ export const PostRouter = trpcRouter.router({
       //   data,
       // });
     }),
-  publish: protectedProcedure
-    .input(AddPostSchema)
-    // .output(
-    //   APIResponseSchema(
-    //     PostSchema.omit({
-    //       PostCurrentDetail: true,
-    //       PostFeature: true,
-    //       PostImage: true,
-    //     }).nullable()
-    //   )
-    // )
-    .mutation(
-      async ({
-        ctx,
-        input: { PostCurrentDetail, PostFeature, PostImage, ...rest },
-      }) => {
-        if ((await ctx).userId == null)
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: ``,
-          });
-
-        const response = await axios<TypeAuth0User>({
-          url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-          method: "GET",
-          params: {
-            search_engine: "v3",
-          },
-          headers: {
-            Authorization: `Bearer ${(await ctx).management_token}`,
-          },
-        });
-
-        const user = response?.data;
-
-        if (user == null)
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: ``,
-          });
-
-        const result = await dbContext.post.create({
-          data: {
-            ...rest,
-            UserId: (await ctx).userId ?? "",
-            PostCurrentDetail: {
-              // connectOrCreate: PostCurrentDetail?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
-              createMany: {
-                data: PostCurrentDetail ?? [],
-              },
-            },
-            PostFeature: {
-              // connectOrCreate: PostFeature?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
-              createMany: {
-                data: PostFeature ?? [],
-              },
-            },
-            PostImage: {
-              // connectOrCreate: PostImage?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
-              createMany: {
-                data: PostImage ?? [],
-              },
-            },
-          },
-          include: {
-            PostCurrentDetail: true,
-            PostFeature: true,
-            PostImage: true,
-          },
-        });
-
-        return { data: result } as TypeAPIResponse<TypePost>;
-        // return await APIResponseSchema(
-        //   PostSchema.omit({
-        //     PostCurrentDetail: true,
-        //     PostFeature: true,
-        //     PostImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data: result });
-      }
-    ),
   update: protectedProcedure
     .input(PostSchema)
     // .output(
