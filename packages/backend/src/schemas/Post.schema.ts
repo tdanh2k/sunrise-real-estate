@@ -1,6 +1,7 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
   OptionalJsDate,
   OptionalNumber,
@@ -19,7 +20,8 @@ export const PostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   Price: OptionalNumber,
-  MapUrl: RequiredURL,
+  MapUrl: RequiredString,
+  Area: NonNegativeNumber,
   PostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
@@ -39,15 +41,18 @@ export const PostSchema = z.object({
       CreatedDate: OptionalJsDate,
     })
   ),
-  PostImage: z.array(z.object({
-    Id: RequiredUUID,
-    Name: RequiredString,
-    Size: NonNegativeIntegerNumber,
-    Path: RequiredString,
-    PostId: RequiredUUID,
-    MimeType: OptionalString,
-    CreatedDate: OptionalJsDate,
-  }))
+  PostImage: z.array(
+    z.object({
+      Id: RequiredUUID,
+      Code: OptionalString,
+      Name: RequiredString,
+      Size: NonNegativeIntegerNumber,
+      Path: RequiredString,
+      PostId: RequiredUUID,
+      MimeType: OptionalString,
+      CreatedDate: OptionalJsDate,
+    })
+  ),
 });
 
 export type TypePost = z.infer<typeof PostSchema>;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OptionalURL = exports.RequiredURL = exports.OptionalPort = exports.RequiredPort = exports.OptionalIp = exports.RequiredIp = exports.OptionalDate = exports.RequiredDate = exports.OptionalArray = exports.RequiredArray = exports.OptionalBoolean = exports.RequiredBoolean = exports.NonNegativeBigInt = exports.NonNegativeIntegerNumber = exports.NonNegativeNumber = exports.PositiveIntegerNumber = exports.PositiveNumber = exports.RequiredNumber = exports.OptionalEmail = exports.RequiredEmail = exports.OptionalUUID = exports.RequiredUUID = exports.OptionalString = exports.RequiredString = void 0;
+exports.OptionalURL = exports.RequiredURL = exports.OptionalPort = exports.RequiredPort = exports.OptionalIp = exports.RequiredIp = exports.OptionalJsDate = exports.OptionalDate = exports.RequiredDate = exports.OptionalArray = exports.RequiredArray = exports.OptionalBoolean = exports.RequiredBoolean = exports.NonNegativeBigInt = exports.NonNegativeIntegerNumber = exports.NonNegativeNumber = exports.PositiveIntegerNumber = exports.PositiveNumber = exports.OptionalNumber = exports.RequiredNumber = exports.OptionalEmail = exports.RequiredEmail = exports.OptionalUUID = exports.RequiredUUID = exports.OptionalString = exports.RequiredString = void 0;
 const zod_1 = require("zod");
 // import { matchIsValidTel } from "mui-tel-input";
 // import dayjs from "dayjs";
@@ -39,6 +39,7 @@ exports.RequiredNumber = zod_1.z.number({
     invalid_type_error: "Dữ liệu này không phải dạng số",
     required_error: "Vui lòng không bỏ trống dữ liệu này",
 });
+exports.OptionalNumber = exports.RequiredNumber.optional();
 exports.PositiveNumber = zod_1.z
     .number({
     invalid_type_error: "Dữ liệu này không phải dạng số",
@@ -83,6 +84,11 @@ exports.RequiredDate = exports.RequiredString.datetime({
     offset: true,
 });
 exports.OptionalDate = exports.RequiredDate.optional();
+exports.OptionalJsDate = zod_1.z
+    .date({
+    invalid_type_error: "Không phải dạng ngày",
+})
+    .optional();
 // export const RequiredMinDate = (minDate: Date | string, message?: string) =>
 //   RequiredDate.refine((val) => new Date(val) > new Date(minDate), {
 //     message: message ?? `Ngày phải sau ${dayjs(minDate).format("dd/MM/yyyy")}`,

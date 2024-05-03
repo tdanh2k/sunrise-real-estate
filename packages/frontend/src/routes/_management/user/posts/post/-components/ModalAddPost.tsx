@@ -14,6 +14,7 @@ import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
+import { useNavigate } from "@tanstack/react-router";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -34,6 +35,7 @@ const defaultValues: TypeAddPost = {
 };
 
 export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
+  const navigate = useNavigate({ from: "/user/posts/post" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 
@@ -58,6 +60,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     privateRoute.user.draft_post.create.useMutation({
       onSuccess: () => {
         utils.user.draft_post.invalidate();
+        navigate({ to: "/user/posts/draft_post" });
       },
     });
 
@@ -65,6 +68,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateAsync(values);
+    setIsDrafting(false);
     handleClose();
     reset();
   };
@@ -73,16 +77,19 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     PostCurrentDetail,
     PostFeature,
     PostImage,
+    Price,
     ...rest
   }) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
     await mutateDraftAsync({
       ...rest,
-      DraftCurrentDetail: PostCurrentDetail ?? [],
-      DraftFeature: PostFeature ?? [],
+      Price: Price ?? 0,
+      DraftPostCurrentDetail: PostCurrentDetail ?? [],
+      DraftPostFeature: PostFeature ?? [],
       DraftPostImage: PostImage ?? [],
     });
+    setIsDrafting(false);
     handleClose();
     reset();
   };
@@ -156,12 +163,16 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           columns={[
             {
               accessorKey: "DetailId",
-              header: "DetailId",
+              header: "Loại chi tiết",
               editVariant: "select",
-              // mantineEditTextInputProps: ({ row }) => ({
-              //   // value: fields?.find((item) => item.Id === row.original.Id)
-              //   //   ?.DetailId,
-              // }),
+              Cell: ({ cell, table, renderedCellValue, row }) =>
+                table.getState()?.editingCell?.id === cell.id
+                  ? renderedCellValue
+                  : cell.getValue<string>()
+                    ? postDetailResponse?.data?.find(
+                        (r) => r.Id === row.original.Id
+                      )?.Name
+                    : null,
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,

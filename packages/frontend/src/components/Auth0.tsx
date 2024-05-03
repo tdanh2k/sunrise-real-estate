@@ -21,7 +21,7 @@ export const CustomAuth0Provider: FC<{ children?: ReactNode }> = ({
         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
         //scope: "profile email read:users read:user_idp_tokens",
       }}
-      onRedirectCallback={onRedirectCallback}
+      //onRedirectCallback={onRedirectCallback}
     >
       {children}
     </Auth0Provider>

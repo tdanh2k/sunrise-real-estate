@@ -1,6 +1,7 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
   OptionalJsDate,
   OptionalNumber,
@@ -21,11 +22,12 @@ export const PendingPostSchema = z.object({
   Price: OptionalNumber,
   ApprovedBy: OptionalString,
   ApprovedDate: OptionalJsDate,
-  MapUrl: RequiredURL,
+  MapUrl: RequiredString,
+  Area: NonNegativeNumber,
   PendingPostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
-      PendingId: RequiredUUID,
+      PendingPostId: RequiredUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
@@ -35,7 +37,7 @@ export const PendingPostSchema = z.object({
   PendingPostFeature: z.array(
     z.object({
       Id: RequiredUUID,
-      PendingId: RequiredUUID,
+      PendingPostId: RequiredUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalJsDate,
@@ -47,7 +49,7 @@ export const PendingPostSchema = z.object({
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
-      PostId: RequiredUUID,
+      PendingPostId: RequiredUUID,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,
     })

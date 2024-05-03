@@ -1,2 +1,8 @@
 {
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/d6172469-e4c0-47f3-b7c1-add68c613b1d/resourceGroups/common/providers/Microsoft.Web/sites/sunrise-real-estate-backend",
+    "appService.deploySubpath": "packages\\backend"
 }

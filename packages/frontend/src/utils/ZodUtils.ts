@@ -1,5 +1,5 @@
 import { z, ZodType } from "zod";
-import { matchIsValidTel } from "mui-tel-input";
+// import { matchIsValidTel } from "mui-tel-input";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -23,6 +23,7 @@ export const OptionalString = z
     required_error: "Vui lòng không bỏ trống dữ liệu này",
   })
   .regex(/(?!^\s+$)/, "Chuỗi chỉ chứa khoảng trằng")
+  .min(0)
   .optional();
 
 export const RequiredUUID = RequiredString.uuid("Mã UUID không hợp lệ");
@@ -35,15 +36,15 @@ export const RequiredEmail = RequiredString.email(
 
 export const OptionalEmail = RequiredEmail.optional();
 
-export const RequiredPhone = RequiredString.refine(
-  (value) => matchIsValidTel(value),
-  "Số điện thoại không hợp lệ"
-);
+// export const RequiredPhone = RequiredString.refine(
+//   (value) => matchIsValidTel(value),
+//   "Số điện thoại không hợp lệ"
+// );
 
-export const OptionalPhone = OptionalString.refine(
-  (value) => matchIsValidTel(value ?? ""),
-  "Số điện thoại không hợp lệ"
-);
+// export const OptionalPhone = OptionalString.refine(
+//   (value) => matchIsValidTel(value ?? ""),
+//   "Số điện thoại không hợp lệ"
+// );
 
 export const RequiredNumber = z.number({
   invalid_type_error: "Dữ liệu này không phải dạng số",

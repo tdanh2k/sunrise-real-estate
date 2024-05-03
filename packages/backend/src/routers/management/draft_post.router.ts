@@ -1,44 +1,40 @@
 import z from "zod";
 import { DraftPostSchema } from "../../schemas/DraftPost.schema";
 import { dbContext } from "../../utils/prisma";
-import { OptionalBoolean, RequiredString } from "../../utils/ZodUtils";
+import { RequiredString } from "../../utils/ZodUtils";
 import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
 
 export const DraftPostRouter = trpcRouter.router({
   all: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "GET",
-        path: "/management/draft_post.all",
-        tags: ["draft_post"],
-      },
-    })
     .input(z.void())
-    .output(APIResponseSchema(z.array(DraftPostSchema)))
+    //.output(APIResponseSchema(z.array(DraftPostSchema)))
     .query(async (opt) => {
-      const data = await dbContext.post.findMany({
+      const data = await dbContext.draftPost.findMany({
         include: {
-          PostCurrentDetail: true,
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
+          DraftPostCurrentDetail: {
+            include: {
+              GlobalPostDetail: true,
+            },
+          },
+          DraftPostImage: true,
+          GlobalPostType: true,
+          DraftPostFeature: true,
         },
       });
 
-      return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      return {
         data,
-      });
+      };
+      // return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      //   data,
+      // });
     }),
   byPage: protectedProcedure
-    // .meta({
-    //   /* 👉 */ openapi: { method: "GET", path: "/management/post.byPage", tags: ["post"]  },
-    // })
     .input(PaginationSchema)
-    .output(APIResponseSchema(z.array(DraftPostSchema)))
+    //.output(APIResponseSchema(z.array(DraftPostSchema)))
     .query(async ({ input }) => {
       const page_index = input.paging.page_index ?? 1;
       const page_size = input.paging.page_size ?? 10;
@@ -48,75 +44,86 @@ export const DraftPostRouter = trpcRouter.router({
           skip: page_index,
           take: page_size,
           include: {
-            DraftPostCurrentDetail: true,
+            DraftPostCurrentDetail: {
+              include: {
+                GlobalPostDetail: true,
+              },
+            },
             DraftPostImage: true,
             DraftPostFeature: true,
           },
         }),
-        dbContext.post.count(),
+        dbContext.draftPost.count(),
       ]);
 
-      return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      return {
         data,
         paging: {
           page_index,
           page_size,
           row_count,
         },
-      });
+      };
+      // return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      //   data,
+      //   paging: {
+      //     page_index,
+      //     page_size,
+      //     row_count,
+      //   },
+      // });
     }),
   byId: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "GET",
-        path: "/management/draft_post.byId",
-        tags: ["draft_post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(APIResponseSchema(DraftPostSchema.nullable()))
+    //.output(APIResponseSchema(DraftPostSchema.nullable()))
     .query(async ({ input }) => {
-      const data = await dbContext.post.findFirst({
+      const data = await dbContext.draftPost.findFirst({
         where: {
           Id: input.Id,
         },
         include: {
-          PostCurrentDetail: true,
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
+          DraftPostCurrentDetail: {
+            include: {
+              GlobalPostDetail: true,
+            },
+          },
+          DraftPostImage: true,
+          GlobalPostType: true,
+          DraftPostFeature: true,
         },
       });
-      return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+
+      return {
         data,
-      });
+      };
+      // return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+      //   data,
+      // });
     }),
   create: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "POST",
-        path: "/management/draft_post.create",
-        tags: ["draft_post"],
-      },
-    })
     .input(AddDraftPostSchema)
-    .output(
-      APIResponseSchema(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     DraftPostSchema.omit({
+    //       DraftPostCurrentDetail: true,
+    //       DraftPostFeature: true,
+    //       DraftPostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
-        input: { DraftCurrentDetail, DraftFeature, DraftPostImage, ...rest },
+        input: {
+          DraftPostCurrentDetail,
+          DraftPostFeature,
+          DraftPostImage,
+          ...rest
+        },
       }) => {
         if ((await ctx).userId == null)
           throw new TRPCError({
@@ -130,9 +137,9 @@ export const DraftPostRouter = trpcRouter.router({
             UserId: (await ctx).userId ?? "",
             DraftPostCurrentDetail: {
               createMany: {
-                data: DraftCurrentDetail,
+                data: DraftPostCurrentDetail,
               },
-              // connectOrCreate: DraftCurrentDetail?.map((item) => ({
+              // connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
               //   where: {
               //     Id: item.Id,
               //   },
@@ -141,9 +148,9 @@ export const DraftPostRouter = trpcRouter.router({
             },
             DraftPostFeature: {
               createMany: {
-                data: DraftFeature,
+                data: DraftPostFeature,
               },
-              // connectOrCreate: DraftFeature?.map((item) => ({
+              // connectOrCreate: DraftPostFeature?.map((item) => ({
               //   where: {
               //     Id: item.Id,
               //   },
@@ -164,40 +171,34 @@ export const DraftPostRouter = trpcRouter.router({
           },
         });
 
-        return await APIResponseSchema(
-          DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          }).nullable()
-        ).parseAsync({ data });
+        return { data };
+        // return await APIResponseSchema(
+        //   DraftPostSchema.omit({
+        //     DraftPostCurrentDetail: true,
+        //     DraftPostFeature: true,
+        //     DraftPostImage: true,
+        //   }).nullable()
+        // ).parseAsync({ data });
       }
     ),
   update: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "PUT",
-        path: "/management/draft_post.update",
-        tags: ["draft_post"],
-      },
-    })
-    .input(DraftPostSchema)
-    .output(
-      APIResponseSchema(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
-      )
-    )
+    .input(DraftPostSchema.omit({ GlobalPostType: true }))
+    // .output(
+    //   APIResponseSchema(
+    //     DraftPostSchema.omit({
+    //       DraftPostCurrentDetail: true,
+    //       DraftPostFeature: true,
+    //       DraftPostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
         input: {
           Id,
-          DraftCurrentDetail,
-          DraftFeature,
+          DraftPostCurrentDetail,
+          DraftPostFeature,
           DraftPostImage,
           ...rest
         },
@@ -211,7 +212,7 @@ export const DraftPostRouter = trpcRouter.router({
           data: {
             ...rest,
             DraftPostCurrentDetail: {
-              connectOrCreate: DraftCurrentDetail?.map((item) => ({
+              connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
                 where: {
                   Id: item.Id,
                 },
@@ -219,7 +220,7 @@ export const DraftPostRouter = trpcRouter.router({
               })),
             },
             DraftPostFeature: {
-              connectOrCreate: DraftFeature?.map((item) => ({
+              connectOrCreate: DraftPostFeature?.map((item) => ({
                 where: {
                   Id: item.Id,
                 },
@@ -237,26 +238,20 @@ export const DraftPostRouter = trpcRouter.router({
           },
         });
 
-        return await APIResponseSchema(
-          DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          })
-        ).parseAsync({ data: result });
+        return { data: result };
+        // return await APIResponseSchema(
+        //   DraftPostSchema.omit({
+        //     DraftPostCurrentDetail: true,
+        //     DraftPostFeature: true,
+        //     DraftPostImage: true,
+        //   })
+        // ).parseAsync({ data: result });
       }
     ),
 
   delete: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "DELETE",
-        path: "/management/draft_post.delete",
-        tags: ["draft_post"],
-      },
-    })
     .input(z.object({ Id: RequiredString }))
-    .output(APIResponseSchema(OptionalBoolean.nullable()))
+    //.output(APIResponseSchema(OptionalBoolean.nullable()))
     .mutation(async ({ ctx, input: { Id } }) => {
       //if (ctx.userId == null) return null;
 
@@ -266,8 +261,11 @@ export const DraftPostRouter = trpcRouter.router({
         },
       });
 
-      return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
-        data: Boolean(result),
-      });
+      return {
+        data: result,
+      };
+      // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
+      //   data: Boolean(result),
+      // });
     }),
 });

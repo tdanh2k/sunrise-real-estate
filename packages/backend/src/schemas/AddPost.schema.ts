@@ -1,8 +1,9 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
-  OptionalDate,
+  OptionalJsDate,
   OptionalNumber,
   OptionalString,
   OptionalUUID,
@@ -15,38 +16,41 @@ export const AddPostSchema = z.object({
   Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
-  CreatedDate: OptionalDate,
+  CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
   Address: RequiredString,
   Price: OptionalNumber,
-  MapUrl: RequiredURL,
+  MapUrl: RequiredString,
+  Area: NonNegativeNumber,
   PostCurrentDetail: z.array(
     z.object({
       Id: OptionalUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
-  ).optional(),
+  ),
   PostFeature: z.array(
     z.object({
       Id: OptionalUUID,
       Title: RequiredString,
       Description: RequiredString,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
-  ).optional(),
+  ),
   PostImage: z.array(
     z.object({
       Id: OptionalUUID,
-      Name: RequiredString,
+      Code: OptionalString,
+      Name: OptionalString,
       Size: NonNegativeIntegerNumber,
-      Path: RequiredString,
+      Path: OptionalString,
       MimeType: OptionalString,
-      CreatedDate: OptionalDate,
+      Base64Data: OptionalString,
+      CreatedDate: OptionalJsDate,
     })
-  ).optional(),
+  ),
 });
 
 export type TypeAddPost = z.infer<typeof AddPostSchema>;

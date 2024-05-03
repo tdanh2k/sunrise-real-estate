@@ -1,6 +1,7 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
   OptionalJsDate,
   OptionalNumber,
@@ -19,8 +20,17 @@ export const DraftPostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   Price: OptionalNumber,
-  MapUrl: RequiredURL,
-  DraftCurrentDetail: z.array(
+  MapUrl: RequiredString,
+  Area: NonNegativeNumber,
+  GlobalPostType: z
+    .object({
+      Id: RequiredUUID,
+      Idx: NonNegativeIntegerNumber,
+      Name: RequiredString,
+      CreatedDate: OptionalJsDate,
+    })
+    .optional(),
+  DraftPostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
       DraftId: RequiredUUID,
@@ -30,7 +40,7 @@ export const DraftPostSchema = z.object({
       CreatedDate: OptionalJsDate,
     })
   ),
-  DraftFeature: z.array(
+  DraftPostFeature: z.array(
     z.object({
       Id: RequiredUUID,
       DraftId: RequiredUUID,
@@ -42,12 +52,16 @@ export const DraftPostSchema = z.object({
   DraftPostImage: z.array(
     z.object({
       Id: RequiredUUID,
+      Code: OptionalString,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
-      PostId: RequiredUUID,
+      DraftId: RequiredUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),
 });
+
+export type TypeDraftPost = z.infer<typeof DraftPostSchema>;

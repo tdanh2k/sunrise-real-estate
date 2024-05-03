@@ -18,20 +18,27 @@ import { Route as ClientContactImport } from './routes/_client/contact'
 import { Route as ClientAboutImport } from './routes/_client/about'
 import { Route as ManagementUserRouteImport } from './routes/_management/user/route'
 import { Route as ManagementManagementRouteImport } from './routes/_management/management/route'
-import { Route as ClientBlogIndexImport } from './routes/_client/blog/index'
-import { Route as ClientPostIdImport } from './routes/_client/post/$id'
-import { Route as ClientBlogIdImport } from './routes/_client/blog/$id'
+import { Route as ClientPostsIndexImport } from './routes/_client/posts/index'
+import { Route as ClientBlogsIndexImport } from './routes/_client/blogs/index'
+import { Route as ClientPostsIdImport } from './routes/_client/posts/$id'
+import { Route as ClientBlogsIdImport } from './routes/_client/blogs/$id'
 import { Route as ManagementUserPostsRouteImport } from './routes/_management/user/posts/route'
-import { Route as ManagementManagementUsersRouteImport } from './routes/_management/management/users/route'
+import { Route as ManagementUserBlogsRouteImport } from './routes/_management/user/blogs/route'
 import { Route as ManagementManagementPostsRouteImport } from './routes/_management/management/posts/route'
-import { Route as ManagementManagementPostsIndexImport } from './routes/_management/management/posts/index'
+import { Route as ManagementManagementBlogsRouteImport } from './routes/_management/management/blogs/route'
+import { Route as ManagementManagementUserIndexImport } from './routes/_management/management/user/index'
 import { Route as ManagementUserPostsPostIndexImport } from './routes/_management/user/posts/post/index'
+import { Route as ManagementUserPostsPendingpostsIndexImport } from './routes/_management/user/posts/pending_posts/index'
 import { Route as ManagementUserPostsDraftpostIndexImport } from './routes/_management/user/posts/draft_post/index'
-import { Route as ManagementManagementUsersUserIndexImport } from './routes/_management/management/users/user/index'
+import { Route as ManagementUserBlogsPendingblogIndexImport } from './routes/_management/user/blogs/pending_blog/index'
+import { Route as ManagementUserBlogsDraftblogIndexImport } from './routes/_management/user/blogs/draft_blog/index'
+import { Route as ManagementUserBlogsBlogIndexImport } from './routes/_management/user/blogs/blog/index'
 import { Route as ManagementManagementPostsPosttypeIndexImport } from './routes/_management/management/posts/post_type/index'
 import { Route as ManagementManagementPostsPostdetailIndexImport } from './routes/_management/management/posts/post_detail/index'
 import { Route as ManagementManagementPostsPostIndexImport } from './routes/_management/management/posts/post/index'
-import { Route as ManagementManagementPostsDraftpostIndexImport } from './routes/_management/management/posts/draft_post/index'
+import { Route as ManagementManagementPostsPendingpostIndexImport } from './routes/_management/management/posts/pending_post/index'
+import { Route as ManagementManagementBlogsBlogtypeIndexImport } from './routes/_management/management/blogs/blog_type/index'
+import { Route as ManagementManagementBlogsBlogIndexImport } from './routes/_management/management/blogs/blog/index'
 
 // Create/Update Routes
 
@@ -70,18 +77,23 @@ const ManagementManagementRouteRoute = ManagementManagementRouteImport.update({
   getParentRoute: () => ManagementRoute,
 } as any)
 
-const ClientBlogIndexRoute = ClientBlogIndexImport.update({
-  path: '/blog/',
+const ClientPostsIndexRoute = ClientPostsIndexImport.update({
+  path: '/posts/',
   getParentRoute: () => ClientRoute,
 } as any)
 
-const ClientPostIdRoute = ClientPostIdImport.update({
-  path: '/post/$id',
+const ClientBlogsIndexRoute = ClientBlogsIndexImport.update({
+  path: '/blogs/',
   getParentRoute: () => ClientRoute,
 } as any)
 
-const ClientBlogIdRoute = ClientBlogIdImport.update({
-  path: '/blog/$id',
+const ClientPostsIdRoute = ClientPostsIdImport.update({
+  path: '/posts/$id',
+  getParentRoute: () => ClientRoute,
+} as any)
+
+const ClientBlogsIdRoute = ClientBlogsIdImport.update({
+  path: '/blogs/$id',
   getParentRoute: () => ClientRoute,
 } as any)
 
@@ -90,11 +102,10 @@ const ManagementUserPostsRouteRoute = ManagementUserPostsRouteImport.update({
   getParentRoute: () => ManagementUserRouteRoute,
 } as any)
 
-const ManagementManagementUsersRouteRoute =
-  ManagementManagementUsersRouteImport.update({
-    path: '/users',
-    getParentRoute: () => ManagementManagementRouteRoute,
-  } as any)
+const ManagementUserBlogsRouteRoute = ManagementUserBlogsRouteImport.update({
+  path: '/blogs',
+  getParentRoute: () => ManagementUserRouteRoute,
+} as any)
 
 const ManagementManagementPostsRouteRoute =
   ManagementManagementPostsRouteImport.update({
@@ -102,15 +113,27 @@ const ManagementManagementPostsRouteRoute =
     getParentRoute: () => ManagementManagementRouteRoute,
   } as any)
 
-const ManagementManagementPostsIndexRoute =
-  ManagementManagementPostsIndexImport.update({
-    path: '/',
-    getParentRoute: () => ManagementManagementPostsRouteRoute,
+const ManagementManagementBlogsRouteRoute =
+  ManagementManagementBlogsRouteImport.update({
+    path: '/blogs',
+    getParentRoute: () => ManagementManagementRouteRoute,
+  } as any)
+
+const ManagementManagementUserIndexRoute =
+  ManagementManagementUserIndexImport.update({
+    path: '/user/',
+    getParentRoute: () => ManagementManagementRouteRoute,
   } as any)
 
 const ManagementUserPostsPostIndexRoute =
   ManagementUserPostsPostIndexImport.update({
     path: '/post/',
+    getParentRoute: () => ManagementUserPostsRouteRoute,
+  } as any)
+
+const ManagementUserPostsPendingpostsIndexRoute =
+  ManagementUserPostsPendingpostsIndexImport.update({
+    path: '/pending_posts/',
     getParentRoute: () => ManagementUserPostsRouteRoute,
   } as any)
 
@@ -120,10 +143,22 @@ const ManagementUserPostsDraftpostIndexRoute =
     getParentRoute: () => ManagementUserPostsRouteRoute,
   } as any)
 
-const ManagementManagementUsersUserIndexRoute =
-  ManagementManagementUsersUserIndexImport.update({
-    path: '/user/',
-    getParentRoute: () => ManagementManagementUsersRouteRoute,
+const ManagementUserBlogsPendingblogIndexRoute =
+  ManagementUserBlogsPendingblogIndexImport.update({
+    path: '/pending_blog/',
+    getParentRoute: () => ManagementUserBlogsRouteRoute,
+  } as any)
+
+const ManagementUserBlogsDraftblogIndexRoute =
+  ManagementUserBlogsDraftblogIndexImport.update({
+    path: '/draft_blog/',
+    getParentRoute: () => ManagementUserBlogsRouteRoute,
+  } as any)
+
+const ManagementUserBlogsBlogIndexRoute =
+  ManagementUserBlogsBlogIndexImport.update({
+    path: '/blog/',
+    getParentRoute: () => ManagementUserBlogsRouteRoute,
   } as any)
 
 const ManagementManagementPostsPosttypeIndexRoute =
@@ -144,10 +179,22 @@ const ManagementManagementPostsPostIndexRoute =
     getParentRoute: () => ManagementManagementPostsRouteRoute,
   } as any)
 
-const ManagementManagementPostsDraftpostIndexRoute =
-  ManagementManagementPostsDraftpostIndexImport.update({
-    path: '/draft_post/',
+const ManagementManagementPostsPendingpostIndexRoute =
+  ManagementManagementPostsPendingpostIndexImport.update({
+    path: '/pending_post/',
     getParentRoute: () => ManagementManagementPostsRouteRoute,
+  } as any)
+
+const ManagementManagementBlogsBlogtypeIndexRoute =
+  ManagementManagementBlogsBlogtypeIndexImport.update({
+    path: '/blog_type/',
+    getParentRoute: () => ManagementManagementBlogsRouteRoute,
+  } as any)
+
+const ManagementManagementBlogsBlogIndexRoute =
+  ManagementManagementBlogsBlogIndexImport.update({
+    path: '/blog/',
+    getParentRoute: () => ManagementManagementBlogsRouteRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -182,36 +229,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientIndexImport
       parentRoute: typeof ClientImport
     }
+    '/_management/management/blogs': {
+      preLoaderRoute: typeof ManagementManagementBlogsRouteImport
+      parentRoute: typeof ManagementManagementRouteImport
+    }
     '/_management/management/posts': {
       preLoaderRoute: typeof ManagementManagementPostsRouteImport
       parentRoute: typeof ManagementManagementRouteImport
     }
-    '/_management/management/users': {
-      preLoaderRoute: typeof ManagementManagementUsersRouteImport
-      parentRoute: typeof ManagementManagementRouteImport
+    '/_management/user/blogs': {
+      preLoaderRoute: typeof ManagementUserBlogsRouteImport
+      parentRoute: typeof ManagementUserRouteImport
     }
     '/_management/user/posts': {
       preLoaderRoute: typeof ManagementUserPostsRouteImport
       parentRoute: typeof ManagementUserRouteImport
     }
-    '/_client/blog/$id': {
-      preLoaderRoute: typeof ClientBlogIdImport
+    '/_client/blogs/$id': {
+      preLoaderRoute: typeof ClientBlogsIdImport
       parentRoute: typeof ClientImport
     }
-    '/_client/post/$id': {
-      preLoaderRoute: typeof ClientPostIdImport
+    '/_client/posts/$id': {
+      preLoaderRoute: typeof ClientPostsIdImport
       parentRoute: typeof ClientImport
     }
-    '/_client/blog/': {
-      preLoaderRoute: typeof ClientBlogIndexImport
+    '/_client/blogs/': {
+      preLoaderRoute: typeof ClientBlogsIndexImport
       parentRoute: typeof ClientImport
     }
-    '/_management/management/posts/': {
-      preLoaderRoute: typeof ManagementManagementPostsIndexImport
-      parentRoute: typeof ManagementManagementPostsRouteImport
+    '/_client/posts/': {
+      preLoaderRoute: typeof ClientPostsIndexImport
+      parentRoute: typeof ClientImport
     }
-    '/_management/management/posts/draft_post/': {
-      preLoaderRoute: typeof ManagementManagementPostsDraftpostIndexImport
+    '/_management/management/user/': {
+      preLoaderRoute: typeof ManagementManagementUserIndexImport
+      parentRoute: typeof ManagementManagementRouteImport
+    }
+    '/_management/management/blogs/blog/': {
+      preLoaderRoute: typeof ManagementManagementBlogsBlogIndexImport
+      parentRoute: typeof ManagementManagementBlogsRouteImport
+    }
+    '/_management/management/blogs/blog_type/': {
+      preLoaderRoute: typeof ManagementManagementBlogsBlogtypeIndexImport
+      parentRoute: typeof ManagementManagementBlogsRouteImport
+    }
+    '/_management/management/posts/pending_post/': {
+      preLoaderRoute: typeof ManagementManagementPostsPendingpostIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
     }
     '/_management/management/posts/post/': {
@@ -226,12 +289,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementManagementPostsPosttypeIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
     }
-    '/_management/management/users/user/': {
-      preLoaderRoute: typeof ManagementManagementUsersUserIndexImport
-      parentRoute: typeof ManagementManagementUsersRouteImport
+    '/_management/user/blogs/blog/': {
+      preLoaderRoute: typeof ManagementUserBlogsBlogIndexImport
+      parentRoute: typeof ManagementUserBlogsRouteImport
+    }
+    '/_management/user/blogs/draft_blog/': {
+      preLoaderRoute: typeof ManagementUserBlogsDraftblogIndexImport
+      parentRoute: typeof ManagementUserBlogsRouteImport
+    }
+    '/_management/user/blogs/pending_blog/': {
+      preLoaderRoute: typeof ManagementUserBlogsPendingblogIndexImport
+      parentRoute: typeof ManagementUserBlogsRouteImport
     }
     '/_management/user/posts/draft_post/': {
       preLoaderRoute: typeof ManagementUserPostsDraftpostIndexImport
+      parentRoute: typeof ManagementUserPostsRouteImport
+    }
+    '/_management/user/posts/pending_posts/': {
+      preLoaderRoute: typeof ManagementUserPostsPendingpostsIndexImport
       parentRoute: typeof ManagementUserPostsRouteImport
     }
     '/_management/user/posts/post/': {
@@ -248,26 +323,34 @@ export const routeTree = rootRoute.addChildren([
     ClientAboutRoute,
     ClientContactRoute,
     ClientIndexRoute,
-    ClientBlogIdRoute,
-    ClientPostIdRoute,
-    ClientBlogIndexRoute,
+    ClientBlogsIdRoute,
+    ClientPostsIdRoute,
+    ClientBlogsIndexRoute,
+    ClientPostsIndexRoute,
   ]),
   ManagementRoute.addChildren([
     ManagementManagementRouteRoute.addChildren([
+      ManagementManagementBlogsRouteRoute.addChildren([
+        ManagementManagementBlogsBlogIndexRoute,
+        ManagementManagementBlogsBlogtypeIndexRoute,
+      ]),
       ManagementManagementPostsRouteRoute.addChildren([
-        ManagementManagementPostsIndexRoute,
-        ManagementManagementPostsDraftpostIndexRoute,
+        ManagementManagementPostsPendingpostIndexRoute,
         ManagementManagementPostsPostIndexRoute,
         ManagementManagementPostsPostdetailIndexRoute,
         ManagementManagementPostsPosttypeIndexRoute,
       ]),
-      ManagementManagementUsersRouteRoute.addChildren([
-        ManagementManagementUsersUserIndexRoute,
-      ]),
+      ManagementManagementUserIndexRoute,
     ]),
     ManagementUserRouteRoute.addChildren([
+      ManagementUserBlogsRouteRoute.addChildren([
+        ManagementUserBlogsBlogIndexRoute,
+        ManagementUserBlogsDraftblogIndexRoute,
+        ManagementUserBlogsPendingblogIndexRoute,
+      ]),
       ManagementUserPostsRouteRoute.addChildren([
         ManagementUserPostsDraftpostIndexRoute,
+        ManagementUserPostsPendingpostsIndexRoute,
         ManagementUserPostsPostIndexRoute,
       ]),
     ]),

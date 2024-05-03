@@ -8,133 +8,140 @@ import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
-import { FC, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { TypeGlobalPostDetail } from "@sunrise-backend/src/schemas/GlobalPostDetail.schema";
 import { ModalAddPostDetail } from "./-components/ModalAddPostDetail";
+import { nprogress } from "@mantine/nprogress";
 
-const PostDetail: FC = () => {
-  const [selectedId, setSelectedId] = useState<string | undefined>("");
-  
-  const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
-    useDisclosure(false);
-  const [
-    openedModalUpdate,
-    { open: openModalUpdate, close: closeModalUpdate },
-  ] = useDisclosure(false);
-  const [
-    openedModalDelete,
-    { open: openModalDelete, close: closeModalDelete },
-  ] = useDisclosure(false);
+export const Route = createFileRoute(
+  "/_management/management/posts/post_detail/"
+)({
+  onEnter: () => {
+    nprogress.complete();
+  },
+  onLeave: () => {
+    nprogress.start();
+  },
+  component: () => {
+    const [selectedId, setSelectedId] = useState<string | undefined>("");
 
-  const handleOpenModalAdd = useCallback(() => {
-    openModalAdd();
-  }, [openModalAdd]);
+    const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
+      useDisclosure(false);
+    const [
+      openedModalUpdate,
+      { open: openModalUpdate, close: closeModalUpdate },
+    ] = useDisclosure(false);
+    const [
+      openedModalDelete,
+      { open: openModalDelete, close: closeModalDelete },
+    ] = useDisclosure(false);
 
-  const handleCloseModalAdd = () => {
-    closeModalAdd();
-  };
+    const handleOpenModalAdd = useCallback(() => {
+      openModalAdd();
+    }, [openModalAdd]);
 
-  const handleOpenModalUpdate = useCallback(
-    (Id: string | undefined) => () => {
-      setSelectedId(Id);
-      openModalUpdate();
-    },
-    [openModalUpdate]
-  );
+    const handleCloseModalAdd = () => {
+      closeModalAdd();
+    };
 
-  const handleCloseModalUpdate = () => {
-    setSelectedId("");
-    closeModalUpdate();
-  };
-
-  const handleOpenModalDelete = useCallback(
-    (Id: string | undefined) => () => {
-      setSelectedId(Id);
-      openModalDelete();
-    },
-    [openModalDelete]
-  );
-
-  const handleCloseModalDelete = () => {
-    setSelectedId("");
-    closeModalDelete();
-  };
-
-  const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
-    () => [
-      {
-        label: "Thêm",
-        actionType: "Add",
-        onClick: handleOpenModalAdd,
+    const handleOpenModalUpdate = useCallback(
+      (Id: string | undefined) => () => {
+        setSelectedId(Id);
+        openModalUpdate();
       },
-    ],
-    [handleOpenModalAdd]
-  );
+      [openModalUpdate]
+    );
 
-  const tableRowActions = useCallback(
-    (Id: string | undefined): CustomActionMenuItemPropsType[] => [
-      {
-        id: "Update",
-        label: "Cập nhật",
-        actionType: "Update",
-        onClick: handleOpenModalUpdate(Id),
-      },
-      {
-        id: "Remove",
-        label: "Xóa",
-        actionType: "Delete",
-        onClick: handleOpenModalDelete(Id),
-      },
-    ],
-    [handleOpenModalUpdate, handleOpenModalDelete]
-  );
+    const handleCloseModalUpdate = () => {
+      setSelectedId("");
+      closeModalUpdate();
+    };
 
-  const table = useMantineRTInstance<TypeGlobalPostDetail>({
-    columns: [
-      {
-        accessorKey: "Id",
-        header: "Id",
-        filterFn: "contains",
+    const handleOpenModalDelete = useCallback(
+      (Id: string | undefined) => () => {
+        setSelectedId(Id);
+        openModalDelete();
       },
-      {
-        accessorKey: "Idx",
-        header: "Thứ tự",
-        filterFn: "contains",
-      },
-      {
-        accessorKey: "Name",
-        header: "Tên",
-        filterFn: "contains",
-      },
-    ],
-    useQuery: privateRoute.management.global_post_detail.byPage.useQuery,
-    topToolbarActionObjectList: tableActions,
-    tableProps: {
-      enableGrouping: false,
-      enableRowSelection: false,
-      enableMultiRowSelection: false,
-      getRowId: (row) => row.Id,
-      enableRowActions: true,
-      renderRowActionMenuItems: ({ row }) =>
-        RenderCustomActionMenuItems({
-          rowId: row.id,
-          actionList: tableRowActions(row.id),
-          //onClickAction: closeMenu,
-        }),
-    },
-  });
+      [openModalDelete]
+    );
 
-  return (
-    <>
-      <MantineReactTable table={table} />
-      <ModalAddPostDetail
-        isOpen={openedModalAdd}
-        handleClose={handleCloseModalAdd}
-      />
-    </>
-  );
-};
+    const handleCloseModalDelete = () => {
+      setSelectedId("");
+      closeModalDelete();
+    };
 
-export const Route = createFileRoute("/_management/management/posts/post_detail/")({
-  component: PostDetail,
+    const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
+      () => [
+        {
+          label: "Thêm",
+          actionType: "Add",
+          onClick: handleOpenModalAdd,
+        },
+      ],
+      [handleOpenModalAdd]
+    );
+
+    const tableRowActions = useCallback(
+      (Id: string | undefined): CustomActionMenuItemPropsType[] => [
+        {
+          id: "Update",
+          label: "Cập nhật",
+          actionType: "Update",
+          onClick: handleOpenModalUpdate(Id),
+        },
+        {
+          id: "Remove",
+          label: "Xóa",
+          actionType: "Delete",
+          onClick: handleOpenModalDelete(Id),
+        },
+      ],
+      [handleOpenModalUpdate, handleOpenModalDelete]
+    );
+
+    const table = useMantineRTInstance<TypeGlobalPostDetail>({
+      columns: [
+        {
+          accessorKey: "Id",
+          header: "Id",
+          filterFn: "contains",
+        },
+        {
+          accessorKey: "Idx",
+          header: "Thứ tự",
+          filterFn: "contains",
+        },
+        {
+          accessorKey: "Name",
+          header: "Tên",
+          filterFn: "contains",
+        },
+      ],
+      useQuery: privateRoute.management.global_post_detail.byPage.useQuery,
+      topToolbarActionObjectList: tableActions,
+      tableProps: {
+        enableGrouping: false,
+        enableRowSelection: false,
+        enableMultiRowSelection: false,
+        getRowId: (row) => row.Id,
+        enableRowActions: true,
+        renderRowActionMenuItems: ({ row }) =>
+          RenderCustomActionMenuItems({
+            rowId: row.id,
+            actionList: tableRowActions(row.id),
+            //onClickAction: closeMenu,
+          }),
+      },
+    });
+
+    return (
+      <>
+        <MantineReactTable table={table} />
+        <ModalAddPostDetail
+          isOpen={openedModalAdd}
+          handleClose={handleCloseModalAdd}
+        />
+      </>
+    );
+  },
 });

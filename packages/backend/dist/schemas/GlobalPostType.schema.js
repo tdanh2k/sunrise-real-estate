@@ -10,5 +10,5 @@ exports.GlobalPostTypeSchema = zod_1.default.object({
     Id: ZodUtils_1.RequiredUUID,
     Idx: ZodUtils_1.NonNegativeIntegerNumber,
     Name: ZodUtils_1.RequiredString,
-    CreatedDate: ZodUtils_1.OptionalDate,
+    CreatedDate: ZodUtils_1.OptionalJsDate,
 });

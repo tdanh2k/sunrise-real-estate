@@ -1,20 +1,18 @@
 import z from "zod";
-import { DraftPostSchema } from "../../schemas/DraftPost.schema";
+import { DraftPostSchema, TypeDraftPost } from "../../schemas/DraftPost.schema";
 import { dbContext } from "../../utils/prisma";
-import { OptionalBoolean, RequiredString } from "../../utils/ZodUtils";
+import { RequiredString } from "../../utils/ZodUtils";
 import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { v2 as cloudinary } from "cloudinary";
 
 export const DraftPostRouter = trpcRouter.router({
   byPage: protectedProcedure
-    // .meta({
-    //   /* 👉 */ openapi: { method: "GET", path: "/user/post.byPage", tags: ["post"]  },
-    // })
     .input(PaginationSchema)
-    .output(APIResponseSchema(z.array(DraftPostSchema)))
+    //.output(APIResponseSchema(z.array(DraftPostSchema)))
     .query(async ({ ctx, input }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -41,70 +39,72 @@ export const DraftPostRouter = trpcRouter.router({
         dbContext.post.count(),
       ]);
 
-      return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      return {
         data,
         paging: {
           page_index,
           page_size,
           row_count,
         },
-      });
+      };
+      // return await APIResponseSchema(z.array(DraftPostSchema)).parseAsync({
+      //   data,
+      //   paging: {
+      //     page_index,
+      //     page_size,
+      //     row_count,
+      //   },
+      // });
     }),
   byId: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "GET",
-        path: "/user/draft_post.byId",
-        tags: ["draft_post"],
-      },
-    })
     .input(
       z.object({
         Id: RequiredString,
       })
     )
-    .output(APIResponseSchema(DraftPostSchema.nullable()))
+    //.output(APIResponseSchema(DraftPostSchema.nullable()))
     .query(async ({ input }) => {
-      const data = await dbContext.post.findFirst({
+      const data = await dbContext.draftPost.findFirst({
         where: {
-          Id: input.Id,
+          Id: input.Id ?? "00000000-0000-0000-0000-000000000000",
         },
         include: {
-          PostCurrentDetail: true,
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
+          DraftPostCurrentDetail: true,
+          DraftPostImage: true,
+          GlobalPostType: true,
+          DraftPostFeature: true,
         },
       });
-      return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+
+      return {
         data,
-      });
+      } as TypeAPIResponse<TypeDraftPost>;
+      // return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
+      //   data,
+      // });
     }),
   create: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "POST",
-        path: "/user/draft_post.create",
-        tags: ["draft_post"],
-      },
-    })
     .input(AddDraftPostSchema)
-    .output(
-      APIResponseSchema(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
-      )
-    )
+    // .output(
+    //   APIResponseSchema(
+    //     DraftPostSchema.omit({
+    //       DraftPostCurrentDetail: true,
+    //       DraftPostFeature: true,
+    //       DraftPostImage: true,
+    //     })
+    //       .extend({
+    //         Price: NonNegativeNumber.optional(),
+    //       })
+    //       .nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
         input: {
           Id,
-          DraftCurrentDetail,
-          DraftFeature,
+          DraftPostCurrentDetail,
+          DraftPostFeature,
           DraftPostImage,
           ...rest
         },
@@ -115,55 +115,100 @@ export const DraftPostRouter = trpcRouter.router({
             message: ``,
           });
 
+        const AddImages: Omit<(typeof DraftPostImage)[number], "Base64Data">[] =
+          [];
+
+        for (const { Base64Data, ...metadata } of DraftPostImage) {
+          if (metadata.Id) {
+            AddImages.push(metadata);
+          } else if (Base64Data != null) {
+            await cloudinary.uploader.upload(
+              Base64Data,
+              {
+                use_filename: true,
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (!error)
+                  AddImages.push({
+                    ...metadata,
+                    Code: result?.public_id,
+                    Path: result?.secure_url ?? "",
+                    Size: result?.bytes ?? metadata?.Size,
+                  });
+              }
+            );
+          }
+        }
+
         const data = await dbContext.draftPost.upsert({
           create: {
             ...rest,
             UserId: (await ctx).userId ?? "",
+            Title: rest.Title ?? "",
+            Description: rest.Description ?? "",
+            TypeId: rest?.TypeId ?? "",
+            Address: rest?.Address ?? "",
+            MapUrl: rest?.MapUrl ?? "",
             DraftPostCurrentDetail: {
               createMany: {
-                data: DraftCurrentDetail,
+                data:
+                  DraftPostCurrentDetail?.map((item) => ({
+                    ...item,
+                    Value: item?.Value ?? "",
+                  })) ?? [],
               },
             },
             DraftPostFeature: {
               createMany: {
-                data: DraftFeature,
+                data: DraftPostFeature ?? [],
               },
             },
             DraftPostImage: {
               createMany: {
-                data: DraftPostImage,
+                data: AddImages,
               },
             },
           },
           update: {
             ...rest,
             DraftPostCurrentDetail: {
-              connectOrCreate: DraftCurrentDetail?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
+              connectOrCreate:
+                DraftPostCurrentDetail?.map((item) => ({
+                  where: {
+                    Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                  },
+                  create: { ...item, Value: item?.Value ?? "" },
+                })) ?? [],
             },
             DraftPostFeature: {
-              connectOrCreate: DraftFeature?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
+              connectOrCreate:
+                DraftPostFeature?.map((item) => ({
+                  where: {
+                    Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                  },
+                  create: item,
+                })) ?? [],
             },
             DraftPostImage: {
-              connectOrCreate: DraftPostImage?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
+              connectOrCreate:
+                AddImages?.map((item) => ({
+                  where: {
+                    Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                  },
+                  create: item,
+                })) ?? [],
+              deleteMany: AddImages?.some((r) => r.Id)
+                ? {
+                    Id: {
+                      notIn: AddImages?.map((r) => r.Id) as string[],
+                    },
+                  }
+                : undefined,
             },
           },
           where: {
-            Id,
+            Id: Id ?? "00000000-0000-0000-0000-000000000000",
             UserId: (await ctx).userId,
           },
         });
@@ -172,22 +217,22 @@ export const DraftPostRouter = trpcRouter.router({
         //   data: {
         //     ...rest,
         //     UserId: (await ctx).userId ?? "",
-        //     DraftCurrentDetail: {
+        //     DraftPostCurrentDetail: {
         //       createMany: {
-        //         data: DraftCurrentDetail,
+        //         data: DraftPostCurrentDetail,
         //       },
-        //       // connectOrCreate: DraftCurrentDetail?.map((item) => ({
+        //       // connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
         //       //   where: {
         //       //     Id: item.Id,
         //       //   },
         //       //   create: item,
         //       // })),
         //     },
-        //     DraftFeature: {
+        //     DraftPostFeature: {
         //       createMany: {
-        //         data: DraftFeature,
+        //         data: DraftPostFeature,
         //       },
-        //       // connectOrCreate: DraftFeature?.map((item) => ({
+        //       // connectOrCreate: DraftPostFeature?.map((item) => ({
         //       //   where: {
         //       //     Id: item.Id,
         //       //   },
@@ -208,110 +253,172 @@ export const DraftPostRouter = trpcRouter.router({
         //   },
         // });
 
-        return await APIResponseSchema(
-          DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          }).nullable()
-        ).parseAsync({ data });
+        return { data };
+
+        // return await APIResponseSchema(
+        //   DraftPostSchema.omit({
+        //     DraftPostCurrentDetail: true,
+        //     DraftPostFeature: true,
+        //     DraftPostImage: true,
+        //   })
+        //     .extend({
+        //       Price: NonNegativeNumber.optional(),
+        //     })
+        //     .nullable()
+        // ).parseAsync({ data });
       }
     ),
   update: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "PUT",
-        path: "/user/draft_post.update",
-        tags: ["draft_post"],
-      },
-    })
-    .input(DraftPostSchema)
-    .output(
-      APIResponseSchema(
-        DraftPostSchema.omit({
-          DraftCurrentDetail: true,
-          DraftFeature: true,
-          DraftPostImage: true,
-        }).nullable()
-      )
-    )
+    .input(DraftPostSchema.omit({ GlobalPostType: true }))
+    // .output(
+    //   APIResponseSchema(
+    //     DraftPostSchema.omit({
+    //       DraftPostCurrentDetail: true,
+    //       DraftPostFeature: true,
+    //       DraftPostImage: true,
+    //     }).nullable()
+    //   )
+    // )
     .mutation(
       async ({
         ctx,
         input: {
           Id,
-          DraftCurrentDetail,
-          DraftFeature,
+          DraftPostCurrentDetail,
+          DraftPostFeature,
           DraftPostImage,
           ...rest
         },
       }) => {
-        //if (ctx.userId == null) return null;
+        if ((await ctx).userId == null)
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: ``,
+          });
 
-        const result = await dbContext.draftPost.update({
-          where: {
-            Id,
-          },
-          data: {
-            ...rest,
-            DraftPostCurrentDetail: {
-              connectOrCreate: DraftCurrentDetail?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-            DraftPostFeature: {
-              connectOrCreate: DraftFeature?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-            DraftPostImage: {
-              connectOrCreate: DraftPostImage?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-          },
-        });
+        const AddImages: Omit<(typeof DraftPostImage)[number], "Base64Data">[] =
+          [];
 
-        return await APIResponseSchema(
-          DraftPostSchema.omit({
-            DraftCurrentDetail: true,
-            DraftFeature: true,
-            DraftPostImage: true,
-          })
-        ).parseAsync({ data: result });
+        for (const { Base64Data, ...metadata } of DraftPostImage) {
+          if (metadata.Id) {
+            AddImages.push(metadata);
+          } else if (Base64Data != null) {
+            await cloudinary.uploader.upload(
+              Base64Data,
+              {
+                use_filename: true,
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (!error)
+                  AddImages.push({
+                    ...metadata,
+                    Code: result?.public_id,
+                    Path: result?.secure_url ?? "",
+                    Size: result?.bytes ?? metadata?.Size,
+                  });
+              }
+            );
+          }
+        }
+
+        const [updatedDraftPost, deletedImages, { count }] =
+          await dbContext.$transaction([
+            dbContext.draftPost.update({
+              where: {
+                Id: Id ?? "00000000-0000-0000-0000-000000000000",
+                UserId: (await ctx).userId,
+              },
+              data: {
+                ...rest,
+                DraftPostCurrentDetail: {
+                  connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
+                    where: {
+                      Id: item.Id,
+                    },
+                    create: item,
+                  })),
+                },
+                DraftPostFeature: {
+                  connectOrCreate: DraftPostFeature?.map((item) => ({
+                    where: {
+                      Id: item.Id,
+                    },
+                    create: item,
+                  })),
+                },
+                DraftPostImage: {
+                  connectOrCreate: AddImages?.map((item) => ({
+                    where: {
+                      Id: item.Id,
+                    },
+                    create: item,
+                  })),
+                },
+              },
+            }),
+            dbContext.draftPostImage.findMany({
+              where: {
+                Id: {
+                  notIn: AddImages?.map((r) => r.Id) as string[],
+                },
+                DraftId: Id,
+              },
+            }),
+            dbContext.draftPostImage.deleteMany({
+              where: {
+                Id: {
+                  notIn: AddImages?.map((r) => r.Id) as string[],
+                },
+                DraftId: Id,
+              },
+            }),
+          ]);
+
+        if (deletedImages?.some((r) => r.Code) && count > 0) {
+          await cloudinary.api.delete_resources(
+            deletedImages
+              ?.filter((r) => r.Code)
+              ?.map((r) => r.Code) as string[],
+            { type: "upload", resource_type: "image" }
+          );
+        }
+
+        return { data: updatedDraftPost };
+
+        // return await APIResponseSchema(
+        //   DraftPostSchema.omit({
+        //     DraftPostCurrentDetail: true,
+        //     DraftPostFeature: true,
+        //     DraftPostImage: true,
+        //   })
+        // ).parseAsync({ data: result });
       }
     ),
 
   delete: protectedProcedure
-    .meta({
-      /* 👉 */ openapi: {
-        method: "DELETE",
-        path: "/user/draft_post.delete",
-        tags: ["draft_post"],
-      },
-    })
     .input(z.object({ Id: RequiredString }))
-    .output(APIResponseSchema(OptionalBoolean.nullable()))
+    //.output(APIResponseSchema(OptionalBoolean.nullable()))
     .mutation(async ({ ctx, input: { Id } }) => {
-      //if (ctx.userId == null) return null;
+      if ((await ctx).userId == null)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: ``,
+        });
 
       const result = await dbContext.draftPost.delete({
         where: {
-          Id,
+          Id: Id ?? "00000000-0000-0000-0000-000000000000",
+          UserId: (await ctx).userId,
         },
       });
 
-      return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
-        data: Boolean(result),
-      });
+      return {
+        data: result,
+      };
+
+      // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
+      //   data: Boolean(result),
+      // });
     }),
 });

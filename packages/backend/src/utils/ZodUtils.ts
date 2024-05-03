@@ -1,4 +1,5 @@
 import { z, ZodType } from "zod";
+import { Base64 } from "js-base64";
 // import { matchIsValidTel } from "mui-tel-input";
 
 // import dayjs from "dayjs";
@@ -24,6 +25,12 @@ export const OptionalString = z
   })
   .regex(/(?!^\s+$)/, "Chuỗi chỉ chứa khoảng trằng")
   .optional();
+
+export const RequiredBase64 = RequiredString.base64("Không phải chuỗi Base64");
+
+export const OptionalBase64 = RequiredString.base64(
+  "Không phải chuỗi Base64"
+).optional();
 
 export const RequiredUUID = RequiredString.uuid("Mã UUID không hợp lệ");
 

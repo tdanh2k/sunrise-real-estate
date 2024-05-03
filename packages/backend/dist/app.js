@@ -29,12 +29,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
 require("dotenv/config.js");
-const server_js_1 = require("./routers/server.js");
+const index_js_1 = require("./routers/index.js");
 const helmet_1 = __importDefault(require("helmet"));
-const error_middleware_js_1 = require("./middlewares/error.middleware.js");
-const not_found_middleware_js_1 = require("./middlewares/not-found.middleware.js");
 const cors_1 = __importDefault(require("cors"));
 const context_1 = require("./routers/context");
+const error_middleware_js_1 = require("./middlewares/error.middleware.js");
+const not_found_middleware_js_1 = require("./middlewares/not-found.middleware.js");
+const auth0_middleware_js_1 = require("./middlewares/auth0.middleware.js");
 const app = (0, express_1.default)();
 const port = 3000;
 app.use((0, cors_1.default)({
@@ -43,6 +44,8 @@ app.use((0, cors_1.default)({
     allowedHeaders: ["Authorization", "Content-Type"],
     maxAge: 86400,
 }));
+app.use(express_1.default.json());
+// app.set("json spaces", 2);
 app.use((0, helmet_1.default)({
     hsts: {
         maxAge: 31536000,
@@ -58,18 +61,35 @@ app.use((0, helmet_1.default)({
         action: "deny",
     },
 }));
-app.get("/", async (req, res) => {
-    res.json({ message: "this is a public route" });
-});
-app.use("/trpc", 
-//validateAccessToken,
+// app.get("/", async (req, res) => {
+//   res.json({ message: "Test" });
+// });
+app.use("/private", auth0_middleware_js_1.validateAccessToken, 
 //checkRequiredPermissions(["use:trpc"]),
 trpcExpress.createExpressMiddleware({
-    router: server_js_1.appRouter,
+    router: index_js_1.appRouter,
     createContext: context_1.createTRPCContext,
 }));
+app.use("/public", trpcExpress.createExpressMiddleware({
+    router: index_js_1.publicAppRouter,
+    createContext: context_1.createTRPCContext,
+}));
+// Serve Swagger UI with our OpenAPI schema
+// app.use(
+//   "/api-docs",
+//   (req: Request, res: Response, next: NextFunction) => {
+//     res?.set("Content-Security-Policy", `script-src 'self'`);
+//     next();
+//   },
+//   swaggerUi.serve,
+//   swaggerUi.setup(openApiDocument, {
+//     isExplorer: true,
+//   })
+// );
 app.use(error_middleware_js_1.errorHandler);
 app.use(not_found_middleware_js_1.notFoundHandler);
 app.listen(port, () => {
-    console.log(`sunrise-real-estate-backend listening on http://localhost:${port}`);
+    console.log(`- sunrise-real-estate-backend listening on http://localhost:${port}.
+` //- Access Swagger docs at http://localhost:${port}/api-docs
+    );
 });

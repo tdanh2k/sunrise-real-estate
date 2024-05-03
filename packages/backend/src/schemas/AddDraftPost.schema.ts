@@ -1,8 +1,9 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
-  OptionalDate,
+  OptionalJsDate,
   OptionalString,
   OptionalUUID,
   RequiredString,
@@ -12,38 +13,42 @@ import {
 
 export const AddDraftPostSchema = z.object({
   Id: OptionalUUID,
-  Code: RequiredString,
-  Title: RequiredString,
-  Description: RequiredString,
-  CreatedDate: OptionalDate,
+  Code: OptionalString,
+  Title: OptionalString,
+  Description: OptionalString,
+  CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
-  Address: RequiredString,
-  MapUrl: RequiredURL,
-  DraftCurrentDetail: z.array(
+  Address: OptionalString,
+  Price: NonNegativeNumber,
+  MapUrl: OptionalString,
+  Area: NonNegativeNumber.optional(),
+  DraftPostCurrentDetail: z.array(
     z.object({
       Id: OptionalUUID,
       DetailId: RequiredUUID,
-      Value: RequiredString,
+      Value: OptionalString,
       IsNumber: OptionalBoolean,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
   ),
-  DraftFeature: z.array(
+  DraftPostFeature: z.array(
     z.object({
       Id: OptionalUUID,
       Title: RequiredString,
       Description: RequiredString,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
   ),
   DraftPostImage: z.array(
     z.object({
       Id: OptionalUUID,
+      Code: OptionalString,
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
+      Base64Data: OptionalString,
       MimeType: OptionalString,
-      CreatedDate: OptionalDate,
+      CreatedDate: OptionalJsDate,
     })
   ),
 });

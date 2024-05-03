@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { NonNegativeIntegerNumber } from "../utils/ZodUtils";
 
-export const APIResponseSchema = <T extends z.ZodSchema>(dataSchema: T) =>
+export const APIResponseSchema: (dataSchema: z.ZodSchema) => z.ZodSchema = (
+  dataSchema
+) =>
   z.object({
     data: dataSchema,
     paging: z
@@ -13,6 +15,17 @@ export const APIResponseSchema = <T extends z.ZodSchema>(dataSchema: T) =>
       .optional(),
   });
 
+// export type TypeAPIResponse<
+//   T extends Record<string, unknown> | Record<string, unknown>[],
+// > = z.infer<ReturnType<typeof APIResponseSchema>> & { data: T };
+
 export type TypeAPIResponse<
   T extends Record<string, unknown> | Record<string, unknown>[],
-> = z.infer<ReturnType<typeof APIResponseSchema>> & { data: T };
+> = {
+  data: T;
+  paging?: {
+    page_size?: number;
+    page_index?: number;
+    row_count?: number;
+  };
+};

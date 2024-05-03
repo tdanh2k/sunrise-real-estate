@@ -13,6 +13,8 @@ import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
+import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
+import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -25,6 +27,7 @@ const defaultValues: TypeAddPost = {
   Title: "",
   Address: "",
   Description: "",
+  Price: 0,
   MapUrl: "",
   PostImage: [],
   PostCurrentDetail: [],
@@ -43,11 +46,12 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     defaultValues,
   });
 
-  const { mutateAsync, isPending } = privateRoute.management.post.publish.useMutation({
-    onSuccess: () => {
-      utils.management.post.invalidate();
-    },
-  });
+  const { mutateAsync, isPending } =
+    privateRoute.management.post.publish.useMutation({
+      onSuccess: () => {
+        utils.management.post.invalidate();
+      },
+    });
 
   const onSubmit: SubmitHandler<TypeAddPost> = async (values) => {
     await mutateAsync(values);
@@ -103,18 +107,23 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
         <TextInputRHF name="MapUrl" label="Url bản đồ" control={control} />
+        <NumberInputRHF name="Price" label="Giá" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
           legendLabel="Chi tiết bất động sản"
           columns={[
             {
               accessorKey: "DetailId",
-              header: "DetailId",
+              header: "Loại chi tiết",
               editVariant: "select",
-              mantineEditTextInputProps: ({ row }) => ({
-                // value: fields?.find((item) => item.Id === row.original.Id)
-                //   ?.DetailId,
-              }),
+              Cell: ({ cell, table, renderedCellValue, row }) =>
+                table.getState()?.editingCell?.id === cell.id
+                  ? renderedCellValue
+                  : cell.getValue<string>()
+                    ? postDetailResponse?.data?.find(
+                        (r) => r.Id === cell.getValue<string>()
+                      )?.Name
+                    : null,
               mantineEditSelectProps: ({ row }) => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
@@ -174,6 +183,52 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           // }}
         />
       </Stack>
+      <MantineReactTableRHF
+        legendLabel="Hình ảnh"
+        externalLoading={isFetching}
+        disableEdit
+        name="PostImage"
+        control={control}
+        columns={[
+          {
+            accessorKey: "Name",
+            header: "Tên file",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "MimeType",
+            header: "MIME",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "Size",
+            header: "Kích thước",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "Base64Data",
+            header: "Upload",
+            Cell: ({ cell, table, renderedCellValue }) =>
+              table.getState()?.editingCell?.id === cell.id
+                ? renderedCellValue
+                : cell.getValue<string>()
+                  ? "Có dữ liệu"
+                  : null,
+            Edit: ({ cell, row, table }) => (
+              <MRT_EditCellFileInput
+                cell={cell}
+                table={table}
+                onChange={(file) => {
+                  if (!file) return;
+                  row._valuesCache["Name"] = file?.name;
+                  row._valuesCache["MimeType"] = file?.type;
+                  row._valuesCache["Size"] = file?.size;
+                }}
+              />
+            ),
+          },
+        ]}
+      />
     </CustomModal>
   );
 };

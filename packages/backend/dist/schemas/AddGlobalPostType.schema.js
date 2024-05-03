@@ -9,5 +9,5 @@ const ZodUtils_1 = require("../utils/ZodUtils");
 exports.AddGlobalPostTypeSchema = zod_1.default.object({
     Idx: ZodUtils_1.NonNegativeIntegerNumber,
     Name: ZodUtils_1.RequiredString,
-    CreatedDate: ZodUtils_1.OptionalDate,
+    //CreatedDate: OptionalJsDate,
 });

@@ -1,14 +1,14 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
-  OptionalDate,
+  OptionalJsDate,
   RequiredString,
 } from "../utils/ZodUtils";
 
 export const AddGlobalPostTypeSchema = z.object({
   Idx: NonNegativeIntegerNumber,
   Name: RequiredString,
-  //CreatedDate: OptionalDate,
+  //CreatedDate: OptionalJsDate,
 });
 
 export type TypeAddGlobalPostType = z.infer<typeof AddGlobalPostTypeSchema>;

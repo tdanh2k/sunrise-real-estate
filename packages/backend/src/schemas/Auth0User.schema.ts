@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   NonNegativeIntegerNumber,
   OptionalBoolean,
-  OptionalDate,
+  OptionalJsDate,
   OptionalString,
   RequiredString,
 } from "../utils/ZodUtils";
@@ -14,8 +14,8 @@ export const Auth0UserSchema = z.object({
   phone_number: OptionalString,
   phone_verified: OptionalBoolean,
   user_id: RequiredString,
-  created_at: OptionalDate,
-  updated_at: OptionalDate,
+  created_at: OptionalJsDate,
+  updated_at: OptionalJsDate,
   // identities: z.array(
   //   z.object({
   //     connection: OptionalString,
@@ -28,12 +28,12 @@ export const Auth0UserSchema = z.object({
   // "user_metadata": {},
   picture: OptionalString,
   name: OptionalString,
-  // "nickname": "",
+  nickname: OptionalString,
   // "multifactor": [
   //   ""
   // ],
-  // "last_ip": "",
-  // "last_login": "",
+  last_ip: OptionalString,
+  last_login: OptionalString,
   logins_count: NonNegativeIntegerNumber,
   blocked: OptionalBoolean,
   given_name: OptionalString,
