@@ -48,19 +48,16 @@ jobs:
       run: corepack enable pnpm@latest
       
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        pnpm install --store=node_modules/.pnpm-store
+      run: pnpm install --store=node_modules/.pnpm-store
+      working-directory: './frontend'
 
     - name: Build frontend
-      run: |
-        cd frontend
-        pnpm build
+      run: pnpm build
+      working-directory: './frontend'
 
     - name: Install backend dependencies
-      run: |
-        cd backend
-        pnpm install --store=node_modules/.pnpm-store
+      run: pnpm install --store=node_modules/.pnpm-store
+      working-directory: './backend'
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
