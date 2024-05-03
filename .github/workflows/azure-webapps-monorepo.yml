@@ -91,3 +91,10 @@ jobs:
         slot-name: ${{ env.AZURE_SLOT_NAME }}
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DE5F64E7A8BB45E2832C00CF0976800C }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+    - name: Start frontend and backend
+      run: |
+        cd backend
+        pnpm run dev &
+        cd ../frontend
+        pnpm preview
