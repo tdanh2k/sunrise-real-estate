@@ -19,6 +19,7 @@ model DraftPost {
   Address                String                   @db.NVarChar(256)
   MapUrl                 String                   @db.VarChar(Max)
   Price                  Float?
+  Area                   Float?
   Auth0Profile           Auth0Profile             @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "DraftPost_Auth0Profile_FK")
   GlobalPostType         GlobalPostType           @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "DraftPost_GlobalPostType_FK")
   DraftPostCurrentDetail DraftPostCurrentDetail[]
@@ -50,6 +51,7 @@ model Post {
   Address           String              @db.NVarChar(Max)
   MapUrl            String              @db.VarChar(Max)
   Price             Float?
+  Area              Float?
   Auth0Profile      Auth0Profile        @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "Post_Auth0Profile_FK")
   PostType          GlobalPostType      @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "Post_PostType_FK")
   PostCurrentDetail PostCurrentDetail[]
@@ -253,6 +255,7 @@ model PendingPost {
   Price                    Float?
   ApprovedBy               String?                    @db.VarChar(256)
   ApprovedDate             DateTime?                  @db.DateTime
+  Area                     Float?
   Auth0Profile             Auth0Profile               @relation(fields: [UserId], references: [UserId], onUpdate: NoAction, map: "PendingPost_Auth0Profile_FK")
   GlobalPostType           GlobalPostType             @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingPost_GlobalPostType_FK")
   PendingPostCurrentDetail PendingPostCurrentDetail[]

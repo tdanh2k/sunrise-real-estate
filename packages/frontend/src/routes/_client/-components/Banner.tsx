@@ -56,7 +56,7 @@ export const Banner = () => {
                       if (event.key !== "Enter") return;
 
                       navigate({
-                        to: "/search",
+                        to: "/blogs",
                         search: {
                           keyword: word,
                         },
@@ -70,7 +70,7 @@ export const Banner = () => {
                     className="btn-search m-2"
                     onClick={() =>
                       navigate({
-                        to: "/search",
+                        to: "/blogs",
                         search: {
                           keyword: word,
                         },

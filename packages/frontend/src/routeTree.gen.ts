@@ -18,10 +18,10 @@ import { Route as ClientContactImport } from './routes/_client/contact'
 import { Route as ClientAboutImport } from './routes/_client/about'
 import { Route as ManagementUserRouteImport } from './routes/_management/user/route'
 import { Route as ManagementManagementRouteImport } from './routes/_management/management/route'
-import { Route as ClientBlogIndexImport } from './routes/_client/blog/index'
-import { Route as ClientPostSearchImport } from './routes/_client/post/search'
-import { Route as ClientPostIdImport } from './routes/_client/post/$id'
-import { Route as ClientBlogIdImport } from './routes/_client/blog/$id'
+import { Route as ClientPostsIndexImport } from './routes/_client/posts/index'
+import { Route as ClientBlogsIndexImport } from './routes/_client/blogs/index'
+import { Route as ClientPostsIdImport } from './routes/_client/posts/$id'
+import { Route as ClientBlogsIdImport } from './routes/_client/blogs/$id'
 import { Route as ManagementUserPostsRouteImport } from './routes/_management/user/posts/route'
 import { Route as ManagementUserBlogsRouteImport } from './routes/_management/user/blogs/route'
 import { Route as ManagementManagementPostsRouteImport } from './routes/_management/management/posts/route'
@@ -77,23 +77,23 @@ const ManagementManagementRouteRoute = ManagementManagementRouteImport.update({
   getParentRoute: () => ManagementRoute,
 } as any)
 
-const ClientBlogIndexRoute = ClientBlogIndexImport.update({
-  path: '/blog/',
+const ClientPostsIndexRoute = ClientPostsIndexImport.update({
+  path: '/posts/',
   getParentRoute: () => ClientRoute,
 } as any)
 
-const ClientPostSearchRoute = ClientPostSearchImport.update({
-  path: '/post/search',
+const ClientBlogsIndexRoute = ClientBlogsIndexImport.update({
+  path: '/blogs/',
   getParentRoute: () => ClientRoute,
 } as any)
 
-const ClientPostIdRoute = ClientPostIdImport.update({
-  path: '/post/$id',
+const ClientPostsIdRoute = ClientPostsIdImport.update({
+  path: '/posts/$id',
   getParentRoute: () => ClientRoute,
 } as any)
 
-const ClientBlogIdRoute = ClientBlogIdImport.update({
-  path: '/blog/$id',
+const ClientBlogsIdRoute = ClientBlogsIdImport.update({
+  path: '/blogs/$id',
   getParentRoute: () => ClientRoute,
 } as any)
 
@@ -245,20 +245,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementUserPostsRouteImport
       parentRoute: typeof ManagementUserRouteImport
     }
-    '/_client/blog/$id': {
-      preLoaderRoute: typeof ClientBlogIdImport
+    '/_client/blogs/$id': {
+      preLoaderRoute: typeof ClientBlogsIdImport
       parentRoute: typeof ClientImport
     }
-    '/_client/post/$id': {
-      preLoaderRoute: typeof ClientPostIdImport
+    '/_client/posts/$id': {
+      preLoaderRoute: typeof ClientPostsIdImport
       parentRoute: typeof ClientImport
     }
-    '/_client/post/search': {
-      preLoaderRoute: typeof ClientPostSearchImport
+    '/_client/blogs/': {
+      preLoaderRoute: typeof ClientBlogsIndexImport
       parentRoute: typeof ClientImport
     }
-    '/_client/blog/': {
-      preLoaderRoute: typeof ClientBlogIndexImport
+    '/_client/posts/': {
+      preLoaderRoute: typeof ClientPostsIndexImport
       parentRoute: typeof ClientImport
     }
     '/_management/management/user/': {
@@ -323,10 +323,10 @@ export const routeTree = rootRoute.addChildren([
     ClientAboutRoute,
     ClientContactRoute,
     ClientIndexRoute,
-    ClientBlogIdRoute,
-    ClientPostIdRoute,
-    ClientPostSearchRoute,
-    ClientBlogIndexRoute,
+    ClientBlogsIdRoute,
+    ClientPostsIdRoute,
+    ClientBlogsIndexRoute,
+    ClientPostsIndexRoute,
   ]),
   ManagementRoute.addChildren([
     ManagementManagementRouteRoute.addChildren([

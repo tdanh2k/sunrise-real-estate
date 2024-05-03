@@ -21,6 +21,7 @@ export const AddDraftPostSchema = z.object({
   Address: OptionalString,
   Price: NonNegativeNumber,
   MapUrl: OptionalString,
+  Area: NonNegativeNumber.optional(),
   DraftPostCurrentDetail: z.array(
     z.object({
       Id: OptionalUUID,

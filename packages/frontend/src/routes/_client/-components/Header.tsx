@@ -35,8 +35,13 @@ export const Header: FC = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/blog">
+                  <Link className="nav-link" to="/blogs">
                     Blog
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/posts">
+                    Bài đăng nhà
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -62,7 +67,7 @@ export const Header: FC = () => {
                         <button
                           className="nav-link logout"
                           onClick={() => {
-                            window.localStorage.clear()
+                            window.localStorage.clear();
                             logout({ logoutParams: { federated: true } });
                           }}
                         >

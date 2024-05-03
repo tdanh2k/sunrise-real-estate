@@ -13,6 +13,7 @@ import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
+import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -29,9 +30,6 @@ const defaultValues: TypeAddBlog = {
 
 export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
   const utils = privateRoute.useUtils();
-
-  const { data: blogDetailResponse, isFetching } =
-    privateRoute.management.global_blog_detail.all.useQuery();
 
   const { handleSubmit, control, reset } = useForm({
     resolver: zodResolver(AddBlogSchema),
@@ -88,7 +86,7 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       <Stack mb={10} style={{ overflow: "auto" }}>
         <QuerySelectRHF<TypeAddBlog, TypeGlobalBlogType>
           name="TypeId"
-          label="Loại bài đăng"
+          label="Loại blog"
           useQuery={privateRoute.management.global_blog_type.all.useQuery}
           mapOption={(item) => ({
             label: item.Name,
@@ -101,45 +99,48 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
           legendLabel="Hình ảnh"
+          disableEdit
+          name="BlogImage"
+          control={control}
           columns={[
             {
               accessorKey: "Name",
               header: "Tên file",
-              mantineEditTextInputProps: ({ row }) => ({
-                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-                //error: control?._formState?.errors?.BlogCurrentDetail?.[0]?.Value,
-                error:
-                  control?._formState?.errors?.BlogImage?.[row.index]?.Name
-                    ?.message,
-              }),
+              enableEditing: false,
             },
             {
-              accessorKey: "DetailId",
-              header: "DetailId",
-              editVariant: "select",
-              mantineEditTextInputProps: ({ row }) => ({
-                // value: fields?.find((item) => item.Id === row.original.Id)
-                //   ?.DetailId,
-              }),
-              mantineEditSelectProps: ({ row }) => ({
-                // value: fields?.find((item) => item.Id === row.original.Id)
-                //   ?.DetailId,
-                data: blogDetailResponse?.data?.map((item) => ({
-                  label: item.Name,
-                  value: item.Id,
-                })),
-                //error:
-                //  control?._formState?.errors?.BlogCurrentDetail?.[row.index]?.DetailId,
-              }),
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Base64Data",
+              header: "Upload",
+              Cell: ({ cell, table, renderedCellValue }) =>
+                table.getState()?.editingCell?.id === cell.id
+                  ? renderedCellValue
+                  : cell.getValue<string>()
+                    ? "Có dữ liệu"
+                    : null,
+              Edit: ({ cell, row, table }) => (
+                <MRT_EditCellFileInput
+                  cell={cell}
+                  table={table}
+                  onChange={(file) => {
+                    if (!file) return;
+                    row._valuesCache["Name"] = file?.name;
+                    row._valuesCache["MimeType"] = file?.type;
+                    row._valuesCache["Size"] = file?.size;
+                  }}
+                />
+              ),
             },
           ]}
-          externalLoading={isFetching}
-          name="BlogImage"
-          control={control}
-          //methods={methods}
-          // onCreate={({ values }) => {
-          //   append(values);
-          // }}
         />
       </Stack>
     </CustomModal>

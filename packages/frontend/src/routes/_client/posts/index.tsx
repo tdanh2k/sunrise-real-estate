@@ -4,27 +4,24 @@ import { OptionalString } from "@utils/ZodUtils";
 import { publicRoute } from "@utils/trpc";
 import { useState } from "react";
 import { z } from "zod";
+import { PostItem } from "../-components/PostItem";
+import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 
-export const Route = createFileRoute("/_client/post/search")({
-  validateSearch: (search) =>
-    z
-      .object({
-        keyword: OptionalString,
-      })
-      .parse(search),
+export const Route = createFileRoute("/_client/posts/")({
+  validateSearch: z.object({
+    keyword: OptionalString,
+  }),
   component: () => {
     const navigate = Route.useNavigate();
     const { keyword } = Route.useSearch();
     const [word, setWord] = useState<string | undefined>(keyword);
 
-    const { data: searchResponse, isFetching: isSearchFetching } =
-      publicRoute.searchPosts.useQuery(
-        { keyword: keyword ?? "" },
-        { enabled: Boolean(keyword) }
-      );
+    const [{ data }] = publicRoute.searchPosts.useSuspenseQuery({
+      keyword: keyword ?? "",
+    });
 
     return (
-      <>
+      <section className="post">
         <div
           className="banner d-flex align-items-center"
           style={{ backgroundImage: `url(images/banner.jpg)` }}
@@ -45,7 +42,7 @@ export const Route = createFileRoute("/_client/post/search")({
                           if (event.key !== "Enter") return;
 
                           navigate({
-                            to: "/post/search",
+                            to: "/posts",
                             search: {
                               keyword: word,
                             },
@@ -59,7 +56,7 @@ export const Route = createFileRoute("/_client/post/search")({
                         className="btn-search m-2"
                         onClick={() =>
                           navigate({
-                            to: "/post/search",
+                            to: "/posts",
                             search: {
                               keyword: word,
                             },
@@ -76,52 +73,16 @@ export const Route = createFileRoute("/_client/post/search")({
             </div>
           </div>
         </div>
-        <section className="section-all-re">
+        <div className="page-content">
           <div className="container">
-            {searchResponse?.data?.map((item) => (
-              <div
-                key={item.Id}
-                className="text-center col-lg-4 col-12 col-md-6 "
-              >
-                <div className="item">
-                  <div className="item-image">
-                    <img
-                      className="img-fluid"
-                      src={item?.PostImage?.[0]?.Path}
-                      alt="flat"
-                    />
-                  </div>
-                  <div className="item-description">
-                    <div className="d-flex justify-content-between mb-3">
-                      <span className="item-title">
-                        Lorem ipsum dolor sit amet consectetur adipiscing elit
-                      </span>
-                      <span className="item-price">{item?.Price}</span>
-                    </div>
-                    <div className="item-icon d-flex alig-items-center justify-content-between">
-                      <div>
-                        <i className="fas fa-check-circle"></i>{" "}
-                        <span>Lorem ipsum dolor</span>
-                      </div>
-                      <div>
-                        <i className="fas fa-check-circle"></i>{" "}
-                        <span> Lorem </span>
-                      </div>
-                      <Link
-                        to={`/post/$id`}
-                        params={{ id: item?.Id ?? "" }}
-                        className="item-title"
-                      >
-                        <button className="btn btn-detail">Xem</button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div className="row">
+              {data?.map((item) => (
+                <PostItem key={item.Id} data={item as TypePost} />
+              ))}
+            </div>
           </div>
-        </section>
-      </>
+        </div>
+      </section>
     );
   },
 });

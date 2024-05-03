@@ -1,6 +1,7 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
   OptionalJsDate,
   OptionalNumber,
@@ -21,7 +22,8 @@ export const AddPendingPostSchema = z.object({
   Price: OptionalNumber,
   ApprovedBy: OptionalString,
   ApprovedDate: OptionalJsDate,
-  MapUrl: RequiredURL,
+  MapUrl: RequiredString,
+  Area: NonNegativeNumber.optional(),
   PendingCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,

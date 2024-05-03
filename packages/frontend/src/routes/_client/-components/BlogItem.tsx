@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 import { FC } from "react";
+import dayjs from "dayjs";
 
 export const BlogItem: FC<{ data: TypeBlog }> = ({ data }) => {
   return (
@@ -11,21 +12,25 @@ export const BlogItem: FC<{ data: TypeBlog }> = ({ data }) => {
         </div>
         <div className="blog-content">
           <h2 className="blog-title" title={data?.Title}>
-            <Link to={`/blog/$id`} params={{ id: data?.Id ?? "" }}>
+            <Link to={`/blogs/$id`} params={{ id: data?.Id ?? "" }}>
               {data?.Title}
             </Link>
           </h2>
           <div className="blog-info">
             <div className="blog-info-item">
               <i className="far fa-calendar-alt "></i>
-              <span>{data?.CreatedDate?.toISOString()}</span>
+              <span>
+                {data?.CreatedDate
+                  ? dayjs(data?.CreatedDate)?.format("DD/MM/YYYY")
+                  : null}
+              </span>
             </div>
             <div className="blog-info-item">
               <i className="far fa-comments"></i>
               <span>0 Comments</span>
             </div>
           </div>
-          <div className="blog-text">{data?.Description}</div>
+          {/* <div className="blog-text">{data?.Description}</div> */}
         </div>
       </div>
     </div>

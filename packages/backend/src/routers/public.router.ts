@@ -1,7 +1,7 @@
 import z from "zod";
 import { dbContext } from "../utils/prisma";
 import { publicProcedure, trpcRouter } from "./router";
-import { RequiredString } from "../utils/ZodUtils";
+import { OptionalString, RequiredString } from "../utils/ZodUtils";
 
 export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure
@@ -89,7 +89,7 @@ export const PublicRouter = trpcRouter.router({
   searchPosts: publicProcedure
     .input(
       z.object({
-        keyword: RequiredString,
+        keyword: OptionalString,
       })
     )
     //.output(APIResponseSchema(PostSchema))
@@ -100,6 +100,8 @@ export const PublicRouter = trpcRouter.router({
           PostImage: true,
           PostFeature: true,
           PostType: true,
+          PostCurrentDetail: true,
+          PostStats: true,
         },
         where: {
           OR: [
@@ -163,7 +165,7 @@ export const PublicRouter = trpcRouter.router({
   searchBlogs: publicProcedure
     .input(
       z.object({
-        keyword: RequiredString,
+        keyword: OptionalString,
       })
     )
     //.output(APIResponseSchema(PostSchema))

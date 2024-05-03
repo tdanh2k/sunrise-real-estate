@@ -1,6 +1,7 @@
 import z from "zod";
 import {
   NonNegativeIntegerNumber,
+  NonNegativeNumber,
   OptionalBoolean,
   OptionalJsDate,
   OptionalNumber,
@@ -19,7 +20,8 @@ export const PostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   Price: OptionalNumber,
-  MapUrl: RequiredURL,
+  MapUrl: RequiredString,
+  Area: NonNegativeNumber,
   PostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,

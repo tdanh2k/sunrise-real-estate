@@ -1,39 +1,16 @@
-import { LoadingOverlay } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { publicRoute } from "@utils/trpc";
 import ImageGallery from "react-image-gallery";
+import htmlParse from "html-react-parser";
 
-export const Route = createFileRoute("/_client/post/$id")({
+export const Route = createFileRoute("/_client/posts/$id")({
   component: () => {
     const { id } = Route.useParams();
 
-    const { data: response, isFetching } = publicRoute.getPostById.useQuery(
-      { id },
-      { enabled: !!id }
-    );
-
-    const images = [
-      {
-        original: "/images/product1.jpeg",
-        thumbnail: "/images/product1.jpeg",
-      },
-      {
-        original: "/images/banner.jpg",
-        thumbnail: "/images/banner.jpg",
-      },
-      {
-        original: "/images/product1.jpeg",
-        thumbnail: "/images/product1.jpeg",
-      },
-    ];
+    const [{ data }] = publicRoute.getPostById.useSuspenseQuery({ id });
 
     return (
       <div className="flat-detail">
-        <LoadingOverlay
-          visible={isFetching}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
         <div className="page-top">
           <div className="container">
             <div className="row">
@@ -49,21 +26,31 @@ export const Route = createFileRoute("/_client/post/$id")({
             <div className="col-lg-12">
               <div className="fd-top flat-detail-content">
                 <div>
-                  <h3 className="flat-detail-title">{response?.data?.Title}</h3>
+                  <h3 className="flat-detail-title">{data?.Title}</h3>
                   <p className="fd-address">
                     {" "}
                     <i className="fas fa-map-marker-alt"></i>
-                    {response?.data?.Address}
+                    {data?.Address}
                   </p>
                 </div>
                 <div>
-                  <span className="fd-price">{response?.data?.Price}</span>
+                  <span className="fd-price">{data?.Price}</span>
                 </div>
               </div>
               <ImageGallery
                 flickThreshold={0.5}
                 slideDuration={0}
-                items={images}
+                items={
+                  data?.PostImage?.map((item) => ({
+                    original: item.Path ?? "/images/product1.jpeg",
+                    thumbnail: item.Path ?? "/images/product1.jpeg",
+                  })) ?? [
+                    {
+                      original: "/images/product1.jpeg",
+                      thumbnail: "/images/product1.jpeg",
+                    },
+                  ]
+                }
                 showNav={false}
                 showFullscreenButton={false}
                 showPlayButton={false}
@@ -72,22 +59,12 @@ export const Route = createFileRoute("/_client/post/$id")({
                 <div className="col-lg-8">
                   <div className="fd-item">
                     <h4>Mô tả</h4>
-                    <p>
-                      {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident, sunt in culpa qui
-                      officia deserunt mollit anim id est laborum */}
-                      {response?.data?.Description}
-                    </p>
+                    <p>{htmlParse(data?.Description ?? "")}</p>
                   </div>
                   <div className="fd-item fd-property-detail">
                     <h4>Chi tiết về bất động sản</h4>
                     <div className="row">
-                      {response?.data?.PostCurrentDetail?.map((item) => (
+                      {data?.PostCurrentDetail?.map((item) => (
                         <div className="col-lg-4">
                           <span>{item.PostDetail?.Name}: </span>
                           <span>{item.Value}</span>

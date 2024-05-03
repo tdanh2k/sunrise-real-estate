@@ -23,6 +23,7 @@ export const OptionalString = z
     required_error: "Vui lòng không bỏ trống dữ liệu này",
   })
   .regex(/(?!^\s+$)/, "Chuỗi chỉ chứa khoảng trằng")
+  .min(0)
   .optional();
 
 export const RequiredUUID = RequiredString.uuid("Mã UUID không hợp lệ");
