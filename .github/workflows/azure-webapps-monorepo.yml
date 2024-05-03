@@ -16,7 +16,7 @@
 # For more information on GitHub Actions for Azure: https://github.com/Azure/Actions
 # For more information on the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
-name: Build and deploy Node.js app to Azure Web App - sunrise-real-estate-backend
+name: Build and deploy Monorepo app to Azure Web App - sunrise-real-estate-backend
 
 on:
   push:
@@ -44,9 +44,9 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
-    - name: Install pnpm
-      run: npm install -g pnpm
-
+    - name: Enable pnpm using Corepack
+      run: corepack enable pnpm@latest
+      
     - name: Install frontend dependencies
       run: |
         cd frontend
@@ -55,7 +55,7 @@ jobs:
     - name: Build frontend
       run: |
         cd frontend
-        pnpm run build
+        pnpm build
 
     - name: Install backend dependencies
       run: |
