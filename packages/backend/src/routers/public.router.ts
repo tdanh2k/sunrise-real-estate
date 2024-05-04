@@ -7,7 +7,7 @@ export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(PostSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.post.findMany({
         take: 5,
         include: {

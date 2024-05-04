@@ -2,10 +2,7 @@ import { TextInputRHF } from "@components/MantineRHF/TextInputRHF";
 import { Button, LoadingOverlay, Stack } from "@mantine/core";
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  AddPostSchema,
-  TypeAddPost,
-} from "@sunrise-backend/src/schemas/AddPost.schema";
+import { AddPostSchema } from "@sunrise-backend/src/schemas/AddPost.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
 import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
@@ -31,6 +28,7 @@ const defaultValues: TypePendingPost = {
   Description: "",
   Price: 0,
   MapUrl: "",
+  Area: 0,
   PendingPostImage: [],
   PendingPostCurrentDetail: [],
   PendingPostFeature: [],
@@ -69,21 +67,37 @@ export const ModalVerifyPost: FC<ModalProps> = ({
     },
   });
 
-  const { mutateAsync, isPending } =
-    privateRoute.management.post.publish.useMutation({
+  const { mutateAsync: approveAsync, isPending: isApprovePending } =
+    privateRoute.management.pending_post.approve.useMutation({
       onSuccess: () => {
         utils.management.post.invalidate();
       },
     });
 
-  const onSubmit: SubmitHandler<TypeAddPost> = async (values) => {
-    await mutateAsync(values);
+  const { mutateAsync: rejectAsync, isPending: isRejectPending } =
+    privateRoute.management.pending_post.approve.useMutation({
+      onSuccess: () => {
+        utils.management.post.invalidate();
+      },
+    });
+
+  const onApprove: SubmitHandler<TypePendingPost> = async (values) => {
+    await approveAsync(values);
+    handleClose();
+    reset();
+  };
+
+  const onReject: SubmitHandler<TypePendingPost> = async (values) => {
+    await rejectAsync(values);
     handleClose();
     reset();
   };
 
   const isLoading =
-    isGetAllGlobalPostDetailFetching || isGetPendingPostByIdFetching;
+    isGetAllGlobalPostDetailFetching ||
+    isGetPendingPostByIdFetching ||
+    isApprovePending ||
+    isRejectPending;
 
   return (
     <CustomModal
@@ -104,16 +118,22 @@ export const ModalVerifyPost: FC<ModalProps> = ({
             Clear
           </Button>
           <Button
-            color="blue"
-            onClick={handleSubmit(onSubmit, (error) => console.error(error))}
+            color="orange"
+            onClick={handleSubmit(onReject, (error) => console.error(error))}
           >
-            Submit
+            Từ chối
+          </Button>
+          <Button
+            color="green"
+            onClick={handleSubmit(onApprove, (error) => console.error(error))}
+          >
+            Đồng ý
           </Button>
         </>
       }
     >
       <LoadingOverlay
-        visible={isPending || isLoading}
+        visible={isLoading}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
@@ -150,6 +170,12 @@ export const ModalVerifyPost: FC<ModalProps> = ({
           readOnly
         />
         <NumberInputRHF name="Price" label="Giá" control={control} readOnly />
+        <NumberInputRHF
+          name="Area"
+          label="Diện tích"
+          control={control}
+          readOnly
+        />
         <RichTextRHF
           name="Description"
           label="Mô tả"
@@ -164,7 +190,7 @@ export const ModalVerifyPost: FC<ModalProps> = ({
               accessorKey: "DetailId",
               header: "DetailId",
               editVariant: "select",
-              mantineEditSelectProps: ({ row }) => ({
+              mantineEditSelectProps: () => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
                 data: postDetailResponse?.data?.map((item) => ({

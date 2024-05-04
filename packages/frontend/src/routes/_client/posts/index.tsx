@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { OptionalString } from "@utils/ZodUtils";
 import { publicRoute } from "@utils/trpc";

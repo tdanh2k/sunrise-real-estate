@@ -53,7 +53,7 @@ export const GlobalPostDetailRouter = trpcRouter.router({
   create: protectedProcedure
     .input(AddGlobalPostDetailSchema)
     //.output(APIResponseSchema(GlobalPostDetailSchema.nullable()))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       //if (ctx.userId == null) return null;
       const data = await dbContext.globalPostDetail.create({
         data: input,

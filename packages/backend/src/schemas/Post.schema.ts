@@ -7,7 +7,6 @@ import {
   OptionalNumber,
   OptionalString,
   RequiredString,
-  RequiredURL,
   RequiredUUID,
 } from "../utils/ZodUtils";
 

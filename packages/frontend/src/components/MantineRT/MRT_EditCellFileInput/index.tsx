@@ -1,9 +1,4 @@
-import {
-  type FocusEvent,
-  type KeyboardEvent,
-  useState,
-  ForwardedRef,
-} from "react";
+import { type FocusEvent, useState } from "react";
 import { type FileInputProps, FileInput } from "@mantine/core";
 import {
   MRT_Cell,
@@ -45,23 +40,9 @@ export const MRT_EditCellFileInput = <TData extends MRT_RowData>({
 
   const isCreating = creatingRow?.id === row.id;
   const isEditing = editingRow?.id === row.id;
-  //const isSelectEdit = columnDef.editVariant === "select";
 
   const [value, setValue] = useState(() => cell.getValue<any>());
   const [internalValue, setInternalValue] = useState<File | null>(null);
-
-  //const arg = { cell, column, row, table };
-  //   const textInputProps = {
-  //     ...parseFromValuesOrFunc(mantineEditTextInputProps, arg),
-  //     ...parseFromValuesOrFunc(columnDef.mantineEditTextInputProps, arg),
-  //     ...rest,
-  //   };
-
-  //   const selectProps = {
-  //     ...parseFromValuesOrFunc(mantineEditSelectProps, arg),
-  //     ...parseFromValuesOrFunc(columnDef.mantineEditSelectProps, arg),
-  //     ...rest,
-  //   };
 
   const saveInputValueToRowCache = (newValue: null | string) => {
     //@ts-ignore
@@ -78,67 +59,6 @@ export const MRT_EditCellFileInput = <TData extends MRT_RowData>({
     saveInputValueToRowCache(value);
     setEditingCell(null);
   };
-
-  //   const handleEnterKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-  //     //textInputProps.onKeyDown?.(event);
-  //     if (event.key === "Enter") {
-  //       editInputRefs.current[cell.id]?.blur();
-  //     }
-  //   };
-
-  // if (columnDef.Edit) {
-  //   return columnDef.Edit?.({ cell, column, row, table });
-  // }
-
-  //   const commonProps = {
-  //     disabled: parseFromValuesOrFunc(columnDef.enableEditing, row) === false,
-  //     label: ["custom", "modal"].includes(
-  //       (isCreating ? createDisplayMode : editDisplayMode) as string
-  //     )
-  //       ? column.columnDef.header
-  //       : undefined,
-  //     name: cell.id,
-  //     onClick: (e: any) => {
-  //       e.stopPropagation();
-  //       textInputProps?.onClick?.(e);
-  //     },
-  //     placeholder: !["custom", "modal"].includes(
-  //       (isCreating ? createDisplayMode : editDisplayMode) as string
-  //     )
-  //       ? columnDef.header
-  //       : undefined,
-  //     value,
-  //     variant: editDisplayMode === "table" ? "unstyled" : "default",
-  //   } as const;
-
-  //   if (isSelectEdit) {
-  //     return (
-  //       // @ts-ignore
-  //       <Select
-  //         {...commonProps}
-  //         searchable
-  //         value={value}
-  //         {...selectProps}
-  //         onBlur={handleBlur}
-  //         onChange={(value) => {
-  //           selectProps.onChange?.(value as any);
-  //           setValue(value);
-  //         }}
-  //         onClick={(e) => {
-  //           e.stopPropagation();
-  //           selectProps?.onClick?.(e);
-  //         }}
-  //         ref={(node) => {
-  //           if (node) {
-  //             editInputRefs.current[cell.id] = node;
-  //             if (selectProps.ref) {
-  //               selectProps.ref.current = node;
-  //             }
-  //           }
-  //         }}
-  //       />
-  //     );
-  //   }
 
   return (
     <FileInput

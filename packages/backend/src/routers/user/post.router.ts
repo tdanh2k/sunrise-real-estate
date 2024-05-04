@@ -85,7 +85,6 @@ export const PostRouter = trpcRouter.router({
     // )
     .mutation(
       async ({
-        ctx,
         input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest },
       }) => {
         //if (ctx.userId == null) return null;

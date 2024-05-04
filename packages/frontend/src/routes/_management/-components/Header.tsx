@@ -11,12 +11,7 @@ import {
   rem,
 } from "@mantine/core";
 import { MantineLogo } from "@mantinex/mantine-logo";
-import {
-  IconLogout,
-  IconMessageCircle,
-  IconPhoto,
-  IconSettings,
-} from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 interface UserButtonProps extends ComponentPropsWithoutRef<"button"> {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OptionalURL = exports.RequiredURL = exports.OptionalPort = exports.RequiredPort = exports.OptionalIp = exports.RequiredIp = exports.OptionalJsDate = exports.OptionalDate = exports.RequiredDate = exports.OptionalArray = exports.RequiredArray = exports.OptionalBoolean = exports.RequiredBoolean = exports.NonNegativeBigInt = exports.NonNegativeIntegerNumber = exports.NonNegativeNumber = exports.PositiveIntegerNumber = exports.PositiveNumber = exports.OptionalNumber = exports.RequiredNumber = exports.OptionalEmail = exports.RequiredEmail = exports.OptionalUUID = exports.RequiredUUID = exports.OptionalString = exports.RequiredString = void 0;
+exports.OptionalURL = exports.RequiredURL = exports.OptionalPort = exports.RequiredPort = exports.OptionalIp = exports.RequiredIp = exports.OptionalJsDate = exports.OptionalDate = exports.RequiredDate = exports.OptionalArray = exports.RequiredArray = exports.OptionalBoolean = exports.RequiredBoolean = exports.NonNegativeBigInt = exports.NonNegativeIntegerNumber = exports.NonNegativeNumber = exports.PositiveIntegerNumber = exports.PositiveNumber = exports.OptionalNumber = exports.RequiredNumber = exports.OptionalEmail = exports.RequiredEmail = exports.OptionalUUID = exports.RequiredUUID = exports.OptionalBase64 = exports.RequiredBase64 = exports.OptionalString = exports.RequiredString = void 0;
 const zod_1 = require("zod");
 // import { matchIsValidTel } from "mui-tel-input";
 // import dayjs from "dayjs";
@@ -23,6 +23,8 @@ exports.OptionalString = zod_1.z
 })
     .regex(/(?!^\s+$)/, "Chuỗi chỉ chứa khoảng trằng")
     .optional();
+exports.RequiredBase64 = exports.RequiredString.base64("Không phải chuỗi Base64");
+exports.OptionalBase64 = exports.RequiredString.base64("Không phải chuỗi Base64").optional();
 exports.RequiredUUID = exports.RequiredString.uuid("Mã UUID không hợp lệ");
 exports.OptionalUUID = exports.RequiredUUID.optional().or(zod_1.z.literal(""));
 exports.RequiredEmail = exports.RequiredString.email("Định dạng email không hợp lệ");

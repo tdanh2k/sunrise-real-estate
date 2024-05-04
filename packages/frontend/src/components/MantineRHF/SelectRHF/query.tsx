@@ -94,7 +94,7 @@ export const QuerySelectRHF = <
     <SelectRHF
       {...SelectProps}
       name={name}
-      options={options}
+      options={options ?? []}
       control={control}
       error={queryError?.message}
       disabled={disabled || isFetching}

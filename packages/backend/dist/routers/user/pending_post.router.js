@@ -4,14 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PendingPostRouter = void 0;
-const zod_1 = __importDefault(require("zod"));
-const prisma_1 = require("../../utils/prisma");
-const ZodUtils_1 = require("../../utils/ZodUtils");
 const server_1 = require("@trpc/server");
-const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const router_1 = require("../router");
-const axios_1 = __importDefault(require("axios"));
+const zod_1 = __importDefault(require("zod"));
 const AddDraftPost_schema_1 = require("../../schemas/AddDraftPost.schema");
+const Pagination_schema_1 = require("../../schemas/Pagination.schema");
+const ZodUtils_1 = require("../../utils/ZodUtils");
+const prisma_1 = require("../../utils/prisma");
+const router_1 = require("../router");
 exports.PendingPostRouter = router_1.trpcRouter.router({
     byPage: router_1.protectedProcedure
         .input(Pagination_schema_1.PaginationSchema)
@@ -88,29 +87,15 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const response = await (0, axios_1.default)({
-            url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-            method: "GET",
-            params: {
-                search_engine: "v3",
-            },
-            headers: {
-                Authorization: `Bearer ${(await ctx).management_token}`,
-            },
-        });
-        const user = response?.data;
         const [createdPendingPost] = await prisma_1.dbContext.$transaction([
             prisma_1.dbContext.pendingPost.create({
                 data: {
                     ...rest,
+                    Title: rest?.Title ?? "",
+                    Description: rest?.Description ?? "",
+                    Address: rest?.Address ?? "",
+                    MapUrl: rest?.MapUrl ?? "",
                     UserId: (await ctx).userId ?? "",
-                    User_Email: user.email,
-                    User_EmailVerified: user.email_verified,
-                    User_Name: user.name,
-                    User_Username: user.username,
-                    User_PhoneNumber: user.phone_number,
-                    User_PhoneVerified: user.phone_verified,
-                    User_Picture: user.picture,
                     PendingPostCurrentDetail: {
                         createMany: {
                             data: DraftPostCurrentDetail?.map((item) => ({
@@ -180,18 +165,7 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                 PendingPostImage: true,
             },
         });
-        const response = await (0, axios_1.default)({
-            url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-            method: "GET",
-            params: {
-                search_engine: "v3",
-            },
-            headers: {
-                Authorization: `Bearer ${(await ctx).management_token}`,
-            },
-        });
-        const user = response?.data;
-        const [updatedPendingPost, createdPost] = await prisma_1.dbContext.$transaction([
+        const [updatedPendingPost] = await prisma_1.dbContext.$transaction([
             prisma_1.dbContext.pendingPost.update({
                 data: {
                     ApprovedBy: (await ctx).userId,
@@ -212,13 +186,6 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                     Price: data?.Price,
                     TypeId: data?.TypeId ?? "",
                     UserId: data?.UserId ?? (await ctx).userId ?? "",
-                    User_Email: user.email,
-                    User_EmailVerified: user.email_verified,
-                    User_Name: user.name,
-                    User_Username: user.username,
-                    User_PhoneNumber: user.phone_number,
-                    User_PhoneVerified: user.phone_verified,
-                    User_Picture: user.picture,
                     PostCurrentDetail: {
                         createMany: {
                             data: data?.PendingPostCurrentDetail?.map((item) => ({

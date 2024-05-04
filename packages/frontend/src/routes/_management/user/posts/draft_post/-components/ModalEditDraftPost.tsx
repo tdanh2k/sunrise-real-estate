@@ -200,7 +200,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
                         (r) => r.Id === row.original.Id
                       )?.Name
                     : null,
-              mantineEditSelectProps: ({ row }) => ({
+              mantineEditSelectProps: () => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
                 data: globalPostDetailResponse?.data?.map((item) => ({
@@ -214,14 +214,6 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
             {
               accessorKey: "Value",
               header: "Value",
-              mantineEditTextInputProps: ({ row }) => ({
-                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-                //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-                error:
-                  control?._formState?.errors?.DraftPostCurrentDetail?.[
-                    row.index
-                  ]?.Value?.message,
-              }),
             },
           ]}
           externalLoading={isLoading}
@@ -242,11 +234,6 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
             {
               accessorKey: "Description",
               header: "Mô tả",
-              mantineEditTextInputProps: ({ row }) => ({
-                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-                //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-                error: control?._formState?.errors?.Description?.message,
-              }),
             },
           ]}
           externalLoading={isLoading}

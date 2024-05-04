@@ -29,6 +29,7 @@ const defaultValues: TypeAddPost = {
   Description: "",
   Price: 0,
   MapUrl: "",
+  Area: 0,
   PostImage: [],
   PostCurrentDetail: [],
   PostFeature: [],
@@ -108,6 +109,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
         <TextInputRHF name="MapUrl" label="Url bản đồ" control={control} />
         <NumberInputRHF name="Price" label="Giá" control={control} />
+        <NumberInputRHF name="Area" label="Diện tích" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
           legendLabel="Chi tiết bất động sản"
@@ -116,7 +118,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
               accessorKey: "DetailId",
               header: "Loại chi tiết",
               editVariant: "select",
-              Cell: ({ cell, table, renderedCellValue, row }) =>
+              Cell: ({ cell, table, renderedCellValue }) =>
                 table.getState()?.editingCell?.id === cell.id
                   ? renderedCellValue
                   : cell.getValue<string>()
@@ -124,7 +126,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
                         (r) => r.Id === cell.getValue<string>()
                       )?.Name
                     : null,
-              mantineEditSelectProps: ({ row }) => ({
+              mantineEditSelectProps: () => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
                 data: postDetailResponse?.data?.map((item) => ({
@@ -138,13 +140,6 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
             {
               accessorKey: "Value",
               header: "Value",
-              mantineEditTextInputProps: ({ row }) => ({
-                //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-                //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-                error:
-                  control?._formState?.errors?.PostCurrentDetail?.[row.index]
-                    ?.Value?.message,
-              }),
             },
           ]}
           externalLoading={isFetching}

@@ -6,8 +6,6 @@ import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
 import { protectedProcedure, trpcRouter } from "../router";
-import axios from "axios";
-import { TypeAuth0User } from "../../schemas/Auth0User.schema";
 import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
 
 export const PendingPostRouter = trpcRouter.router({
@@ -103,23 +101,14 @@ export const PendingPostRouter = trpcRouter.router({
             message: ``,
           });
 
-        const response = await axios<TypeAuth0User>({
-          url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-          method: "GET",
-          params: {
-            search_engine: "v3",
-          },
-          headers: {
-            Authorization: `Bearer ${(await ctx).management_token}`,
-          },
-        });
-
-        const user = response?.data;
-
         const [createdPendingPost] = await dbContext.$transaction([
           dbContext.pendingPost.create({
             data: {
               ...rest,
+              Title: rest?.Title ?? "",
+              Description: rest?.Description ?? "",
+              Address: rest?.Address ?? "",
+              MapUrl: rest?.MapUrl ?? "",
               UserId: (await ctx).userId ?? "",
               PendingPostCurrentDetail: {
                 createMany: {
@@ -196,20 +185,7 @@ export const PendingPostRouter = trpcRouter.router({
         },
       });
 
-      const response = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-        method: "GET",
-        params: {
-          search_engine: "v3",
-        },
-        headers: {
-          Authorization: `Bearer ${(await ctx).management_token}`,
-        },
-      });
-
-      const user = response?.data;
-
-      const [updatedPendingPost, createdPost] = await dbContext.$transaction([
+      const [updatedPendingPost] = await dbContext.$transaction([
         dbContext.pendingPost.update({
           data: {
             ApprovedBy: (await ctx).userId,

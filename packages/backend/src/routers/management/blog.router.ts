@@ -14,7 +14,7 @@ export const BlogRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(BlogSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.blog.findMany({
         include: {
           BlogImage: true,
@@ -170,7 +170,7 @@ export const BlogRouter = trpcRouter.router({
     //     }).nullable()
     //   )
     // )
-    .mutation(async ({ ctx, input: { Id, BlogImage, ...rest } }) => {
+    .mutation(async ({ input: { Id, BlogImage, ...rest } }) => {
       //if (ctx.userId == null) return null;
 
       const result = await dbContext.blog.update({

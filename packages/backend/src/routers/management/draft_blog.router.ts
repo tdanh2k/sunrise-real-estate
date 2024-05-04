@@ -11,7 +11,7 @@ export const DraftBlogRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(DraftBlogSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.draftBlog.findMany({
         include: {
           DraftBlogImage: true,
@@ -108,6 +108,10 @@ export const DraftBlogRouter = trpcRouter.router({
       const data = await dbContext.draftBlog.create({
         data: {
           ...rest,
+          Code: rest?.Code ?? "",
+          Title: rest?.Title ?? "",
+          Description: rest?.Description ?? "",
+          TypeId: rest?.TypeId ?? "",
           UserId: (await ctx).userId ?? "",
           DraftBlogImage: {
             createMany: {
@@ -149,7 +153,6 @@ export const DraftBlogRouter = trpcRouter.router({
     // )
     .mutation(
       async ({
-        ctx,
         input: {
           Id,
           DraftBlogImage,
@@ -189,7 +192,7 @@ export const DraftBlogRouter = trpcRouter.router({
   delete: protectedProcedure
     .input(z.object({ Id: RequiredString }))
     //.output(APIResponseSchema(OptionalBoolean.nullable()))
-    .mutation(async ({ ctx, input: { Id } }) => {
+    .mutation(async ({ input: { Id } }) => {
       //if (ctx.userId == null) return null;
 
       const result = await dbContext.draftBlog.delete({

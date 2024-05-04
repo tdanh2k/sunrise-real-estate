@@ -12,6 +12,7 @@ const AddDraftPost_schema_1 = require("../../schemas/AddDraftPost.schema");
 const server_1 = require("@trpc/server");
 const Pagination_schema_1 = require("../../schemas/Pagination.schema");
 const router_1 = require("../router");
+const cloudinary_1 = require("cloudinary");
 exports.DraftPostRouter = router_1.trpcRouter.router({
     byPage: router_1.protectedProcedure
         .input(Pagination_schema_1.PaginationSchema)
@@ -64,7 +65,7 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         .query(async ({ input }) => {
         const data = await prisma_1.dbContext.draftPost.findFirst({
             where: {
-                Id: input.Id,
+                Id: input.Id ?? "00000000-0000-0000-0000-000000000000",
             },
             include: {
                 DraftPostCurrentDetail: true,
@@ -101,23 +102,51 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
+        const AddImages = [];
+        for (const { Base64Data, ...metadata } of DraftPostImage) {
+            if (metadata.Id) {
+                AddImages.push(metadata);
+            }
+            else if (Base64Data != null) {
+                await cloudinary_1.v2.uploader.upload(Base64Data, {
+                    use_filename: true,
+                    access_mode: "public",
+                }, (error, result) => {
+                    if (!error)
+                        AddImages.push({
+                            ...metadata,
+                            Code: result?.public_id,
+                            Path: result?.secure_url ?? "",
+                            Size: result?.bytes ?? metadata?.Size,
+                        });
+                });
+            }
+        }
         const data = await prisma_1.dbContext.draftPost.upsert({
             create: {
                 ...rest,
                 UserId: (await ctx).userId ?? "",
+                Title: rest.Title ?? "",
+                Description: rest.Description ?? "",
+                TypeId: rest?.TypeId ?? "",
+                Address: rest?.Address ?? "",
+                MapUrl: rest?.MapUrl ?? "",
                 DraftPostCurrentDetail: {
                     createMany: {
-                        data: DraftPostCurrentDetail,
+                        data: DraftPostCurrentDetail?.map((item) => ({
+                            ...item,
+                            Value: item?.Value ?? "",
+                        })) ?? [],
                     },
                 },
                 DraftPostFeature: {
                     createMany: {
-                        data: DraftPostFeature,
+                        data: DraftPostFeature ?? [],
                     },
                 },
                 DraftPostImage: {
                     createMany: {
-                        data: DraftPostImage,
+                        data: AddImages,
                     },
                 },
             },
@@ -126,26 +155,33 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
                 DraftPostCurrentDetail: {
                     connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
                         where: {
-                            Id: item.Id,
+                            Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                         },
-                        create: item,
-                    })),
+                        create: { ...item, Value: item?.Value ?? "" },
+                    })) ?? [],
                 },
                 DraftPostFeature: {
                     connectOrCreate: DraftPostFeature?.map((item) => ({
                         where: {
-                            Id: item.Id,
+                            Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                         },
                         create: item,
-                    })),
+                    })) ?? [],
                 },
                 DraftPostImage: {
-                    connectOrCreate: DraftPostImage?.map((item) => ({
+                    connectOrCreate: AddImages?.map((item) => ({
                         where: {
-                            Id: item.Id,
+                            Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                         },
                         create: item,
-                    })),
+                    })) ?? [],
+                    deleteMany: AddImages?.some((r) => r.Id)
+                        ? {
+                            Id: {
+                                notIn: AddImages?.map((r) => r.Id),
+                            },
+                        }
+                        : undefined,
                 },
             },
             where: {
@@ -222,40 +258,83 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const result = await prisma_1.dbContext.draftPost.update({
-            where: {
-                Id: Id ?? "00000000-0000-0000-0000-000000000000",
-                UserId: (await ctx).userId,
-            },
-            data: {
-                ...rest,
-                DraftPostCurrentDetail: {
-                    connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
-                        where: {
-                            Id: item.Id,
-                        },
-                        create: item,
-                    })),
+        const AddImages = [];
+        for (const { Base64Data, ...metadata } of DraftPostImage) {
+            if (metadata.Id) {
+                AddImages.push(metadata);
+            }
+            else if (Base64Data != null) {
+                await cloudinary_1.v2.uploader.upload(Base64Data, {
+                    use_filename: true,
+                    access_mode: "public",
+                }, (error, result) => {
+                    if (!error)
+                        AddImages.push({
+                            ...metadata,
+                            Code: result?.public_id,
+                            Path: result?.secure_url ?? "",
+                            Size: result?.bytes ?? metadata?.Size,
+                        });
+                });
+            }
+        }
+        const [updatedDraftPost, deletedImages, { count }] = await prisma_1.dbContext.$transaction([
+            prisma_1.dbContext.draftPost.update({
+                where: {
+                    Id: Id ?? "00000000-0000-0000-0000-000000000000",
+                    UserId: (await ctx).userId,
                 },
-                DraftPostFeature: {
-                    connectOrCreate: DraftPostFeature?.map((item) => ({
-                        where: {
-                            Id: item.Id,
-                        },
-                        create: item,
-                    })),
+                data: {
+                    ...rest,
+                    DraftPostCurrentDetail: {
+                        connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
+                            where: {
+                                Id: item.Id,
+                            },
+                            create: item,
+                        })),
+                    },
+                    DraftPostFeature: {
+                        connectOrCreate: DraftPostFeature?.map((item) => ({
+                            where: {
+                                Id: item.Id,
+                            },
+                            create: item,
+                        })),
+                    },
+                    DraftPostImage: {
+                        connectOrCreate: AddImages?.map((item) => ({
+                            where: {
+                                Id: item.Id,
+                            },
+                            create: item,
+                        })),
+                    },
                 },
-                DraftPostImage: {
-                    connectOrCreate: DraftPostImage?.map((item) => ({
-                        where: {
-                            Id: item.Id,
-                        },
-                        create: item,
-                    })),
+            }),
+            prisma_1.dbContext.draftPostImage.findMany({
+                where: {
+                    Id: {
+                        notIn: AddImages?.map((r) => r.Id),
+                    },
+                    DraftId: Id,
                 },
-            },
-        });
-        return { data: result };
+            }),
+            prisma_1.dbContext.draftPostImage.deleteMany({
+                where: {
+                    Id: {
+                        notIn: AddImages?.map((r) => r.Id),
+                    },
+                    DraftId: Id,
+                },
+            }),
+        ]);
+        if (deletedImages?.some((r) => r.Code) && count > 0) {
+            await cloudinary_1.v2.api.delete_resources(deletedImages
+                ?.filter((r) => r.Code)
+                ?.map((r) => r.Code), { type: "upload", resource_type: "image" });
+        }
+        return { data: updatedDraftPost };
         // return await APIResponseSchema(
         //   DraftPostSchema.omit({
         //     DraftPostCurrentDetail: true,

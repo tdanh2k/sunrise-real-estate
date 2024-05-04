@@ -1,5 +1,6 @@
 import * as trpcExpress from "@trpc/server/adapters/express";
 import axios from "axios";
+import { AuthResult } from "express-oauth2-jwt-bearer";
 
 export const createTRPCContext = async ({
   req,
@@ -23,9 +24,9 @@ export const createTRPCContext = async ({
   });
   
   return {
-    userId: req.auth?.payload.sub,
-    token: req.auth?.token,
-    domain: req.auth?.payload?.iss,
+    userId: (req.auth as AuthResult)?.payload.sub,
+    token: (req.auth as AuthResult)?.token,
+    domain: (req.auth as AuthResult)?.payload?.iss,
     management_token: tokenResponse?.data?.access_token,
   };
 }; // no context

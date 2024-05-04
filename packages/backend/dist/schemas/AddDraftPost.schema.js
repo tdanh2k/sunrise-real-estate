@@ -8,14 +8,15 @@ const zod_1 = __importDefault(require("zod"));
 const ZodUtils_1 = require("../utils/ZodUtils");
 exports.AddDraftPostSchema = zod_1.default.object({
     Id: ZodUtils_1.OptionalUUID,
-    Code: ZodUtils_1.RequiredString,
-    Title: ZodUtils_1.RequiredString,
-    Description: ZodUtils_1.RequiredString,
+    Code: ZodUtils_1.OptionalString,
+    Title: ZodUtils_1.OptionalString,
+    Description: ZodUtils_1.OptionalString,
     CreatedDate: ZodUtils_1.OptionalJsDate,
     TypeId: ZodUtils_1.RequiredUUID,
-    Address: ZodUtils_1.RequiredString,
+    Address: ZodUtils_1.OptionalString,
     Price: ZodUtils_1.NonNegativeNumber,
-    MapUrl: ZodUtils_1.RequiredURL,
+    MapUrl: ZodUtils_1.OptionalString,
+    Area: ZodUtils_1.NonNegativeNumber.optional(),
     DraftPostCurrentDetail: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.OptionalUUID,
         DetailId: ZodUtils_1.RequiredUUID,
@@ -31,9 +32,11 @@ exports.AddDraftPostSchema = zod_1.default.object({
     })),
     DraftPostImage: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.OptionalUUID,
+        Code: ZodUtils_1.OptionalString,
         Name: ZodUtils_1.RequiredString,
         Size: ZodUtils_1.NonNegativeIntegerNumber,
         Path: ZodUtils_1.RequiredString,
+        Base64Data: ZodUtils_1.OptionalString,
         MimeType: ZodUtils_1.OptionalString,
         CreatedDate: ZodUtils_1.OptionalJsDate,
     })),

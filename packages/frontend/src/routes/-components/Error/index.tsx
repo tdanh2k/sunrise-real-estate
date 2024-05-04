@@ -1,6 +1,6 @@
 import { Container, Title, Text, Button, Group } from "@mantine/core";
 import classes from "./error.module.css";
-import { ComponentPropsWithoutRef, FC, useEffect } from "react";
+import { ComponentPropsWithoutRef, FC } from "react";
 import { ErrorComponentProps } from "@tanstack/react-router";
 
 const Illustration = (props: ComponentPropsWithoutRef<"svg">) => (
@@ -29,7 +29,7 @@ export const ErrorComponent: FC<ErrorComponentProps> = ({
           <Illustration className={classes.image} />
           <div className={classes.content}>
             <Title className={classes.title}>Có lỗi xảy ra</Title>
-            <Text size="md" ta="center" className={classes.description}>              
+            <Text size="md" ta="center" className={classes.description}>
               {(error as Error)?.stack}
               {info?.componentStack}
             </Text>

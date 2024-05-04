@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 const ZodUtils_1 = require("../utils/ZodUtils");
+const GlobalBlogType_schema_1 = require("./GlobalBlogType.schema");
 exports.BlogSchema = zod_1.default.object({
     Id: ZodUtils_1.RequiredUUID,
     Code: ZodUtils_1.RequiredString,
@@ -13,9 +14,10 @@ exports.BlogSchema = zod_1.default.object({
     Description: ZodUtils_1.RequiredString,
     CreatedDate: ZodUtils_1.OptionalJsDate,
     TypeId: ZodUtils_1.RequiredUUID,
-    Address: ZodUtils_1.RequiredString,
+    GlobalBlogType: GlobalBlogType_schema_1.GlobalBlogTypeSchema.optional(),
     BlogImage: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.RequiredUUID,
+        Code: ZodUtils_1.OptionalString,
         Name: ZodUtils_1.RequiredString,
         Size: ZodUtils_1.NonNegativeIntegerNumber,
         Path: ZodUtils_1.RequiredString,

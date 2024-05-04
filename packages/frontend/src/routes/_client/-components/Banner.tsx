@@ -1,14 +1,14 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { ChangeEventHandler, useState } from "react";
 
 export const Banner = () => {
   const navigate = useNavigate({ from: "/" });
-  const [search, setSearch] = useState<string[]>([]);
-  const [find, setFind] = useState<string[]>([]);
+  // const [search, setSearch] = useState<string[]>([]);
+  // const [find, setFind] = useState<string[]>([]);
   const [word, setWord] = useState<string>("");
-  useEffect(() => {
-    setSearch(["a", "b", "test", "mb"]);
-  }, []);
+  // useEffect(() => {
+  //   setSearch(["a", "b", "test", "mb"]);
+  // }, []);
   const findSearch: ChangeEventHandler<HTMLInputElement> = (e) => {
     setWord(e.target.value);
     // const filteredCountries = search?.filter((item) =>

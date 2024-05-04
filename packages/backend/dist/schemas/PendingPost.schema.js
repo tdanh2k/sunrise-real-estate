@@ -17,7 +17,8 @@ exports.PendingPostSchema = zod_1.default.object({
     Price: ZodUtils_1.OptionalNumber,
     ApprovedBy: ZodUtils_1.OptionalString,
     ApprovedDate: ZodUtils_1.OptionalJsDate,
-    MapUrl: ZodUtils_1.RequiredURL,
+    MapUrl: ZodUtils_1.RequiredString,
+    Area: ZodUtils_1.NonNegativeNumber,
     PendingPostCurrentDetail: zod_1.default.array(zod_1.default.object({
         Id: ZodUtils_1.RequiredUUID,
         PendingPostId: ZodUtils_1.RequiredUUID,

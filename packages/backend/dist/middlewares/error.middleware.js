@@ -20,7 +20,8 @@ const errorHandler = (error, request, response, next) => {
         return;
     }
     const status = 500;
-    const message = "Internal Server Error";
+    const message = error;
+    console.log({ message });
     response.status(status).json({ message });
 };
 exports.errorHandler = errorHandler;

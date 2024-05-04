@@ -25,16 +25,16 @@ export const ModalAddPostType: FC<ModalAddProps> = ({
   handleClose,
 }) => {
   const utils = privateRoute.useUtils();
-  const { data: idxResponse, isFetching } =
-    privateRoute.management.global_post_type.nextIdx.useQuery(undefined, {
-      enabled: isOpen,
-    });
+  // const { data: idxResponse, isFetching } =
+  //   privateRoute.management.global_post_type.nextIdx.useQuery(undefined, {
+  //     enabled: isOpen,
+  //   });
   const { handleSubmit, control, reset } = useForm({
     resolver: zodResolver(AddGlobalPostTypeSchema),
     mode: "all",
     values: {
       ...defaultValues,
-      Idx: idxResponse?.Idx ?? defaultValues.Idx,
+      //Idx: idxResponse?.Idx ?? defaultValues.Idx,
     },
   });
 
@@ -64,7 +64,7 @@ export const ModalAddPostType: FC<ModalAddProps> = ({
       centered
     >
       <LoadingOverlay
-        visible={isFetching || isPending}
+        visible={isPending}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />

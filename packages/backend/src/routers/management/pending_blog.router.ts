@@ -196,7 +196,7 @@ export const PendingBlogRouter = trpcRouter.router({
 
       // const user = response?.data;
 
-      const [updatedPendingBlog, createdBlog] = await dbContext.$transaction([
+      const [updatedPendingBlog] = await dbContext.$transaction([
         dbContext.pendingBlog.update({
           data: {
             ApprovedBy: (await ctx).userId,

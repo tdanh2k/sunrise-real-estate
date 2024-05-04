@@ -11,7 +11,7 @@ exports.GlobalPostTypeRouter = router_1.trpcRouter.router({
     all: router_1.protectedProcedure
         .input(zod_1.default.void())
         //.output(APIResponseSchema(z.array(GlobalPostTypeSchema)))
-        .query(async (opt) => {
+        .query(async () => {
         const data = await prisma_1.dbContext.globalPostType.findMany();
         return {
             data,
@@ -25,7 +25,7 @@ exports.GlobalPostTypeRouter = router_1.trpcRouter.router({
         // .output(
         //   APIResponseSchema(z.object({ Idx: NonNegativeIntegerNumber.nullable() }))
         // )
-        .query(async (opt) => {
+        .query(async () => {
         const data = await prisma_1.dbContext.globalPostType.aggregate({
             _max: {
                 Idx: true,

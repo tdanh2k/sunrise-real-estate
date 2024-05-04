@@ -24,12 +24,12 @@ exports.Auth0UserSchema = zod_1.z.object({
     // "user_metadata": {},
     picture: ZodUtils_1.OptionalString,
     name: ZodUtils_1.OptionalString,
-    // "nickname": "",
+    nickname: ZodUtils_1.OptionalString,
     // "multifactor": [
     //   ""
     // ],
-    // "last_ip": "",
-    // "last_login": "",
+    last_ip: ZodUtils_1.OptionalString,
+    last_login: ZodUtils_1.OptionalString,
     logins_count: ZodUtils_1.NonNegativeIntegerNumber,
     blocked: ZodUtils_1.OptionalBoolean,
     given_name: ZodUtils_1.OptionalString,

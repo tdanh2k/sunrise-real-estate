@@ -1,12 +1,12 @@
-import { AppState, Auth0Provider } from "@auth0/auth0-react";
+import { Auth0Provider } from "@auth0/auth0-react";
 import { FC, ReactNode } from "react";
 
 export const CustomAuth0Provider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
-  const onRedirectCallback = (appState?: AppState) => {
-    window.location.replace(appState?.returnTo || window.location.pathname);
-  };
+  // const onRedirectCallback = (appState?: AppState) => {
+  //   window.location.replace(appState?.returnTo || window.location.pathname);
+  // };
 
   return (
     <Auth0Provider

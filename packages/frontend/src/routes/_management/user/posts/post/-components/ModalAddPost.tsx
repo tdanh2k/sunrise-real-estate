@@ -29,6 +29,7 @@ const defaultValues: TypeAddPost = {
   Description: "",
   Price: 0,
   MapUrl: "",
+  Area: 0,
   PostImage: [],
   PostCurrentDetail: [],
   PostFeature: [],
@@ -48,13 +49,12 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     defaultValues,
   });
 
-  const { mutateAsync, isPending } = privateRoute.user.post.publish.useMutation(
-    {
+  const { mutateAsync, isPending } =
+    privateRoute.user.pending_post.createFromDraft.useMutation({
       onSuccess: () => {
         utils.user.post.invalidate();
       },
-    }
-  );
+    });
 
   const { mutateAsync: mutateDraftAsync, isPending: isDraftPending } =
     privateRoute.user.draft_post.create.useMutation({
@@ -64,10 +64,22 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       },
     });
 
-  const onSubmit: SubmitHandler<TypeAddPost> = async (values) => {
+  const onSubmit: SubmitHandler<TypeAddPost> = async ({
+    PostCurrentDetail,
+    PostFeature,
+    PostImage,
+    Price,
+    ...rest
+  }) => {
     if (!window.confirm("Bạn đã chắc chắn?")) return;
 
-    await mutateAsync(values);
+    await mutateAsync({
+      ...rest,
+      Price: Price ?? 0,
+      DraftPostCurrentDetail: PostCurrentDetail ?? [],
+      DraftPostFeature: PostFeature ?? [],
+      DraftPostImage: PostImage ?? [],
+    });
     setIsDrafting(false);
     handleClose();
     reset();
@@ -156,6 +168,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
         <NumberInputRHF name="Price" label="Giá" control={control} />
+        <NumberInputRHF name="Area" label="Diện tích" control={control} />
         <TextInputRHF name="MapUrl" label="Url bản đồ" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
@@ -173,7 +186,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
                         (r) => r.Id === row.original.Id
                       )?.Name
                     : null,
-              mantineEditSelectProps: ({ row }) => ({
+              mantineEditSelectProps: () => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
                 //   ?.DetailId,
                 data: postDetailResponse?.data?.map((item) => ({

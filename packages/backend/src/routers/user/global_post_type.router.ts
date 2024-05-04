@@ -1,21 +1,14 @@
 import z from "zod";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { TypeGlobalPostType } from "../../schemas/GlobalPostType.schema";
 import { dbContext } from "../../utils/prisma";
-import {
-  GlobalPostTypeSchema,
-  TypeGlobalPostType,
-} from "../../schemas/GlobalPostType.schema";
-import { NonNegativeIntegerNumber } from "../../utils/ZodUtils";
-import {
-  APIResponseSchema,
-  TypeAPIResponse,
-} from "../../schemas/APIResponse.schema";
 import { protectedProcedure, trpcRouter } from "../router";
 
 export const GlobalPostTypeRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(GlobalPostTypeSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalPostType.findMany();
 
       return {
@@ -30,7 +23,7 @@ export const GlobalPostTypeRouter = trpcRouter.router({
     // .output(
     //   APIResponseSchema(z.object({ Idx: NonNegativeIntegerNumber.nullable() }))
     // )
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalPostType.aggregate({
         _max: {
           Idx: true,

@@ -7,7 +7,6 @@ import {
   OptionalString,
   OptionalUUID,
   RequiredString,
-  RequiredURL,
   RequiredUUID,
 } from "../utils/ZodUtils";
 
@@ -26,7 +25,7 @@ export const AddDraftPostSchema = z.object({
     z.object({
       Id: OptionalUUID,
       DetailId: RequiredUUID,
-      Value: OptionalString,
+      Value: RequiredString,
       IsNumber: OptionalBoolean,
       CreatedDate: OptionalJsDate,
     })
@@ -43,9 +42,9 @@ export const AddDraftPostSchema = z.object({
     z.object({
       Id: OptionalUUID,
       Code: OptionalString,
-      Name: RequiredString,
+      Name: OptionalString,
       Size: NonNegativeIntegerNumber,
-      Path: RequiredString,
+      Path: OptionalString,
       Base64Data: OptionalString,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,

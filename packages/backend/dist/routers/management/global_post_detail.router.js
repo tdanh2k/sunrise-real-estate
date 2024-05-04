@@ -13,7 +13,7 @@ exports.GlobalPostDetailRouter = router_1.trpcRouter.router({
     all: router_1.protectedProcedure
         .input(zod_1.default.void())
         //.output(APIResponseSchema(z.array(GlobalPostDetailSchema)))
-        .query(async (opt) => {
+        .query(async () => {
         const data = await prisma_1.dbContext.globalPostDetail.findMany();
         return { data };
         // return await APIResponseSchema(
@@ -55,7 +55,7 @@ exports.GlobalPostDetailRouter = router_1.trpcRouter.router({
     create: router_1.protectedProcedure
         .input(AddGlobalPostDetail_schema_1.AddGlobalPostDetailSchema)
         //.output(APIResponseSchema(GlobalPostDetailSchema.nullable()))
-        .mutation(async ({ ctx, input }) => {
+        .mutation(async ({ input }) => {
         //if (ctx.userId == null) return null;
         const data = await prisma_1.dbContext.globalPostDetail.create({
             data: input,

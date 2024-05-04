@@ -8,11 +8,8 @@ const zod_1 = __importDefault(require("zod"));
 const Post_schema_1 = require("../../schemas/Post.schema");
 const prisma_1 = require("../../utils/prisma");
 const ZodUtils_1 = require("../../utils/ZodUtils");
-const AddPost_schema_1 = require("../../schemas/AddPost.schema");
 const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const server_1 = require("@trpc/server");
 const router_1 = require("../router");
-const axios_1 = __importDefault(require("axios"));
 exports.PostRouter = router_1.trpcRouter.router({
     byPage: router_1.protectedProcedure
         .input(Pagination_schema_1.PaginationSchema)
@@ -74,99 +71,6 @@ exports.PostRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    publish: router_1.protectedProcedure
-        .input(AddPost_schema_1.AddPostSchema)
-        // .output(
-        //   APIResponseSchema(
-        //     PostSchema.omit({
-        //       PostCurrentDetail: true,
-        //       PostFeature: true,
-        //       PostImage: true,
-        //     }).nullable()
-        //   )
-        // )
-        .mutation(async ({ ctx, input: { PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
-        if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
-                code: "UNAUTHORIZED",
-                message: ``,
-            });
-        const response = await (0, axios_1.default)({
-            url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-            method: "GET",
-            params: {
-                search_engine: "v3",
-            },
-            headers: {
-                Authorization: `Bearer ${(await ctx).management_token}`,
-            },
-        });
-        const user = response?.data;
-        if (user == null)
-            throw new server_1.TRPCError({
-                code: "UNAUTHORIZED",
-                message: ``,
-            });
-        const result = await prisma_1.dbContext.post.create({
-            data: {
-                ...rest,
-                UserId: (await ctx).userId ?? "",
-                User_Email: user.email,
-                User_EmailVerified: user.email_verified,
-                User_Name: user.name,
-                User_Username: user.username,
-                User_PhoneNumber: user.phone_number,
-                User_PhoneVerified: user.phone_verified,
-                User_Picture: user.picture,
-                PostCurrentDetail: {
-                    // connectOrCreate: PostCurrentDetail?.map((item) => ({
-                    //   where: {
-                    //     Id: item.Id,
-                    //   },
-                    //   create: item,
-                    // })),
-                    createMany: {
-                        data: PostCurrentDetail ?? [],
-                    },
-                },
-                PostFeature: {
-                    // connectOrCreate: PostFeature?.map((item) => ({
-                    //   where: {
-                    //     Id: item.Id,
-                    //   },
-                    //   create: item,
-                    // })),
-                    createMany: {
-                        data: PostFeature ?? [],
-                    },
-                },
-                PostImage: {
-                    // connectOrCreate: PostImage?.map((item) => ({
-                    //   where: {
-                    //     Id: item.Id,
-                    //   },
-                    //   create: item,
-                    // })),
-                    createMany: {
-                        data: PostImage ?? [],
-                    },
-                },
-            },
-            include: {
-                PostCurrentDetail: true,
-                PostFeature: true,
-                PostImage: true,
-            },
-        });
-        return { data: result };
-        // return await APIResponseSchema(
-        //   PostSchema.omit({
-        //     PostCurrentDetail: true,
-        //     PostFeature: true,
-        //     PostImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data: result });
-    }),
     update: router_1.protectedProcedure
         .input(Post_schema_1.PostSchema)
         // .output(
@@ -178,7 +82,7 @@ exports.PostRouter = router_1.trpcRouter.router({
         //     }).nullable()
         //   )
         // )
-        .mutation(async ({ ctx, input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
+        .mutation(async ({ input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
         //if (ctx.userId == null) return null;
         const result = await prisma_1.dbContext.post.update({
             where: {

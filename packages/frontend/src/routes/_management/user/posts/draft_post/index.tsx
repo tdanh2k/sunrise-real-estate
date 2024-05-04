@@ -26,24 +26,24 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
   },
   component: () => {
     const [selectedId, setSelectedId] = useState<string | undefined>("");
-    const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
-      useDisclosure(false);
+    // const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
+    //   useDisclosure(false);
     const [
       openedModalUpdate,
       { open: openModalUpdate, close: closeModalUpdate },
     ] = useDisclosure(false);
-    const [
-      openedModalDelete,
-      { open: openModalDelete, close: closeModalDelete },
-    ] = useDisclosure(false);
+    // const [
+    //   openedModalDelete,
+    //   { open: openModalDelete, close: closeModalDelete },
+    // ] = useDisclosure(false);
 
-    const handleOpenModalAdd = useCallback(() => {
-      openModalAdd();
-    }, [openModalAdd]);
+    // const handleOpenModalAdd = useCallback(() => {
+    //   openModalAdd();
+    // }, [openModalAdd]);
 
-    const handleCloseModalAdd = () => {
-      closeModalAdd();
-    };
+    // const handleCloseModalAdd = () => {
+    //   closeModalAdd();
+    // };
 
     const handleOpenModalUpdate = useCallback(
       (Id: string | undefined) => () => {
@@ -58,18 +58,18 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
       closeModalUpdate();
     };
 
-    const handleOpenModalDelete = useCallback(
-      (Id: string | undefined) => () => {
-        setSelectedId(Id);
-        openModalDelete();
-      },
-      [openModalDelete]
-    );
+    // const handleOpenModalDelete = useCallback(
+    //   (Id: string | undefined) => () => {
+    //     setSelectedId(Id);
+    //     openModalDelete();
+    //   },
+    //   [openModalDelete]
+    // );
 
-    const handleCloseModalDelete = () => {
-      setSelectedId("");
-      closeModalDelete();
-    };
+    // const handleCloseModalDelete = () => {
+    //   setSelectedId("");
+    //   closeModalDelete();
+    // };
 
     const tableRowActions = useCallback(
       (Id: string | undefined): CustomActionMenuItemPropsType[] => [
@@ -79,14 +79,14 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
           actionType: "Update",
           onClick: handleOpenModalUpdate(Id),
         },
-        {
-          id: "Remove",
-          label: "Xóa",
-          actionType: "Delete",
-          onClick: handleOpenModalDelete(Id),
-        },
+        // {
+        //   id: "Remove",
+        //   label: "Xóa",
+        //   actionType: "Delete",
+        //   onClick: handleOpenModalDelete(Id),
+        // },
       ],
-      [handleOpenModalUpdate, handleOpenModalDelete]
+      [handleOpenModalUpdate]
     );
 
     const table = useMantineRTInstance<TypeDraftPost>({

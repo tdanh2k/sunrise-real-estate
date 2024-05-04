@@ -8,7 +8,7 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(GlobalBlogTypeSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalBlogType.findMany();
 
       return {
@@ -23,7 +23,7 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
     // .output(
     //   APIResponseSchema(z.object({ Idx: NonNegativeIntegerNumber.nullable() }))
     // )
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalBlogType.aggregate({
         _max: {
           Idx: true,
@@ -74,7 +74,7 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
   create: protectedProcedure
     .input(AddGlobalBlogTypeSchema)
     //.output(APIResponseSchema(GlobalBlogTypeSchema.nullable()))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       //if (ctx.userId == null) return null;
       const data = await dbContext.globalBlogType.create({
         data: input,

@@ -1,8 +1,6 @@
 import { FC } from "react";
 import Slider, { Settings } from "react-slick";
 import { Title } from "./Title";
-import { BestPostItem } from "./BestPostItem";
-import { publicRoute } from "@utils/trpc";
 
 export const BestPostList: FC = () => {
   const title = {

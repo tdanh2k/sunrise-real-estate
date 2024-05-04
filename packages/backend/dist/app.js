@@ -36,15 +36,24 @@ const context_1 = require("./routers/context");
 const error_middleware_js_1 = require("./middlewares/error.middleware.js");
 const not_found_middleware_js_1 = require("./middlewares/not-found.middleware.js");
 const auth0_middleware_js_1 = require("./middlewares/auth0.middleware.js");
+const cloudinary_1 = require("cloudinary");
 const app = (0, express_1.default)();
 const port = 3000;
+cloudinary_1.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+});
 app.use((0, cors_1.default)({
     //origin: "http://localhost:3000",
     methods: ["GET"],
     allowedHeaders: ["Authorization", "Content-Type"],
     maxAge: 86400,
 }));
-app.use(express_1.default.json());
+app.use(express_1.default.json({
+    limit: "100mb",
+}));
 // app.set("json spaces", 2);
 app.use((0, helmet_1.default)({
     hsts: {

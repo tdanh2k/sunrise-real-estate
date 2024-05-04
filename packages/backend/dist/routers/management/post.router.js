@@ -12,12 +12,12 @@ const AddPost_schema_1 = require("../../schemas/AddPost.schema");
 const Pagination_schema_1 = require("../../schemas/Pagination.schema");
 const server_1 = require("@trpc/server");
 const router_1 = require("../router");
-const axios_1 = __importDefault(require("axios"));
+const cloudinary_1 = require("cloudinary");
 exports.PostRouter = router_1.trpcRouter.router({
     all: router_1.protectedProcedure
         .input(zod_1.default.void())
         //.output(APIResponseSchema(z.array(PostSchema)))
-        .query(async (opt) => {
+        .query(async () => {
         const data = await prisma_1.dbContext.post.findMany({
             include: {
                 PostCurrentDetail: true,
@@ -110,33 +110,30 @@ exports.PostRouter = router_1.trpcRouter.router({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const response = await (0, axios_1.default)({
-            url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-            method: "GET",
-            params: {
-                search_engine: "v3",
-            },
-            headers: {
-                Authorization: `Bearer ${(await ctx).management_token}`,
-            },
-        });
-        const user = response?.data;
-        if (user == null)
-            throw new server_1.TRPCError({
-                code: "UNAUTHORIZED",
-                message: ``,
-            });
+        const AddImages = [];
+        for (const { Base64Data, ...metadata } of PostImage ?? []) {
+            if (metadata.Id) {
+                AddImages.push(metadata);
+            }
+            else if (Base64Data != null) {
+                await cloudinary_1.v2.uploader.upload(Base64Data, {
+                    use_filename: true,
+                    access_mode: "public",
+                }, (error, result) => {
+                    if (!error)
+                        AddImages.push({
+                            ...metadata,
+                            Code: result?.public_id,
+                            Path: result?.secure_url ?? "",
+                            Size: result?.bytes ?? metadata?.Size,
+                        });
+                });
+            }
+        }
         const result = await prisma_1.dbContext.post.create({
             data: {
                 ...rest,
                 UserId: (await ctx).userId ?? "",
-                User_Email: user.email,
-                User_EmailVerified: user.email_verified,
-                User_Name: user.name,
-                User_Username: user.username,
-                User_PhoneNumber: user.phone_number,
-                User_PhoneVerified: user.phone_verified,
-                User_Picture: user.picture,
                 PostCurrentDetail: {
                     // connectOrCreate: PostCurrentDetail?.map((item) => ({
                     //   where: {
@@ -167,7 +164,7 @@ exports.PostRouter = router_1.trpcRouter.router({
                     //   create: item,
                     // })),
                     createMany: {
-                        data: PostImage ?? [],
+                        data: AddImages ?? [],
                     },
                 },
             },
@@ -197,7 +194,7 @@ exports.PostRouter = router_1.trpcRouter.router({
         //     }).nullable()
         //   )
         // )
-        .mutation(async ({ ctx, input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
+        .mutation(async ({ input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
         //if (ctx.userId == null) return null;
         const result = await prisma_1.dbContext.post.update({
             where: {

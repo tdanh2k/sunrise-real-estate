@@ -1,6 +1,4 @@
-import { redirect } from "@tanstack/react-router";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { createPrivateClient } from "@utils/trpc";
 import { NotFoundComponent } from "../../-components/NotFound";
 
 export const Route = createFileRoute("/_management/management")({

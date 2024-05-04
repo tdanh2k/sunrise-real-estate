@@ -13,7 +13,7 @@ export const PostRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(PostSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.post.findMany({
         include: {
           PostCurrentDetail: true,
@@ -210,7 +210,6 @@ export const PostRouter = trpcRouter.router({
     // )
     .mutation(
       async ({
-        ctx,
         input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest },
       }) => {
         //if (ctx.userId == null) return null;

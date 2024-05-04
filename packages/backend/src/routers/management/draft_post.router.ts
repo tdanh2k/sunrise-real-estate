@@ -1,17 +1,17 @@
-import z from "zod";
-import { DraftPostSchema } from "../../schemas/DraftPost.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
 import { TRPCError } from "@trpc/server";
+import z from "zod";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
+import { DraftPostSchema } from "../../schemas/DraftPost.schema";
 import { PaginationSchema } from "../../schemas/Pagination.schema";
+import { RequiredString } from "../../utils/ZodUtils";
+import { dbContext } from "../../utils/prisma";
 import { protectedProcedure, trpcRouter } from "../router";
 
 export const DraftPostRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(DraftPostSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.draftPost.findMany({
         include: {
           DraftPostCurrentDetail: {
@@ -134,6 +134,10 @@ export const DraftPostRouter = trpcRouter.router({
         const data = await dbContext.draftPost.create({
           data: {
             ...rest,
+            Title: rest?.Title ?? "",
+            Description: rest?.Description ?? "",
+            Address: rest?.Address ?? "",
+            MapUrl: rest?.MapUrl ?? "",
             UserId: (await ctx).userId ?? "",
             DraftPostCurrentDetail: {
               createMany: {
@@ -194,7 +198,6 @@ export const DraftPostRouter = trpcRouter.router({
     // )
     .mutation(
       async ({
-        ctx,
         input: {
           Id,
           DraftPostCurrentDetail,
@@ -252,7 +255,7 @@ export const DraftPostRouter = trpcRouter.router({
   delete: protectedProcedure
     .input(z.object({ Id: RequiredString }))
     //.output(APIResponseSchema(OptionalBoolean.nullable()))
-    .mutation(async ({ ctx, input: { Id } }) => {
+    .mutation(async ({ input: { Id } }) => {
       //if (ctx.userId == null) return null;
 
       const result = await dbContext.draftPost.delete({

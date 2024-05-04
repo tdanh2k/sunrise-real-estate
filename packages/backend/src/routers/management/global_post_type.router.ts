@@ -8,7 +8,7 @@ export const GlobalPostTypeRouter = trpcRouter.router({
   all: protectedProcedure
     .input(z.void())
     //.output(APIResponseSchema(z.array(GlobalPostTypeSchema)))
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalPostType.findMany();
 
       return {
@@ -23,7 +23,7 @@ export const GlobalPostTypeRouter = trpcRouter.router({
     // .output(
     //   APIResponseSchema(z.object({ Idx: NonNegativeIntegerNumber.nullable() }))
     // )
-    .query(async (opt) => {
+    .query(async () => {
       const data = await dbContext.globalPostType.aggregate({
         _max: {
           Idx: true,
@@ -74,7 +74,7 @@ export const GlobalPostTypeRouter = trpcRouter.router({
   create: protectedProcedure
     .input(AddGlobalPostTypeSchema)
     //.output(APIResponseSchema(GlobalPostTypeSchema.nullable()))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ input }) => {
       //if (ctx.userId == null) return null;
       const data = await dbContext.globalPostType.create({
         data: input,

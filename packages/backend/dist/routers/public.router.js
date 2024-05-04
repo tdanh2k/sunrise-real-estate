@@ -12,11 +12,15 @@ exports.PublicRouter = router_1.trpcRouter.router({
     topPost: router_1.publicProcedure
         .input(zod_1.default.void())
         //.output(APIResponseSchema(z.array(PostSchema)))
-        .query(async (opt) => {
+        .query(async () => {
         const data = await prisma_1.dbContext.post.findMany({
             take: 5,
             include: {
-                PostCurrentDetail: true,
+                PostCurrentDetail: {
+                    include: {
+                        PostDetail: true,
+                    },
+                },
                 PostImage: true,
                 PostType: true,
                 PostFeature: true,
@@ -34,6 +38,24 @@ exports.PublicRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
+    topPosts: router_1.publicProcedure.input(zod_1.default.void()).query(async () => {
+        const data = await prisma_1.dbContext.post.findMany({
+            take: 5,
+            include: {
+                PostImage: true,
+                PostFeature: true,
+                PostType: true,
+                Auth0Profile: true,
+                PostCurrentDetail: true,
+                PostStats: {
+                    orderBy: {
+                        ViewCount: "desc",
+                    },
+                },
+            },
+        });
+        return { data };
+    }),
     getPostById: router_1.publicProcedure
         .input(zod_1.default.object({
         id: ZodUtils_1.RequiredString,
@@ -45,11 +67,16 @@ exports.PublicRouter = router_1.trpcRouter.router({
                 Id: input.id,
             },
             include: {
-                PostCurrentDetail: true,
+                PostCurrentDetail: {
+                    include: {
+                        PostDetail: true,
+                    },
+                },
                 PostImage: true,
                 PostType: true,
                 PostFeature: true,
                 PostStats: true,
+                Auth0Profile: true,
             },
         });
         return {
@@ -58,6 +85,39 @@ exports.PublicRouter = router_1.trpcRouter.router({
         // return await APIResponseSchema(PostSchema).parseAsync({
         //   data,
         // });
+    }),
+    searchPosts: router_1.publicProcedure
+        .input(zod_1.default.object({
+        keyword: ZodUtils_1.OptionalString,
+    }))
+        //.output(APIResponseSchema(PostSchema))
+        .query(async ({ input }) => {
+        const response = await prisma_1.dbContext.post.findMany({
+            include: {
+                Auth0Profile: true,
+                PostImage: true,
+                PostFeature: true,
+                PostType: true,
+                PostCurrentDetail: true,
+                PostStats: true,
+            },
+            where: {
+                OR: [
+                    {
+                        Title: {
+                            contains: input.keyword,
+                        },
+                    },
+                    {
+                        Description: {
+                            contains: input.keyword,
+                        },
+                    },
+                ],
+            },
+            take: 20,
+        });
+        return { data: response };
     }),
     topBlogs: router_1.publicProcedure.input(zod_1.default.void()).query(async () => {
         const data = await prisma_1.dbContext.blog.findMany({
@@ -72,5 +132,57 @@ exports.PublicRouter = router_1.trpcRouter.router({
             },
         });
         return { data };
+    }),
+    getBlogById: 
+    //.output(APIResponseSchema(PostSchema))
+    router_1.publicProcedure
+        .input(zod_1.default.object({
+        id: ZodUtils_1.RequiredString,
+    }))
+        .query(async ({ input }) => {
+        const data = await prisma_1.dbContext.blog.findFirst({
+            where: {
+                Id: input.id,
+            },
+            include: {
+                BlogImage: true,
+                GlobalBlogType: true,
+                BlogStats: true,
+                Auth0Profile: true,
+            },
+        });
+        return {
+            data,
+        };
+    }),
+    searchBlogs: router_1.publicProcedure
+        .input(zod_1.default.object({
+        keyword: ZodUtils_1.OptionalString,
+    }))
+        //.output(APIResponseSchema(PostSchema))
+        .query(async ({ input }) => {
+        const response = await prisma_1.dbContext.blog.findMany({
+            include: {
+                Auth0Profile: true,
+                BlogImage: true,
+                GlobalBlogType: true,
+            },
+            where: {
+                OR: [
+                    {
+                        Title: {
+                            contains: input.keyword,
+                        },
+                    },
+                    {
+                        Description: {
+                            contains: input.keyword,
+                        },
+                    },
+                ],
+            },
+            take: 20,
+        });
+        return { data: response };
     }),
 });
