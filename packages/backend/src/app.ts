@@ -12,7 +12,7 @@ import { validateAccessToken } from "./middlewares/auth0.middleware.js";
 import { v2 as cloudinary } from "cloudinary";
 
 const app = express();
-const port = 8080;
+const port = process.env.port || 8080;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
