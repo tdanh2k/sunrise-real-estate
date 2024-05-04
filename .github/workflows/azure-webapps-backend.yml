@@ -27,5 +27,16 @@ jobs:
           cd backend
           pnpm install
 
-      - name: Deploy backend
-        run: pnpm dev
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: sunrise-real-estate-backend
+          slot-name: production  # Optional: specify the deployment slot name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: backend  # Adjust this if the backend folder has a different name
+
+      - name: Run dev script
+        run: |
+          # Assuming your dev script is named "dev" in your backend package.json
+          cd backend
+          pnpm run dev
