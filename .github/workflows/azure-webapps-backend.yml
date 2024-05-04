@@ -24,11 +24,11 @@ jobs:
           app-name: sunrise-real-estate-backend
           slot-name: production  # Optional: specify the deployment slot name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: backend/dist  # Adjust this if the backend folder has a different name
+          package: src/backend/dist  # Adjust this if the backend folder has a different name
 
       - name: Run dev script
         run: |
           # Assuming your dev script is named "dev" in your backend package.json
-          cd backend/dist
+          cd src/backend/dist
           node app.js
           
