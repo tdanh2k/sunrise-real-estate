@@ -1,8 +1,8 @@
 import z from "zod";
-import { dbContext } from "../../utils/prisma";
-import { AddGlobalPostDetailSchema } from "../../schemas/AddGlobalPostDetail.schema";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { protectedProcedure, trpcRouter } from "../router";
+import { dbContext } from "../../utils/prisma.js";
+import { AddGlobalPostDetailSchema } from "../../schemas/AddGlobalPostDetail.schema.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
 
 export const GlobalPostDetailRouter = trpcRouter.router({
   all: protectedProcedure

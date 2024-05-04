@@ -1,6 +1,6 @@
 
 import { z } from "zod";
-import { NonNegativeIntegerNumber, OptionalNumber, OptionalString, RequiredString } from "../utils/ZodUtils";
+import { NonNegativeIntegerNumber, OptionalNumber, OptionalString, RequiredString } from "../utils/ZodUtils.js";
 
 export const PaginationSchema = z.object({
   paging: z.object({

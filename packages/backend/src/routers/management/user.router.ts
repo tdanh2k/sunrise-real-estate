@@ -1,9 +1,9 @@
 import axios from "axios";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { protectedProcedure, trpcRouter } from "../router";
-import { APIResponseSchema } from "../../schemas/APIResponse.schema";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+import { APIResponseSchema } from "../../schemas/APIResponse.schema.js";
 import { z } from "zod";
-import { TypeAuth0User } from "../../schemas/Auth0User.schema";
+import { TypeAuth0User } from "../../schemas/Auth0User.schema.js";
 
 export const AdminUserRouter = trpcRouter.router({
   byPage: protectedProcedure

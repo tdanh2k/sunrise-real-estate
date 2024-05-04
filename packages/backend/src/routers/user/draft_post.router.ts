@@ -1,12 +1,15 @@
 import z from "zod";
-import { DraftPostSchema, TypeDraftPost } from "../../schemas/DraftPost.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
+import {
+  DraftPostSchema,
+  TypeDraftPost,
+} from "../../schemas/DraftPost.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema.js";
 import { TRPCError } from "@trpc/server";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { protectedProcedure, trpcRouter } from "../router";
-import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const DraftPostRouter = trpcRouter.router({

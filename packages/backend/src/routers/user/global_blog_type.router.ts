@@ -1,12 +1,8 @@
 import z from "zod";
-import { dbContext } from "../../utils/prisma";
-import {
-  TypeGlobalBlogType,
-} from "../../schemas/GlobalBlogType.schema";
-import {
-  TypeAPIResponse,
-} from "../../schemas/APIResponse.schema";
-import { protectedProcedure, trpcRouter } from "../router";
+import { dbContext } from "../../utils/prisma.js";
+import { TypeGlobalBlogType } from "../../schemas/GlobalBlogType.schema.js";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
 
 export const GlobalBlogTypeRouter = trpcRouter.router({
   all: protectedProcedure

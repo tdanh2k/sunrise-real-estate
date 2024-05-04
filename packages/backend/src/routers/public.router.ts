@@ -1,7 +1,7 @@
 import z from "zod";
-import { dbContext } from "../utils/prisma";
-import { publicProcedure, trpcRouter } from "./router";
-import { OptionalString, RequiredString } from "../utils/ZodUtils";
+import { dbContext } from "../utils/prisma.js";
+import { publicProcedure, trpcRouter } from "./router.js";
+import { OptionalString, RequiredString } from "../utils/ZodUtils.js";
 
 export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure

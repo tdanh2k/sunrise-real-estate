@@ -4,7 +4,7 @@ import {
   OptionalJsDate,
   RequiredString,
   RequiredUUID,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const GlobalPostTypeSchema = z.object({
   Id: RequiredUUID,

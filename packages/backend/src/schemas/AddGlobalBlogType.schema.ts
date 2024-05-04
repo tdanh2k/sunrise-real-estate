@@ -3,7 +3,7 @@ import {
   NonNegativeIntegerNumber,
   OptionalJsDate,
   RequiredString,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const AddGlobalBlogTypeSchema = z.object({
   Idx: NonNegativeIntegerNumber,

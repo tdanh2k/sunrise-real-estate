@@ -6,8 +6,8 @@ import {
   OptionalUUID,
   RequiredString,
   RequiredUUID,
-} from "../utils/ZodUtils";
-import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema";
+} from "../utils/ZodUtils.js";
+import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 
 export const PendingBlogSchema = z.object({
   Id: RequiredUUID,

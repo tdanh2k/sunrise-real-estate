@@ -1,12 +1,15 @@
 import z from "zod";
-import { DraftBlogSchema, TypeDraftBlog } from "../../schemas/DraftBlog.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { AddDraftBlogSchema } from "../../schemas/AddDraftBlog.schema";
+import {
+  DraftBlogSchema,
+  TypeDraftBlog,
+} from "../../schemas/DraftBlog.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { AddDraftBlogSchema } from "../../schemas/AddDraftBlog.schema.js";
 import { TRPCError } from "@trpc/server";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { protectedProcedure, trpcRouter } from "../router";
-import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
 import { v2 as cloudinary } from "cloudinary";
 
 export const DraftBlogRouter = trpcRouter.router({

@@ -1,17 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Auth0UserSchema = void 0;
-const zod_1 = require("zod");
-const ZodUtils_1 = require("../utils/ZodUtils");
-exports.Auth0UserSchema = zod_1.z.object({
-    email: ZodUtils_1.RequiredString,
-    email_verified: ZodUtils_1.OptionalBoolean,
-    username: ZodUtils_1.OptionalString,
-    phone_number: ZodUtils_1.OptionalString,
-    phone_verified: ZodUtils_1.OptionalBoolean,
-    user_id: ZodUtils_1.RequiredString,
-    created_at: ZodUtils_1.OptionalJsDate,
-    updated_at: ZodUtils_1.OptionalJsDate,
+import { z } from "zod";
+import { NonNegativeIntegerNumber, OptionalBoolean, OptionalJsDate, OptionalString, RequiredString, } from "../utils/ZodUtils.js";
+export const Auth0UserSchema = z.object({
+    email: RequiredString,
+    email_verified: OptionalBoolean,
+    username: OptionalString,
+    phone_number: OptionalString,
+    phone_verified: OptionalBoolean,
+    user_id: RequiredString,
+    created_at: OptionalJsDate,
+    updated_at: OptionalJsDate,
     // identities: z.array(
     //   z.object({
     //     connection: OptionalString,
@@ -22,16 +19,16 @@ exports.Auth0UserSchema = zod_1.z.object({
     // ),
     // "app_metadata": {},
     // "user_metadata": {},
-    picture: ZodUtils_1.OptionalString,
-    name: ZodUtils_1.OptionalString,
-    nickname: ZodUtils_1.OptionalString,
+    picture: OptionalString,
+    name: OptionalString,
+    nickname: OptionalString,
     // "multifactor": [
     //   ""
     // ],
-    last_ip: ZodUtils_1.OptionalString,
-    last_login: ZodUtils_1.OptionalString,
-    logins_count: ZodUtils_1.NonNegativeIntegerNumber,
-    blocked: ZodUtils_1.OptionalBoolean,
-    given_name: ZodUtils_1.OptionalString,
-    family_name: ZodUtils_1.OptionalString,
+    last_ip: OptionalString,
+    last_login: OptionalString,
+    logins_count: NonNegativeIntegerNumber,
+    blocked: OptionalBoolean,
+    given_name: OptionalString,
+    family_name: OptionalString,
 });

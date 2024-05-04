@@ -1,11 +1,11 @@
 import z from "zod";
-import { DraftBlogSchema } from "../../schemas/DraftBlog.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { AddDraftBlogSchema } from "../../schemas/AddDraftBlog.schema";
+import { DraftBlogSchema } from "../../schemas/DraftBlog.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { AddDraftBlogSchema } from "../../schemas/AddDraftBlog.schema.js";
 import { TRPCError } from "@trpc/server";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { protectedProcedure, trpcRouter } from "../router";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
 
 export const DraftBlogRouter = trpcRouter.router({
   all: protectedProcedure

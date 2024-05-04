@@ -1,20 +1,14 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.GlobalBlogTypeRouter = void 0;
-const zod_1 = __importDefault(require("zod"));
-const prisma_1 = require("../../utils/prisma");
-const AddGlobalBlogType_schema_1 = require("../../schemas/AddGlobalBlogType.schema");
-const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const router_1 = require("../router");
-exports.GlobalBlogTypeRouter = router_1.trpcRouter.router({
-    all: router_1.protectedProcedure
-        .input(zod_1.default.void())
+import z from "zod";
+import { dbContext } from "../../utils/prisma.js";
+import { AddGlobalBlogTypeSchema } from "../../schemas/AddGlobalBlogType.schema.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+export const GlobalBlogTypeRouter = trpcRouter.router({
+    all: protectedProcedure
+        .input(z.void())
         //.output(APIResponseSchema(z.array(GlobalBlogTypeSchema)))
         .query(async () => {
-        const data = await prisma_1.dbContext.globalBlogType.findMany();
+        const data = await dbContext.globalBlogType.findMany();
         return {
             data,
         };
@@ -22,13 +16,13 @@ exports.GlobalBlogTypeRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    nextIdx: router_1.protectedProcedure
-        .input(zod_1.default.void())
+    nextIdx: protectedProcedure
+        .input(z.void())
         // .output(
         //   APIResponseSchema(z.object({ Idx: NonNegativeIntegerNumber.nullable() }))
         // )
         .query(async () => {
-        const data = await prisma_1.dbContext.globalBlogType.aggregate({
+        const data = await dbContext.globalBlogType.aggregate({
             _max: {
                 Idx: true,
             },
@@ -41,18 +35,18 @@ exports.GlobalBlogTypeRouter = router_1.trpcRouter.router({
         //   z.object({ Idx: NonNegativeIntegerNumber.nullable() })
         // ).parseAsync({ data: result });
     }),
-    byPage: router_1.protectedProcedure
-        .input(Pagination_schema_1.PaginationSchema)
+    byPage: protectedProcedure
+        .input(PaginationSchema)
         //.output(APIResponseSchema(z.array(GlobalBlogTypeSchema)))
         .query(async ({ input }) => {
         const page_index = input.paging.page_index ?? 0;
         const page_size = input.paging.page_size ?? 10;
-        const [data, row_count] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.globalBlogType.findMany({
+        const [data, row_count] = await dbContext.$transaction([
+            dbContext.globalBlogType.findMany({
                 skip: page_index,
                 take: page_size,
             }),
-            prisma_1.dbContext.globalBlogType.count(),
+            dbContext.globalBlogType.count(),
         ]);
         return {
             data,
@@ -71,12 +65,12 @@ exports.GlobalBlogTypeRouter = router_1.trpcRouter.router({
         //   },
         // });
     }),
-    create: router_1.protectedProcedure
-        .input(AddGlobalBlogType_schema_1.AddGlobalBlogTypeSchema)
+    create: protectedProcedure
+        .input(AddGlobalBlogTypeSchema)
         //.output(APIResponseSchema(GlobalBlogTypeSchema.nullable()))
         .mutation(async ({ input }) => {
         //if (ctx.userId == null) return null;
-        const data = await prisma_1.dbContext.globalBlogType.create({
+        const data = await dbContext.globalBlogType.create({
             data: input,
         });
         return { data };

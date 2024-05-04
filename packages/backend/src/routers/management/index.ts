@@ -1,18 +1,18 @@
 import { z } from "zod";
-import { publicProcedure, trpcRouter } from "../router";
-import { DraftPostRouter } from "./draft_post.router";
-import { GlobalPostDetailRouter } from "./global_post_detail.router";
-import { GlobalPostTypeRouter } from "./global_post_type.router";
-import { PostRouter } from "./post.router";
-import { AdminUserRouter } from "./user.router";
-import { RequiredString } from "../../utils/ZodUtils";
+import { publicProcedure, trpcRouter } from "../router.js";
+import { DraftPostRouter } from "./draft_post.router.js";
+import { GlobalPostDetailRouter } from "./global_post_detail.router.js";
+import { GlobalPostTypeRouter } from "./global_post_type.router.js";
+import { PostRouter } from "./post.router.js";
+import { AdminUserRouter } from "./user.router.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
 import { TRPCError } from "@trpc/server";
 import axios from "axios";
-import { BlogRouter } from "./blog.router";
-import { DraftBlogRouter } from "./draft_blog.router";
-import { GlobalBlogTypeRouter } from "./global_blog_type.router";
-import { PendingBlogRouter } from "./pending_blog.router";
-import { PendingPostRouter } from "./pending_post.router";
+import { BlogRouter } from "./blog.router.js";
+import { DraftBlogRouter } from "./draft_blog.router.js";
+import { GlobalBlogTypeRouter } from "./global_blog_type.router.js";
+import { PendingBlogRouter } from "./pending_blog.router.js";
+import { PendingPostRouter } from "./pending_post.router.js";
 
 export const managementRouter = trpcRouter.router({
   post: PostRouter,

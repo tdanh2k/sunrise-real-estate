@@ -1,13 +1,13 @@
-import { trpcRouter } from "../router";
-import { BlogRouter } from "./blog.router";
-import { DraftBlogRouter } from "./draft_blog.router";
-import { DraftPostRouter } from "./draft_post.router";
-import { GlobalBlogTypeRouter } from "./global_blog_type.router";
-import { GlobalPostDetailRouter } from "./global_post_detail.router";
-import { GlobalPostTypeRouter } from "./global_post_type.router";
-import { PendingBlogRouter } from "./pending_blog.router";
-import { PendingPostRouter } from "./pending_post.router";
-import { PostRouter } from "./post.router";
+import { trpcRouter } from "../router.js";
+import { BlogRouter } from "./blog.router.js";
+import { DraftBlogRouter } from "./draft_blog.router.js";
+import { DraftPostRouter } from "./draft_post.router.js";
+import { GlobalBlogTypeRouter } from "./global_blog_type.router.js";
+import { GlobalPostDetailRouter } from "./global_post_detail.router.js";
+import { GlobalPostTypeRouter } from "./global_post_type.router.js";
+import { PendingBlogRouter } from "./pending_blog.router.js";
+import { PendingPostRouter } from "./pending_post.router.js";
+import { PostRouter } from "./post.router.js";
 
 export const userRouter = trpcRouter.router({
   post: PostRouter,

@@ -7,9 +7,8 @@ import {
   OptionalNumber,
   OptionalString,
   RequiredString,
-  RequiredURL,
   RequiredUUID,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const AddPendingPostSchema = z.object({
   //Id: RequiredUUID,

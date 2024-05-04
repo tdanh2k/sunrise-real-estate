@@ -1,23 +1,17 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DraftPostRouter = void 0;
-const server_1 = require("@trpc/server");
-const zod_1 = __importDefault(require("zod"));
-const AddDraftPost_schema_1 = require("../../schemas/AddDraftPost.schema");
-const DraftPost_schema_1 = require("../../schemas/DraftPost.schema");
-const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const ZodUtils_1 = require("../../utils/ZodUtils");
-const prisma_1 = require("../../utils/prisma");
-const router_1 = require("../router");
-exports.DraftPostRouter = router_1.trpcRouter.router({
-    all: router_1.protectedProcedure
-        .input(zod_1.default.void())
+import { TRPCError } from "@trpc/server";
+import z from "zod";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema.js";
+import { DraftPostSchema } from "../../schemas/DraftPost.schema.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { dbContext } from "../../utils/prisma.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+export const DraftPostRouter = trpcRouter.router({
+    all: protectedProcedure
+        .input(z.void())
         //.output(APIResponseSchema(z.array(DraftPostSchema)))
         .query(async () => {
-        const data = await prisma_1.dbContext.draftPost.findMany({
+        const data = await dbContext.draftPost.findMany({
             include: {
                 DraftPostCurrentDetail: {
                     include: {
@@ -36,14 +30,14 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    byPage: router_1.protectedProcedure
-        .input(Pagination_schema_1.PaginationSchema)
+    byPage: protectedProcedure
+        .input(PaginationSchema)
         //.output(APIResponseSchema(z.array(DraftPostSchema)))
         .query(async ({ input }) => {
         const page_index = input.paging.page_index ?? 1;
         const page_size = input.paging.page_size ?? 10;
-        const [data, row_count] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.draftPost.findMany({
+        const [data, row_count] = await dbContext.$transaction([
+            dbContext.draftPost.findMany({
                 skip: page_index,
                 take: page_size,
                 include: {
@@ -56,7 +50,7 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
                     DraftPostFeature: true,
                 },
             }),
-            prisma_1.dbContext.draftPost.count(),
+            dbContext.draftPost.count(),
         ]);
         return {
             data,
@@ -75,13 +69,13 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         //   },
         // });
     }),
-    byId: router_1.protectedProcedure
-        .input(zod_1.default.object({
-        Id: ZodUtils_1.RequiredString,
+    byId: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
     }))
         //.output(APIResponseSchema(DraftPostSchema.nullable()))
         .query(async ({ input }) => {
-        const data = await prisma_1.dbContext.draftPost.findFirst({
+        const data = await dbContext.draftPost.findFirst({
             where: {
                 Id: input.Id,
             },
@@ -103,8 +97,8 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    create: router_1.protectedProcedure
-        .input(AddDraftPost_schema_1.AddDraftPostSchema)
+    create: protectedProcedure
+        .input(AddDraftPostSchema)
         // .output(
         //   APIResponseSchema(
         //     DraftPostSchema.omit({
@@ -116,11 +110,11 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ ctx, input: { DraftPostCurrentDetail, DraftPostFeature, DraftPostImage, ...rest }, }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const data = await prisma_1.dbContext.draftPost.create({
+        const data = await dbContext.draftPost.create({
             data: {
                 ...rest,
                 Title: rest?.Title ?? "",
@@ -172,8 +166,8 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         //   }).nullable()
         // ).parseAsync({ data });
     }),
-    update: router_1.protectedProcedure
-        .input(DraftPost_schema_1.DraftPostSchema.omit({ GlobalPostType: true }))
+    update: protectedProcedure
+        .input(DraftPostSchema.omit({ GlobalPostType: true }))
         // .output(
         //   APIResponseSchema(
         //     DraftPostSchema.omit({
@@ -185,7 +179,7 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ input: { Id, DraftPostCurrentDetail, DraftPostFeature, DraftPostImage, ...rest }, }) => {
         //if (ctx.userId == null) return null;
-        const result = await prisma_1.dbContext.draftPost.update({
+        const result = await dbContext.draftPost.update({
             where: {
                 Id,
             },
@@ -226,12 +220,12 @@ exports.DraftPostRouter = router_1.trpcRouter.router({
         //   })
         // ).parseAsync({ data: result });
     }),
-    delete: router_1.protectedProcedure
-        .input(zod_1.default.object({ Id: ZodUtils_1.RequiredString }))
+    delete: protectedProcedure
+        .input(z.object({ Id: RequiredString }))
         //.output(APIResponseSchema(OptionalBoolean.nullable()))
         .mutation(async ({ input: { Id } }) => {
         //if (ctx.userId == null) return null;
-        const result = await prisma_1.dbContext.draftPost.delete({
+        const result = await dbContext.draftPost.delete({
             where: {
                 Id,
             },

@@ -3,7 +3,7 @@ import {
   OptionalJsDate,
   RequiredBoolean,
   RequiredString,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const AddGlobalPostDetailSchema = z.object({
   Code: RequiredString,

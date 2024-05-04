@@ -1,24 +1,18 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PostRouter = void 0;
-const zod_1 = __importDefault(require("zod"));
-const Post_schema_1 = require("../../schemas/Post.schema");
-const prisma_1 = require("../../utils/prisma");
-const ZodUtils_1 = require("../../utils/ZodUtils");
-const AddPost_schema_1 = require("../../schemas/AddPost.schema");
-const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const server_1 = require("@trpc/server");
-const router_1 = require("../router");
-const cloudinary_1 = require("cloudinary");
-exports.PostRouter = router_1.trpcRouter.router({
-    all: router_1.protectedProcedure
-        .input(zod_1.default.void())
+import z from "zod";
+import { PostSchema } from "../../schemas/Post.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { AddPostSchema } from "../../schemas/AddPost.schema.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { TRPCError } from "@trpc/server";
+import { protectedProcedure, trpcRouter } from "../router.js";
+import { v2 as cloudinary } from "cloudinary";
+export const PostRouter = trpcRouter.router({
+    all: protectedProcedure
+        .input(z.void())
         //.output(APIResponseSchema(z.array(PostSchema)))
         .query(async () => {
-        const data = await prisma_1.dbContext.post.findMany({
+        const data = await dbContext.post.findMany({
             include: {
                 PostCurrentDetail: true,
                 PostImage: true,
@@ -33,14 +27,14 @@ exports.PostRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    byPage: router_1.protectedProcedure
-        .input(Pagination_schema_1.PaginationSchema)
+    byPage: protectedProcedure
+        .input(PaginationSchema)
         //.output(APIResponseSchema(z.array(PostSchema)))
         .query(async ({ input }) => {
         const page_index = input.paging.page_index ?? 1;
         const page_size = input.paging.page_size ?? 10;
-        const [data, row_count] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.post.findMany({
+        const [data, row_count] = await dbContext.$transaction([
+            dbContext.post.findMany({
                 skip: page_index,
                 take: page_size,
                 include: {
@@ -50,7 +44,7 @@ exports.PostRouter = router_1.trpcRouter.router({
                     PostFeature: true,
                 },
             }),
-            prisma_1.dbContext.post.count(),
+            dbContext.post.count(),
         ]);
         return {
             data,
@@ -69,13 +63,13 @@ exports.PostRouter = router_1.trpcRouter.router({
         //   },
         // });
     }),
-    byId: router_1.protectedProcedure
-        .input(zod_1.default.object({
-        Id: ZodUtils_1.RequiredString,
+    byId: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
     }))
         //.output(APIResponseSchema(PostSchema.nullable()))
         .query(async ({ input }) => {
-        const data = await prisma_1.dbContext.post.findFirst({
+        const data = await dbContext.post.findFirst({
             where: {
                 Id: input.Id,
             },
@@ -93,8 +87,8 @@ exports.PostRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    publish: router_1.protectedProcedure
-        .input(AddPost_schema_1.AddPostSchema)
+    publish: protectedProcedure
+        .input(AddPostSchema)
         // .output(
         //   APIResponseSchema(
         //     PostSchema.omit({
@@ -106,7 +100,7 @@ exports.PostRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ ctx, input: { PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
@@ -116,7 +110,7 @@ exports.PostRouter = router_1.trpcRouter.router({
                 AddImages.push(metadata);
             }
             else if (Base64Data != null) {
-                await cloudinary_1.v2.uploader.upload(Base64Data, {
+                await cloudinary.uploader.upload(Base64Data, {
                     use_filename: true,
                     access_mode: "public",
                 }, (error, result) => {
@@ -130,7 +124,7 @@ exports.PostRouter = router_1.trpcRouter.router({
                 });
             }
         }
-        const result = await prisma_1.dbContext.post.create({
+        const result = await dbContext.post.create({
             data: {
                 ...rest,
                 UserId: (await ctx).userId ?? "",
@@ -183,8 +177,8 @@ exports.PostRouter = router_1.trpcRouter.router({
         //   }).nullable()
         // ).parseAsync({ data: result });
     }),
-    update: router_1.protectedProcedure
-        .input(Post_schema_1.PostSchema)
+    update: protectedProcedure
+        .input(PostSchema)
         // .output(
         //   APIResponseSchema(
         //     PostSchema.omit({
@@ -196,7 +190,7 @@ exports.PostRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest }, }) => {
         //if (ctx.userId == null) return null;
-        const result = await prisma_1.dbContext.post.update({
+        const result = await dbContext.post.update({
             where: {
                 Id,
             },

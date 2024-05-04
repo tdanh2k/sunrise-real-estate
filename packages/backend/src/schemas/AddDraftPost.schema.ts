@@ -8,7 +8,7 @@ import {
   OptionalUUID,
   RequiredString,
   RequiredUUID,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const AddDraftPostSchema = z.object({
   Id: OptionalUUID,

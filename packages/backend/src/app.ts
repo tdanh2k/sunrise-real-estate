@@ -5,7 +5,7 @@ import "dotenv/config.js";
 import { appRouter, publicAppRouter } from "./routers/index.js";
 import helmet from "helmet";
 import cors from "cors";
-import { createTRPCContext } from "./routers/context";
+import { createTRPCContext } from "./routers/context.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/not-found.middleware.js";
 import { validateAccessToken } from "./middlewares/auth0.middleware.js";

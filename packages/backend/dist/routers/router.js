@@ -1,27 +1,21 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.protectedProcedure = exports.publicProcedure = exports.trpcRouter = void 0;
-const server_1 = require("@trpc/server");
-const superjson_1 = __importDefault(require("superjson"));
-const prisma_1 = require("../utils/prisma");
-const axios_1 = __importDefault(require("axios"));
-exports.trpcRouter = server_1.initTRPC.context().create({
-    transformer: superjson_1.default,
+import { TRPCError, initTRPC } from "@trpc/server";
+import SuperJSON from "superjson";
+import { dbContext } from "../utils/prisma.js";
+import axios from "axios";
+export const trpcRouter = initTRPC.context().create({
+    transformer: SuperJSON,
 });
-exports.publicProcedure = exports.trpcRouter.procedure;
-exports.protectedProcedure = exports.trpcRouter.procedure.use(async ({ ctx, next }) => {
+export const publicProcedure = trpcRouter.procedure;
+export const protectedProcedure = trpcRouter.procedure.use(async ({ ctx, next }) => {
     if (!(await ctx).userId)
-        throw new server_1.TRPCError({ code: "UNAUTHORIZED" });
-    const user = await prisma_1.dbContext.auth0Profile.findUnique({
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+    const user = await dbContext.auth0Profile.findUnique({
         where: {
             UserId: (await ctx).userId,
         },
     });
     if (!user) {
-        const userResponse = await (0, axios_1.default)({
+        const userResponse = await axios({
             url: `${(await ctx).domain}api/v2/users/${encodeURIComponent((await ctx).userId ?? "")}`,
             method: "GET",
             params: {
@@ -33,8 +27,8 @@ exports.protectedProcedure = exports.trpcRouter.procedure.use(async ({ ctx, next
         });
         const auth0_user = userResponse?.data;
         if (!auth0_user)
-            throw new server_1.TRPCError({ code: "UNAUTHORIZED" });
-        await prisma_1.dbContext.auth0Profile.create({
+            throw new TRPCError({ code: "UNAUTHORIZED" });
+        await dbContext.auth0Profile.create({
             data: {
                 UserId: auth0_user?.user_id,
                 Username: auth0_user?.username,

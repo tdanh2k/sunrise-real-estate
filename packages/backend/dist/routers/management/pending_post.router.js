@@ -1,30 +1,24 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PendingPostRouter = void 0;
-const zod_1 = __importDefault(require("zod"));
-const prisma_1 = require("../../utils/prisma");
-const ZodUtils_1 = require("../../utils/ZodUtils");
-const server_1 = require("@trpc/server");
-const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const router_1 = require("../router");
-const AddDraftPost_schema_1 = require("../../schemas/AddDraftPost.schema");
-exports.PendingPostRouter = router_1.trpcRouter.router({
-    byPage: router_1.protectedProcedure
-        .input(Pagination_schema_1.PaginationSchema)
+import z from "zod";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { TRPCError } from "@trpc/server";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema.js";
+export const PendingPostRouter = trpcRouter.router({
+    byPage: protectedProcedure
+        .input(PaginationSchema)
         //.output(APIResponseSchema(z.array(PendingPostSchema)))
         .query(async ({ ctx, input }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
         const page_index = input.paging.page_index ?? 1;
         const page_size = input.paging.page_size ?? 10;
-        const [data, row_count] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.pendingPost.findMany({
+        const [data, row_count] = await dbContext.$transaction([
+            dbContext.pendingPost.findMany({
                 where: {
                     UserId: (await ctx).userId,
                 },
@@ -36,7 +30,7 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                     PendingPostFeature: true,
                 },
             }),
-            prisma_1.dbContext.post.count(),
+            dbContext.post.count(),
         ]);
         return {
             data,
@@ -55,13 +49,13 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
         //   },
         // });
     }),
-    byId: router_1.protectedProcedure
-        .input(zod_1.default.object({
-        Id: ZodUtils_1.RequiredString,
+    byId: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
     }))
         //.output(APIResponseSchema(PendingPostSchema.nullable()))
         .query(async ({ input }) => {
-        const data = await prisma_1.dbContext.pendingPost.findFirst({
+        const data = await dbContext.pendingPost.findFirst({
             where: {
                 Id: input.Id,
             },
@@ -79,16 +73,16 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    createFromDraft: router_1.protectedProcedure
-        .input(AddDraftPost_schema_1.AddDraftPostSchema)
+    createFromDraft: protectedProcedure
+        .input(AddDraftPostSchema)
         .mutation(async ({ ctx, input: { Id, DraftPostCurrentDetail, DraftPostFeature, DraftPostImage, ...rest }, }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const [createdPendingPost] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.pendingPost.create({
+        const [createdPendingPost] = await dbContext.$transaction([
+            dbContext.pendingPost.create({
                 data: {
                     ...rest,
                     Title: rest?.Title ?? "",
@@ -122,7 +116,7 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                     },
                 },
             }),
-            prisma_1.dbContext.draftPost.delete({
+            dbContext.draftPost.delete({
                 where: {
                     Id: Id ?? "00000000-0000-0000-0000-000000000000",
                     UserId: (await ctx).userId ?? "",
@@ -136,9 +130,9 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
         ]);
         return { data: createdPendingPost };
     }),
-    approve: router_1.protectedProcedure
-        .input(zod_1.default.object({
-        Id: ZodUtils_1.RequiredString,
+    approve: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
     }))
         // .output(
         //   APIResponseSchema(
@@ -151,11 +145,11 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ ctx, input: { Id } }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const data = await prisma_1.dbContext.pendingPost.findFirst({
+        const data = await dbContext.pendingPost.findFirst({
             where: {
                 Id,
             },
@@ -165,8 +159,8 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                 PendingPostImage: true,
             },
         });
-        const [updatedPendingPost] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.pendingPost.update({
+        const [updatedPendingPost] = await dbContext.$transaction([
+            dbContext.pendingPost.update({
                 data: {
                     ApprovedBy: (await ctx).userId,
                     ApprovedDate: new Date(),
@@ -175,7 +169,7 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                     Id,
                 },
             }),
-            prisma_1.dbContext.post.create({
+            dbContext.post.create({
                 data: {
                     Idx: data?.Idx,
                     Code: data?.Code,
@@ -225,9 +219,9 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
         //   }).nullable()
         // ).parseAsync({ data });
     }),
-    reject: router_1.protectedProcedure
-        .input(zod_1.default.object({
-        Id: ZodUtils_1.RequiredString,
+    reject: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
     }))
         // .output(
         //   APIResponseSchema(
@@ -240,11 +234,11 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ ctx, input: { Id } }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const data = await prisma_1.dbContext.pendingPost.findFirst({
+        const data = await dbContext.pendingPost.findFirst({
             where: {
                 Id,
             },
@@ -254,8 +248,8 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                 PendingPostImage: true,
             },
         });
-        const [, pendingPost] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.draftPost.create({
+        const [, pendingPost] = await dbContext.$transaction([
+            dbContext.draftPost.create({
                 data: {
                     Idx: data?.Idx,
                     Code: data?.Code,
@@ -293,7 +287,7 @@ exports.PendingPostRouter = router_1.trpcRouter.router({
                     },
                 },
             }),
-            prisma_1.dbContext.pendingPost.delete({
+            dbContext.pendingPost.delete({
                 where: {
                     Id,
                 },

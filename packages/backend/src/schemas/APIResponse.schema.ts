@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { NonNegativeIntegerNumber } from "../utils/ZodUtils";
+import { NonNegativeIntegerNumber } from "../utils/ZodUtils.js";
 
 export const APIResponseSchema: (dataSchema: z.ZodSchema) => z.ZodSchema = (
   dataSchema

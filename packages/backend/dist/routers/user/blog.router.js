@@ -1,30 +1,24 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BlogRouter = void 0;
-const zod_1 = __importDefault(require("zod"));
-const Blog_schema_1 = require("../../schemas/Blog.schema");
-const prisma_1 = require("../../utils/prisma");
-const ZodUtils_1 = require("../../utils/ZodUtils");
-const Pagination_schema_1 = require("../../schemas/Pagination.schema");
-const server_1 = require("@trpc/server");
-const router_1 = require("../router");
-exports.BlogRouter = router_1.trpcRouter.router({
-    byPage: router_1.protectedProcedure
-        .input(Pagination_schema_1.PaginationSchema)
+import z from "zod";
+import { BlogSchema } from "../../schemas/Blog.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { TRPCError } from "@trpc/server";
+import { protectedProcedure, trpcRouter } from "../router.js";
+export const BlogRouter = trpcRouter.router({
+    byPage: protectedProcedure
+        .input(PaginationSchema)
         //.output(APIResponseSchema(z.array(BlogSchema)))
         .query(async ({ ctx, input }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
         const page_index = input.paging.page_index ?? 1;
         const page_size = input.paging.page_size ?? 10;
-        const [data, row_count] = await prisma_1.dbContext.$transaction([
-            prisma_1.dbContext.blog.findMany({
+        const [data, row_count] = await dbContext.$transaction([
+            dbContext.blog.findMany({
                 skip: page_index,
                 take: page_size,
                 include: {
@@ -35,7 +29,7 @@ exports.BlogRouter = router_1.trpcRouter.router({
                     UserId: (await ctx).userId,
                 },
             }),
-            prisma_1.dbContext.blog.count(),
+            dbContext.blog.count(),
         ]);
         return {
             data,
@@ -54,18 +48,18 @@ exports.BlogRouter = router_1.trpcRouter.router({
         //   },
         // });
     }),
-    byId: router_1.protectedProcedure
-        .input(zod_1.default.object({
-        Id: ZodUtils_1.RequiredString,
+    byId: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
     }))
         //.output(APIResponseSchema(BlogSchema.nullable()))
         .query(async ({ ctx, input }) => {
         if ((await ctx).userId == null)
-            throw new server_1.TRPCError({
+            throw new TRPCError({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const data = await prisma_1.dbContext.blog.findFirst({
+        const data = await dbContext.blog.findFirst({
             where: {
                 Id: input.Id,
                 UserId: (await ctx).userId,
@@ -82,8 +76,8 @@ exports.BlogRouter = router_1.trpcRouter.router({
         //   data,
         // });
     }),
-    update: router_1.protectedProcedure
-        .input(Blog_schema_1.BlogSchema.omit({ GlobalBlogType: true }))
+    update: protectedProcedure
+        .input(BlogSchema.omit({ GlobalBlogType: true }))
         // .output(
         //   APIResponseSchema(
         //     BlogSchema.omit({
@@ -95,7 +89,7 @@ exports.BlogRouter = router_1.trpcRouter.router({
         // )
         .mutation(async ({ input: { Id, BlogImage, ...rest } }) => {
         //if (ctx.userId == null) return null;
-        const result = await prisma_1.dbContext.blog.update({
+        const result = await dbContext.blog.update({
             where: {
                 Id,
             },

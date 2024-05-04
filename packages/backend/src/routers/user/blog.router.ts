@@ -1,11 +1,11 @@
 import z from "zod";
-import { BlogSchema, TypeBlog } from "../../schemas/Blog.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { BlogSchema, TypeBlog } from "../../schemas/Blog.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
 import { TRPCError } from "@trpc/server";
-import { protectedProcedure, trpcRouter } from "../router";
+import { protectedProcedure, trpcRouter } from "../router.js";
 
 export const BlogRouter = trpcRouter.router({
   byPage: protectedProcedure

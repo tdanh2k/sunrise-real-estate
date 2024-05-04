@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbContext = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient({
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient({
 // log: [
 //   { emit: "stdout", level: "query" },
 //   { emit: "stdout", level: "info" },
 // ],
 });
-exports.dbContext = prisma;
+export const dbContext = prisma;

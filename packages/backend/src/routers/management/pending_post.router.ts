@@ -1,12 +1,12 @@
 import z from "zod";
-import { TypePendingPost } from "../../schemas/PendingPost.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
+import { TypePendingPost } from "../../schemas/PendingPost.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
 import { TRPCError } from "@trpc/server";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { protectedProcedure, trpcRouter } from "../router";
-import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema.js";
 
 export const PendingPostRouter = trpcRouter.router({
   byPage: protectedProcedure

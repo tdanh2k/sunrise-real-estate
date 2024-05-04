@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.publicAppRouter = exports.appRouter = void 0;
-const public_router_1 = require("./public.router");
-const router_1 = require("./router");
-const management_1 = require("./management");
-const user_1 = require("./user");
+import { managementRouter } from "./management/index.js";
+import { PublicRouter } from "./public.router.js";
+import { trpcRouter } from "./router.js";
+import { userRouter } from "./user/index.js";
 // Access as /user.getUser
-exports.appRouter = router_1.trpcRouter.router({
-    management: management_1.managementRouter,
-    user: user_1.userRouter,
+export const appRouter = trpcRouter.router({
+    management: managementRouter,
+    user: userRouter,
 });
-exports.publicAppRouter = public_router_1.PublicRouter;
+export const publicAppRouter = PublicRouter;

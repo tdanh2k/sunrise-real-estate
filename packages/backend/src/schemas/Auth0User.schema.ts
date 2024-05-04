@@ -5,7 +5,7 @@ import {
   OptionalJsDate,
   OptionalString,
   RequiredString,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const Auth0UserSchema = z.object({
   email: RequiredString,

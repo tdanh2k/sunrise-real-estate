@@ -5,7 +5,7 @@ import {
   OptionalString,
   RequiredString,
   RequiredUUID,
-} from "../utils/ZodUtils";
+} from "../utils/ZodUtils.js";
 
 export const AddBlogSchema = z.object({
   Code: RequiredString,

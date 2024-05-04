@@ -1,11 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema";
-import { DraftPostSchema } from "../../schemas/DraftPost.schema";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { RequiredString } from "../../utils/ZodUtils";
-import { dbContext } from "../../utils/prisma";
-import { protectedProcedure, trpcRouter } from "../router";
+import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema.js";
+import { DraftPostSchema } from "../../schemas/DraftPost.schema.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { dbContext } from "../../utils/prisma.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
 
 export const DraftPostRouter = trpcRouter.router({
   all: protectedProcedure

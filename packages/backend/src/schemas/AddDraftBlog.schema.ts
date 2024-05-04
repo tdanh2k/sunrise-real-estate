@@ -4,8 +4,8 @@ import {
   OptionalJsDate,
   OptionalString,
   OptionalUUID,
-} from "../utils/ZodUtils";
-import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema";
+} from "../utils/ZodUtils.js";
+import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 
 export const AddDraftBlogSchema = z.object({
   Id: OptionalUUID,

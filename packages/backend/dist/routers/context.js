@@ -1,14 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTRPCContext = void 0;
-const axios_1 = __importDefault(require("axios"));
-const createTRPCContext = async ({ req, res, }) => {
+import axios from "axios";
+export const createTRPCContext = async ({ req, res, }) => {
     res;
     //console.log(req.auth)
-    const tokenResponse = await (0, axios_1.default)({
+    const tokenResponse = await axios({
         method: "POST",
         url: `${process.env.AUTH0_DOMAIN}/oauth/token`,
         headers: { "content-type": "application/json" },
@@ -26,4 +20,3 @@ const createTRPCContext = async ({ req, res, }) => {
         management_token: tokenResponse?.data?.access_token,
     };
 }; // no context
-exports.createTRPCContext = createTRPCContext;

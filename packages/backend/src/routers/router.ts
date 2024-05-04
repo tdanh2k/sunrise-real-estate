@@ -1,9 +1,9 @@
 import { TRPCError, initTRPC } from "@trpc/server";
-import { TRPCContext } from "./context";
+import { TRPCContext } from "./context.js";
 import SuperJSON from "superjson";
-import { dbContext } from "../utils/prisma";
+import { dbContext } from "../utils/prisma.js";
 import axios from "axios";
-import { TypeAuth0User } from "../schemas/Auth0User.schema";
+import { TypeAuth0User } from "../schemas/Auth0User.schema.js";
 
 export const trpcRouter = initTRPC.context<TRPCContext>().create({
   transformer: SuperJSON,

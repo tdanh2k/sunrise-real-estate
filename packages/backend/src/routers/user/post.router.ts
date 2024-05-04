@@ -1,10 +1,10 @@
 import z from "zod";
-import { PostSchema, TypePost } from "../../schemas/Post.schema";
-import { dbContext } from "../../utils/prisma";
-import { RequiredString } from "../../utils/ZodUtils";
-import { PaginationSchema } from "../../schemas/Pagination.schema";
-import { TypeAPIResponse } from "../../schemas/APIResponse.schema";
-import { protectedProcedure, trpcRouter } from "../router";
+import { PostSchema, TypePost } from "../../schemas/Post.schema.js";
+import { dbContext } from "../../utils/prisma.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
+import { PaginationSchema } from "../../schemas/Pagination.schema.js";
+import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
+import { protectedProcedure, trpcRouter } from "../router.js";
 
 export const PostRouter = trpcRouter.router({
   byPage: protectedProcedure
