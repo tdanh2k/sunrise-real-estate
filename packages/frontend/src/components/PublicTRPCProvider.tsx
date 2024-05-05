@@ -26,7 +26,7 @@ export const PublicTRPCProvider: FC<{
           client={publicRoute.createClient({
             links: [
               httpBatchLink({
-                url: "http://localhost:3000/public",
+                url: "https://sunrise-real-estate-backend.azurewebsites.net/public",
                 // You can pass any HTTP headers you wish here
                 // async headers() {
                 //   const token = await getAccessTokenSilently({

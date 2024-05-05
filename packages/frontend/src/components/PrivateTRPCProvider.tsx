@@ -42,7 +42,7 @@ export const PrivateTRPCProvider: FC<{
             client={privateRoute.createClient({
               links: [
                 httpBatchLink({
-                  url: "http://localhost:3000/private",
+                  url: "https://sunrise-real-estate-backend.azurewebsites.net/private",
                   // You can pass any HTTP headers you wish here
                   async headers() {
                     const token = await getAccessTokenSilently();
