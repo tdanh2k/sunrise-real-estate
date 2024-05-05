@@ -21,7 +21,6 @@ jobs:
 
       - name: ls
         run: |
-            cd /github/workspace
             ls
 
       - name: Build And Deploy
