@@ -45,9 +45,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies, tsc
-        run: |
-          pnpm install
-          pnpm tsc
+        run: pnpm install
         working-directory: ./packages/backend
 
       - name: Upload artifact for deployment job
