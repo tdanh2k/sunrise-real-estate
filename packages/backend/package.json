@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node --experimental-modules dist/app.js",
+    "start": "tsx src/app.ts",
+    "start-o": "node --experimental-modules dist/app.js",
     "dev": "tsx watch src/app.ts",
     "db-pull": "prisma db pull",
     "gen-client": "prisma generate",
