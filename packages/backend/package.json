@@ -1,0 +1,45 @@
+{
+  "name": "sunrise-real-estate-backend",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "tsx watch src/app.ts",
+    "db-pull": "prisma db pull",
+    "gen-client": "prisma generate",
+    "prisma-studio": "prisma studio",
+    "env-pull": "dotenv-vault pull",
+    "env-push": "dotenv-vault push",
+    "env-open": "dotenv-vault open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "5.13.0",
+    "@trpc/client": "11.0.0-rc.340",
+    "@trpc/react-query": "11.0.0-rc.340",
+    "@trpc/server": "11.0.0-rc.340",
+    "axios": "^1.6.8",
+    "cloudinary": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-oauth2-jwt-bearer": "^1.6.0",
+    "helmet": "^7.1.0",
+    "superjson": "^2.2.1",
+    "zod": "^3.23.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.8",
+    "dotenv-vault": "^1.26.1",
+    "prisma": "^5.13.0",
+    "tsx": "^4.9.3",
+    "typescript": "^5.4.5"
+  }
+}
