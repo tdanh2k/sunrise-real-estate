@@ -1,6 +1,7 @@
-name: Azure Static Web Apps CI/CD
+name: Deploy sunrise-real-estate-frontend
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
 
 jobs:
   build_and_deploy_job:
