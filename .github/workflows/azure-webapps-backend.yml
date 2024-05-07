@@ -41,13 +41,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      
-      - name: Download .env file
-        uses: zdeneklapes/dotenv-vault-action@v1
-        with:
-          dotenvMe: ${{ secrets.DOTENV_ME }}
-          stage: "production"
-          move: true
 
       - name: Install dependencies, tsc
         run: |
