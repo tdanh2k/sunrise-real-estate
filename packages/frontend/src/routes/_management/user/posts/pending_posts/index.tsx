@@ -133,7 +133,7 @@ export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
           handleClose={handleCloseModalAdd}
         /> */}
         {/* <ModalEditPendingPost
-          isOpen={openedModalUpdate}
+          isOpen={openedModalUpdate && Boolean(selectedId)}
           editId={selectedId}
           handleClose={handleCloseModalUpdate}
         /> */}

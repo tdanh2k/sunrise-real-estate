@@ -8,6 +8,7 @@ import { useCallback, useMemo } from "react";
 import { TypePost } from "@sunrise-backend/src/schemas/Post.schema";
 import { ModalAddPost } from "./-components/ModalAddPost";
 import { nprogress } from "@mantine/nprogress";
+import { IconNews } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_management/management/posts/post/")({
   onEnter: () => {
@@ -15,6 +16,10 @@ export const Route = createFileRoute("/_management/management/posts/post/")({
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Danh sách bài đăng",
+    icon: <IconNews />,
   },
   component: () => {
     // const [selectedId, setSelectedId] = useState<string | undefined>("");

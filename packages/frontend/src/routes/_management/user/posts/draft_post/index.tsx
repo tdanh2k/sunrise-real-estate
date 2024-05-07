@@ -131,7 +131,7 @@ export const Route = createFileRoute("/_management/user/posts/draft_post/")({
           handleClose={handleCloseModalAdd}
         /> */}
         <ModalEditDraftPost
-          isOpen={openedModalUpdate}
+          isOpen={openedModalUpdate && Boolean(selectedId)}
           draftPostId={selectedId}
           handleClose={handleCloseModalUpdate}
         />

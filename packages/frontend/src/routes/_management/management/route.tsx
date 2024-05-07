@@ -1,9 +1,14 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { NotFoundComponent } from "../../-components/NotFound";
+import { IconScript } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_management/management")({
+  staticData: {
+    routeName: "Admin",
+    icon: <IconScript />,
+  },
   component: () => <Outlet />,
-  notFoundComponent: NotFoundComponent ,
+  notFoundComponent: NotFoundComponent,
   // beforeLoad: async ({ context }) => {
   //   try {
   //     const response = await createPrivateClient(

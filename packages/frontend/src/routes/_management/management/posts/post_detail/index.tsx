@@ -8,15 +8,18 @@ import { useCallback, useMemo } from "react";
 import { TypeGlobalPostDetail } from "@sunrise-backend/src/schemas/GlobalPostDetail.schema";
 import { ModalAddPostDetail } from "./-components/ModalAddPostDetail";
 import { nprogress } from "@mantine/nprogress";
+import { IconCategory2 } from "@tabler/icons-react";
 
-export const Route = createFileRoute(
-  "/_management/management/posts/post_detail/"
-)({
+export const Route = createFileRoute("/_management/management/posts/post_detail/")({
   onEnter: () => {
     nprogress.complete();
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Loại chi tiết bài đăng",
+    icon: <IconCategory2 />,
   },
   component: () => {
     // const [selectedId, setSelectedId] = useState<string | undefined>("");

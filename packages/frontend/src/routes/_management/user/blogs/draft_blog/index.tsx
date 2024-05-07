@@ -12,9 +12,9 @@ import {
   CustomActionMenuItemPropsType,
   RenderCustomActionMenuItems,
 } from "@components/MantineRT/RenderCustomActionMenuItems";
-import { CustomDeleteModal } from "@components/MantineRHF/CustomModal/delete";
 import { IconBrandBlogger } from "@tabler/icons-react";
 import { ModalUpdateDraftBlog } from "./-components/ModalUpdateDraftBlog";
+import { ModalConfirmDelete } from "@components/MantineRHF/CustomModal/delete";
 
 export const Route = createFileRoute("/_management/user/blogs/draft_blog/")({
   onEnter: () => {
@@ -143,13 +143,13 @@ export const Route = createFileRoute("/_management/user/blogs/draft_blog/")({
           handleClose={handleCloseModalAdd}
         />
         <ModalUpdateDraftBlog
-          isOpen={openedModalUpdate}
+          isOpen={openedModalUpdate && Boolean(selectedId)}
           blogId={selectedId ?? ""}
           handleClose={handleCloseModalUpdate}
         />
-        <CustomDeleteModal
-          isOpen={openedModalDelete}
-          handleClose={handleCloseModalDelete}
+        <ModalConfirmDelete
+          opened={openedModalDelete}
+          onClose={handleCloseModalDelete}
           data={{ Id: selectedId ?? "" }}
           useMutation={privateRoute.user.draft_blog.delete.useMutation}
         />

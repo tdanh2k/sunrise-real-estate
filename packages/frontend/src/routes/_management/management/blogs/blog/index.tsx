@@ -4,10 +4,17 @@ import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 import { ModalAddBlog } from "./-components/ModalAddBlog";
 import { nprogress } from "@mantine/nprogress";
+import {
+  CustomActionMenuItemPropsType,
+  RenderCustomActionMenuItems,
+} from "@components/MantineRT/RenderCustomActionMenuItems";
+import { ModalUpdateBlog } from "./-components/ModalUpdateBlog";
+import { ModalConfirmDelete } from "@components/MantineRHF/CustomModal/delete";
+import { IconBrandBlogger } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_management/management/blogs/blog/")({
   onEnter: () => {
@@ -16,18 +23,22 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
   onLeave: () => {
     nprogress.start();
   },
+  staticData: {
+    routeName: "Quản lý blog",
+    icon: <IconBrandBlogger />,
+  },
   component: () => {
-    // const [selectedId, setSelectedId] = useState<string | undefined>("");
+    const [selectedId, setSelectedId] = useState<string | undefined>("");
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
       useDisclosure(false);
-    // const [
-    //   openedModalUpdate,
-    //   { open: openModalUpdate, close: closeModalUpdate },
-    // ] = useDisclosure(false);
-    // const [
-    //   openedModalDelete,
-    //   { open: openModalDelete, close: closeModalDelete },
-    // ] = useDisclosure(false);
+    const [
+      openedModalUpdate,
+      { open: openModalUpdate, close: closeModalUpdate },
+    ] = useDisclosure(false);
+    const [
+      openedModalDelete,
+      { open: openModalDelete, close: closeModalDelete },
+    ] = useDisclosure(false);
 
     const handleOpenModalAdd = useCallback(() => {
       openModalAdd();
@@ -37,31 +48,31 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
       closeModalAdd();
     };
 
-    // const handleOpenModalUpdate = useCallback(
-    //   (Id: string | undefined) => () => {
-    //     setSelectedId(Id);
-    //     openModalUpdate();
-    //   },
-    //   [openModalUpdate]
-    // );
+    const handleOpenModalUpdate = useCallback(
+      (Id: string | undefined) => () => {
+        setSelectedId(Id);
+        openModalUpdate();
+      },
+      [openModalUpdate]
+    );
 
-    // const handleCloseModalUpdate = () => {
-    //   setSelectedId("");
-    //   closeModalUpdate();
-    // };
+    const handleCloseModalUpdate = () => {
+      setSelectedId("");
+      closeModalUpdate();
+    };
 
-    // const handleOpenModalDelete = useCallback(
-    //   (Id: string | undefined) => () => {
-    //     setSelectedId(Id);
-    //     openModalDelete();
-    //   },
-    //   [openModalDelete]
-    // );
+    const handleOpenModalDelete = useCallback(
+      (Id: string | undefined) => () => {
+        setSelectedId(Id);
+        openModalDelete();
+      },
+      [openModalDelete]
+    );
 
-    // const handleCloseModalDelete = () => {
-    //   setSelectedId("");
-    //   closeModalDelete();
-    // };
+    const handleCloseModalDelete = () => {
+      setSelectedId("");
+      closeModalDelete();
+    };
 
     const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
       () => [
@@ -74,23 +85,23 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
       [handleOpenModalAdd]
     );
 
-    // const tableRowActions = useCallback(
-    //   (Id: string | undefined): CustomActionMenuItemPropsType[] => [
-    //     {
-    //       id: "Update",
-    //       label: "Cập nhật",
-    //       actionType: "Update",
-    //       onClick: handleOpenModalUpdate(Id),
-    //     },
-    //     {
-    //       id: "Remove",
-    //       label: "Xóa",
-    //       actionType: "Delete",
-    //       onClick: handleOpenModalDelete(Id),
-    //     },
-    //   ],
-    //   [handleOpenModalUpdate, handleOpenModalDelete]
-    // );
+    const tableRowActions = useCallback(
+      (Id: string | undefined): CustomActionMenuItemPropsType[] => [
+        {
+          id: "Update",
+          label: "Cập nhật",
+          actionType: "Update",
+          onClick: handleOpenModalUpdate(Id),
+        },
+        {
+          id: "Remove",
+          label: "Xóa",
+          actionType: "Delete",
+          onClick: handleOpenModalDelete(Id),
+        },
+      ],
+      [handleOpenModalUpdate, handleOpenModalDelete]
+    );
 
     const table = useMantineRTInstance<TypeBlog>({
       columns: [
@@ -122,13 +133,13 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
         enableRowSelection: false,
         enableMultiRowSelection: false,
         getRowId: (row) => row.Id,
-        // enableRowActions: true,
-        // renderRowActionMenuItems: ({ row }) =>
-        //   RenderCustomActionMenuItems({
-        //     rowId: row.id,
-        //     actionList: tableRowActions(row.id),
-        //     //onClickAction: closeMenu,
-        //   }),
+        enableRowActions: true,
+        renderRowActionMenuItems: ({ row }) =>
+          RenderCustomActionMenuItems({
+            rowId: row.id,
+            actionList: tableRowActions(row.id),
+            //onClickAction: closeMenu,
+          }),
       },
     });
 
@@ -138,6 +149,17 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
         <ModalAddBlog
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
+        />
+        <ModalUpdateBlog
+          isOpen={openedModalUpdate && Boolean(selectedId)}
+          blogId={selectedId ?? ""}
+          handleClose={handleCloseModalUpdate}
+        />
+        <ModalConfirmDelete
+          opened={openedModalDelete}
+          onClose={handleCloseModalDelete}
+          data={{ Id: selectedId ?? "" }}
+          useMutation={privateRoute.management.blog.delete.useMutation}
         />
       </>
     );

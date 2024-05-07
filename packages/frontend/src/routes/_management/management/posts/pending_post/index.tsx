@@ -1,18 +1,21 @@
 import { useMantineRTInstance } from "@components/MantineRT";
 import { nprogress } from "@mantine/nprogress";
 import { TypePendingPost } from "@sunrise-backend/src/schemas/PendingPost.schema";
+import { IconZoomCheckFilled } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
 
-export const Route = createFileRoute(
-  "/_management/management/posts/pending_post/"
-)({
+export const Route = createFileRoute("/_management/management/posts/pending_post/")({
   onEnter: () => {
     nprogress.complete();
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Bài chờ duyệt",
+    icon: <IconZoomCheckFilled />,
   },
   component: () => {
     // const [selectedId, setSelectedId] = useState<string | undefined>("");

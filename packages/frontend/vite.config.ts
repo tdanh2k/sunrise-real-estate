@@ -27,7 +27,7 @@ export default defineConfig({
       //structured: true,
       targets: [
         {
-          src: "./src/assets/**",
+          src: "./staticwebapp.config.json",
           dest: "./",
           overwrite: true,
         },

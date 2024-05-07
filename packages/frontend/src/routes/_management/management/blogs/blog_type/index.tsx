@@ -8,15 +8,18 @@ import { useCallback, useMemo } from "react";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { ModalAddBlogType } from "./-components/ModalAddBlogType";
 import { nprogress } from "@mantine/nprogress";
+import { IconCategory } from "@tabler/icons-react";
 
-export const Route = createFileRoute(
-  "/_management/management/blogs/blog_type/"
-)({
+export const Route = createFileRoute("/_management/management/blogs/blog_type/")({
   onEnter: () => {
     nprogress.complete();
   },
   onLeave: () => {
     nprogress.start();
+  },
+  staticData: {
+    routeName: "Loại blog",
+    icon: <IconCategory />,
   },
   component: () => {
     // const [selectedId, setSelectedId] = useState<string | undefined>("");

@@ -26,7 +26,7 @@ export const AdminUserRouter = trpcRouter.router({
       // });
       
       const data = dbContext.auth0Profile.findMany({
-        skip: (paging.page_size ?? 10) * (paging.page_index ?? 1),
+        skip: (paging.page_size ?? 10) * (paging.page_index ?? 0),
         take: paging.page_size ?? 10,
       });
 

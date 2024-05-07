@@ -4,7 +4,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_management/user/blogs")({
   staticData: {
-    routeName: "Quản lý blog",
+    routeName: "Quản lý blog cá nhân",
     icon: <IconBrandBlogger />,
   },
   component: () => <Outlet />,
