@@ -1,7 +1,12 @@
 {
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
-        ".vscode{,/**}"
+        ".vscode{,/**}",
+        ".env{,/**}",
+        "!.env.vault",
+        "!.env.project",
+        "db.sql",
+        ".gitignore",
     ],
     "appService.defaultWebAppToDeploy": "None",
     "appService.showBuildDuringDeployPrompt": false,

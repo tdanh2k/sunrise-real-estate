@@ -299,7 +299,7 @@ export const DraftBlogRouter = trpcRouter.router({
                 code: "UNAUTHORIZED",
                 message: ``,
             });
-        const [images, deletedDraftBlog] = await dbContext.$transaction([
+        const [images, deletedData] = await dbContext.$transaction([
             dbContext.draftBlogImage.findMany({
                 where: {
                     DraftBlogId: Id,
@@ -319,7 +319,7 @@ export const DraftBlogRouter = trpcRouter.router({
             await cloudinary.api.delete_resources(images?.filter((r) => r.Code)?.map((r) => r.Code), { type: "upload", resource_type: "image" });
         }
         return {
-            data: deletedDraftBlog,
+            data: deletedData,
         };
         // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
         //   data: Boolean(result),

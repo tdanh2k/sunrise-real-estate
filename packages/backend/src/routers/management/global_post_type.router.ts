@@ -3,6 +3,7 @@ import { dbContext } from "../../utils/prisma.js";
 import { AddGlobalPostTypeSchema } from "../../schemas/AddGlobalPostType.schema.js";
 import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
 
 export const GlobalPostTypeRouter = trpcRouter.router({
   all: protectedProcedure
@@ -84,5 +85,22 @@ export const GlobalPostTypeRouter = trpcRouter.router({
       // return await APIResponseSchema(
       //   GlobalPostTypeSchema.nullable()
       // ).parseAsync({ data });
+    }),
+  delete: protectedProcedure
+    .input(z.object({ Id: RequiredString }))
+    //.output(APIResponseSchema(OptionalBoolean.nullable()))
+    .mutation(async ({ input: { Id } }) => {
+      //if (ctx.userId == null) return null;
+      const result = await dbContext.globalPostType.delete({
+        where: {
+          Id,
+        },
+      });
+      return {
+        data: result,
+      };
+      // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
+      //   data: Boolean(result),
+      // });
     }),
 });

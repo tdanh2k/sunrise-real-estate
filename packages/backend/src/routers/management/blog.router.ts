@@ -7,8 +7,7 @@ import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, trpcRouter } from "../router.js";
-import axios from "axios";
-import { TypeAuth0User } from "../../schemas/Auth0User.schema.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const BlogRouter = trpcRouter.router({
   all: protectedProcedure
@@ -108,24 +107,30 @@ export const BlogRouter = trpcRouter.router({
           message: ``,
         });
 
-      const response = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-        method: "GET",
-        params: {
-          search_engine: "v3",
-        },
-        headers: {
-          Authorization: `Bearer ${(await ctx).management_token}`,
-        },
-      });
+      const AddImages: Omit<(typeof BlogImage)[number], "Base64Data">[] = [];
 
-      const user = response?.data;
-
-      if (user == null)
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: ``,
-        });
+      for (const { Base64Data, ...metadata } of BlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
+            },
+            (error, result) => {
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url ?? "",
+                  Size: result?.bytes ?? metadata?.Size,
+                });
+            }
+          );
+        }
+      }
 
       const result = await dbContext.blog.create({
         data: {
@@ -139,7 +144,7 @@ export const BlogRouter = trpcRouter.router({
             //   create: item,
             // })),
             createMany: {
-              data: BlogImage ?? [],
+              data: AddImages,
             },
           },
         },
@@ -173,6 +178,31 @@ export const BlogRouter = trpcRouter.router({
     .mutation(async ({ input: { Id, BlogImage, ...rest } }) => {
       //if (ctx.userId == null) return null;
 
+      const AddImages: Omit<(typeof BlogImage)[number], "Base64Data">[] = [];
+
+      for (const { Base64Data, ...metadata } of BlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
+            },
+            (error, result) => {
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url ?? "",
+                  Size: result?.bytes ?? metadata?.Size,
+                });
+            }
+          );
+        }
+      }
+
       const result = await dbContext.blog.update({
         where: {
           Id,
@@ -180,12 +210,19 @@ export const BlogRouter = trpcRouter.router({
         data: {
           ...rest,
           BlogImage: {
-            connectOrCreate: BlogImage?.map((item) => ({
-              where: {
-                Id: item.Id,
-              },
+            connectOrCreate: AddImages?.map((item) => ({
               create: item,
+              where: {
+                Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+              },
             })),
+            deleteMany: AddImages?.some((r) => r.Id)
+              ? {
+                  Id: {
+                    notIn: AddImages?.map((r) => r.Id) as string[],
+                  },
+                }
+              : undefined,
           },
         },
         include: {
@@ -203,5 +240,47 @@ export const BlogRouter = trpcRouter.router({
       //     BlogImage: true,
       //   }).nullable()
       // ).parseAsync({ data: result });
+    }),
+  delete: protectedProcedure
+    .input(z.object({ Id: RequiredString }))
+    //.output(APIResponseSchema(OptionalBoolean.nullable()))
+    .mutation(async ({ ctx, input: { Id } }) => {
+      if ((await ctx).userId == null)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: ``,
+        });
+
+      const [images, deletedData] = await dbContext.$transaction([
+        dbContext.blogImage.findMany({
+          where: {
+            BlogId: Id,
+            Blog: {
+              UserId: (await ctx).userId,
+            },
+          },
+        }),
+        dbContext.blog.delete({
+          where: {
+            Id: Id ?? "00000000-0000-0000-0000-000000000000",
+            UserId: (await ctx).userId,
+          },
+        }),
+      ]);
+
+      if (images?.some((r) => r.Code)) {
+        await cloudinary.api.delete_resources(
+          images?.filter((r) => r.Code)?.map((r) => r.Code) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
+
+      return {
+        data: deletedData,
+      };
+
+      // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
+      //   data: Boolean(result),
+      // });
     }),
 });

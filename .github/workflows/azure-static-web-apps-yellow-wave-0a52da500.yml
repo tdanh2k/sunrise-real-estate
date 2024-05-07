@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4.0.2
         with:
-          node_version: 20.x
+          node-version: 20.x
           cache: 'pnpm'
           cache-dependency-path: 'packages/frontend'
       
@@ -29,12 +29,12 @@ jobs:
         run: pnpm install
         working-directory: 'packages/frontend'
 
-      - name: Run pnpm vite build
-        run: pnpm vite build
-        working-directory: 'packages/frontend'
+      # - name: Run pnpm vite build
+      #   run: pnpm vite build
+      #   working-directory: 'packages/frontend'
 
-      - name: Remove 'node_modules'
-        run: rm -rf node_modules/
+      # - name: Remove 'node_modules'
+      #   run: rm -rf node_modules/
         
       - name: Build And Deploy
         id: builddeploy
@@ -48,7 +48,7 @@ jobs:
           app_location: "./packages/frontend" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "dist" # Built app content directory - optional
-          skip_app_build: true
+          app_build_command: "pnpm vite build"
           is_static_export: true 
           
           ###### End of Repository/Build Configurations ######

@@ -336,7 +336,7 @@ export const DraftBlogRouter = trpcRouter.router({
           message: ``,
         });
 
-      const [images, deletedDraftBlog] = await dbContext.$transaction([
+      const [images, deletedData] = await dbContext.$transaction([
         dbContext.draftBlogImage.findMany({
           where: {
             DraftBlogId: Id,
@@ -361,7 +361,7 @@ export const DraftBlogRouter = trpcRouter.router({
       }
 
       return {
-        data: deletedDraftBlog,
+        data: deletedData,
       };
 
       // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({

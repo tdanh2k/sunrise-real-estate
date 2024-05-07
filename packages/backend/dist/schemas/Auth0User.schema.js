@@ -26,7 +26,7 @@ export const Auth0UserSchema = z.object({
     //   ""
     // ],
     last_ip: OptionalString,
-    last_login: OptionalString,
+    last_login: OptionalJsDate,
     logins_count: NonNegativeIntegerNumber,
     blocked: OptionalBoolean,
     given_name: OptionalString,

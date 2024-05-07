@@ -105,6 +105,7 @@ export const PendingBlogRouter = trpcRouter.router({
                     ...rest,
                     UserId: (await ctx).userId ?? "",
                     TypeId: rest.TypeId ?? "",
+                    Title: rest?.Title ?? "",
                     Description: rest.Description ?? "",
                     PendingBlogImage: {
                         // createMany: {

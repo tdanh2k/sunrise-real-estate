@@ -3,25 +3,27 @@ import {
   NonNegativeIntegerNumber,
   OptionalJsDate,
   OptionalString,
+  OptionalUUID,
   RequiredString,
   RequiredUUID,
 } from "../utils/ZodUtils.js";
 
 export const AddBlogSchema = z.object({
-  Code: RequiredString,
+  Code: OptionalString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,
   TypeId: RequiredUUID,
   BlogImage: z.array(
     z.object({
-      Id: RequiredUUID,
+      Id: OptionalUUID,
       Code: OptionalString,
-      Name: RequiredString,
+      Name: OptionalString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
       BlogId: RequiredUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),

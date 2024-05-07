@@ -25,6 +25,7 @@ export const BlogSchema = z.object({
       Path: RequiredString,
       BlogId: RequiredUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),
