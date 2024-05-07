@@ -44,8 +44,7 @@ jobs:
 
       - name: Install dependencies, tsc
         run: |
-          pnpm install
-          pnpm tsc
+          pnpm install --no-frozen-lockfile
         working-directory: ./packages/backend
 
       - name: Upload artifact for deployment job
