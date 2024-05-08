@@ -13,7 +13,8 @@
     "prisma-studio": "prisma studio",
     "env-pull": "dotenv-vault pull",
     "env-push": "dotenv-vault push",
-    "env-open": "dotenv-vault open"
+    "env-open": "dotenv-vault open",
+    "env-key-prod": "dotenv-vault keys production"
   },
   "keywords": [],
   "author": "",
@@ -31,7 +32,7 @@
     "express-oauth2-jwt-bearer": "^1.6.0",
     "helmet": "^7.1.0",
     "superjson": "^2.2.1",
-    "zod": "^3.23.6"
+    "zod": "^3.23.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

@@ -24,8 +24,7 @@ export const AdminUserRouter = trpcRouter.router({
       //     Authorization: `Bearer ${(await ctx).management_token}`,
       //   },
       // });
-      
-      const data = dbContext.auth0Profile.findMany({
+      const data = await dbContext.auth0Profile.findMany({
         skip: (paging.page_size ?? 10) * (paging.page_index ?? 0),
         take: paging.page_size ?? 10,
       });
@@ -60,11 +59,13 @@ export const AdminUserRouter = trpcRouter.router({
     }),
   update: protectedProcedure
     .input(UpdateAuth0UserSchema)
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx }) => {
       const response = await axios<TypeAuth0User>({
         url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
         method: "PATCH",
-        data: input,
+        data: {
+
+        },
         headers: {
           Authorization: `Bearer ${(await ctx).management_token}`,
           "Content-Type": "application/json",

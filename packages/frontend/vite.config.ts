@@ -31,9 +31,17 @@ export default defineConfig({
           dest: "./",
           overwrite: true,
         },
+        {
+          src: "./.env.vault",
+          dest: "./",
+          overwrite: true,
+        },
       ],
     }),
   ],
+  define: {
+    "process.env.NODE_ENV": `'${process.env.NODE_ENV}'`,
+  },
   resolve: {
     alias: [
       {

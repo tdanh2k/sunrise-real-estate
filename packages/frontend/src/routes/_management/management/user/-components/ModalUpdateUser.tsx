@@ -80,7 +80,7 @@ export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Tạo bài nháp"
+      title="Sửa user"
       centered
       footer={
         <>

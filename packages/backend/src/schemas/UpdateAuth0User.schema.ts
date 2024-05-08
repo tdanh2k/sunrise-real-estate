@@ -15,8 +15,8 @@ export const UpdateAuth0UserSchema = z.object({
   name: OptionalString,
   nickname: OptionalString,
   blocked: OptionalBoolean,
-  given_name: OptionalString,
-  family_name: OptionalString,
+  given_name: OptionalString.nullable(),
+  family_name: OptionalString.nullable(),
 });
 
 export type TypeUpdateAuth0User = z.infer<typeof UpdateAuth0UserSchema>;

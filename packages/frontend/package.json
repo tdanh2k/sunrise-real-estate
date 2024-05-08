@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "env-pull": "dotenv-vault pull",
     "env-push": "dotenv-vault push",
-    "env-open": "dotenv-vault open"
+    "env-open": "dotenv-vault open",
+    "env-key-prod": "dotenv-vault keys production"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
@@ -29,7 +30,7 @@
     "@mantinex/mantine-logo": "^1.0.1",
     "@tabler/icons-react": "^3.3.0",
     "@tanstack/react-query": "^5.35.1",
-    "@tanstack/react-router": "^1.31.20",
+    "@tanstack/react-router": "^1.31.23",
     "@tiptap/extension-highlight": "^2.3.1",
     "@tiptap/extension-link": "^2.3.1",
     "@tiptap/extension-subscript": "^2.3.1",
@@ -45,6 +46,7 @@
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
+    "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.0.4",
     "html-react-parser": "^5.1.10",
     "mantine-react-table": "2.0.0-beta.0",
@@ -55,12 +57,12 @@
     "react-slick": "^0.30.2",
     "sunrise-real-estate-backend": "workspace:^",
     "superjson": "^2.2.1",
-    "zod": "^3.23.6"
+    "zod": "^3.23.7"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.32.1",
     "@tanstack/react-query-devtools": "^5.35.1",
-    "@tanstack/router-devtools": "^1.31.20",
+    "@tanstack/router-devtools": "^1.31.23",
     "@tanstack/router-vite-plugin": "^1.31.18",
     "@trpc/server": "11.0.0-rc.340",
     "@types/node": "^20.12.10",
