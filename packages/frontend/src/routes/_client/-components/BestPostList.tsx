@@ -4,8 +4,8 @@ import { Title } from "./Title";
 
 export const BestPostList: FC = () => {
   const title = {
-    text: "Lorem Ipsum",
-    description: "Lorem ipsum dolor sit ame",
+    text: "Top bài Blog",
+    description: "Những bài blog được xem nhiều nhất",
   };
   const settings: Settings = {
     infinite: true,

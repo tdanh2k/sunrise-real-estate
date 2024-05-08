@@ -44,9 +44,9 @@ export const Banner = () => {
           <div className="row">
             <div className="col-lg-6 mx-auto">
               <div className="banner-area text-center pt-4 pb-4">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                <p>Chào mừng bạn đến với sunrise-real-estate</p>
                 <h2 className="mt-2 mb-4 banner-title">
-                  <strong> Lorem Ipsum Dolor</strong>{" "}
+                  <strong> Hãy chọn theo ý của bạn</strong>{" "}
                 </h2>
                 <div className="search-area">
                   <input
@@ -64,7 +64,7 @@ export const Banner = () => {
                     }}
                     type="text"
                     className="inp-search"
-                    placeholder="Search"
+                    placeholder="Nhập thông tin cần tìm..."
                   />
                   <button
                     className="btn-search m-2"
@@ -77,7 +77,7 @@ export const Banner = () => {
                       })
                     }
                   >
-                    Search All
+                    Tìm kiếm
                   </button>
                 </div>
                 {/* {findResult()} */}

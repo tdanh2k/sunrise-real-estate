@@ -49,7 +49,7 @@ export const Route = createFileRoute("/_client/posts/")({
                         }}
                         type="text"
                         className="inp-search"
-                        placeholder="Search"
+                        placeholder="Nhập thông tin cần tìm.."
                       />
                       <button
                         className="btn-search m-2"
@@ -62,7 +62,7 @@ export const Route = createFileRoute("/_client/posts/")({
                           })
                         }
                       >
-                        Search All
+                        Tìm kiếm
                       </button>
                     </div>
                     {/* {findResult()} */}

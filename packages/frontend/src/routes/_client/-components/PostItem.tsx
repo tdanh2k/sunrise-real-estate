@@ -35,17 +35,17 @@ export const PostItem: FC<{ data?: TypePost }> = ({ data }) => {
           <div className="item-icon d-flex alig-items-center justify-content-between">
             <div>
               <i className="fas fa-check-circle"></i>{" "}
-              <span>Lorem ipsum dolor</span>
+              <span>Sẵn sàng</span>
             </div>
             <div>
-              <i className="fas fa-check-circle"></i> <span> Lorem </span>
+              <i className="fas fa-check-circle"></i> <span> Đã qua kiểm duyệt </span>
             </div>
             <Link
               to={`/posts/$id`}
               params={{ id: data?.Id ?? "" }}
               className="item-title"
             >
-              <button className="btn btn-detail">View</button>
+              <button className="btn btn-detail">Xem</button>
             </Link>
           </div>
         </div>

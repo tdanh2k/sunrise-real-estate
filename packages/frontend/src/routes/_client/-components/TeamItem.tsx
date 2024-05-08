@@ -4,7 +4,11 @@ export const TeamItem: FC<{
   name: string;
   position: string;
   image: string;
-}> = ({ name, position, image }) => {
+  facebook?:string;
+  twitter?:string;
+  instagram?:string;
+  linkedin?:string;
+}> = ({ name, position, image, facebook, instagram, linkedin,twitter }) => {
   return (
     <div className="col-lg-4">
       <div className="team">
@@ -15,18 +19,18 @@ export const TeamItem: FC<{
           <h5 className="team-name">{name}</h5>
           <h6 className="team-position">{position}</h6>
           <div className="social-links">
-            <div className="social-item">
+            <a className="social-item" target="_blank" rel="noopener noreferrer" href={facebook}>
               <i className="fab fa-facebook"></i>
-            </div>
-            <div className="social-item">
+            </a>
+            <a className="social-item" target="_blank" rel="noopener noreferrer" href={twitter}>
               <i className="fab fa-twitter"></i>
-            </div>
-            <div className="social-item">
+            </a>
+            <a className="social-item" target="_blank" rel="noopener noreferrer" href={instagram}>
               <i className="fab fa-instagram"></i>
-            </div>
-            <div className="social-item">
+            </a>
+            <a className="social-item" target="_blank" rel="noopener noreferrer" href={linkedin}>
               <i className="fab fa-linkedin"></i>
-            </div>
+            </a>
           </div>
         </div>
       </div>

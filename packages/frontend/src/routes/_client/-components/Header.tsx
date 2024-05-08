@@ -31,7 +31,7 @@ export const Header: FC = () => {
               <ul className="navbar-nav ms-auto">
                 <li className="nav-item">
                   <Link className="nav-link" to="/">
-                    Home
+                    Trang chủ
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -46,12 +46,12 @@ export const Header: FC = () => {
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/about">
-                    About
+                    Giới thiệu
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/contact">
-                    Contact
+                    Liên hệ
                   </Link>
                 </li>
                 {isAuthenticated ? (

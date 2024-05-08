@@ -9,7 +9,7 @@ export const PostList: FC = () => {
 
   const title = {
     text: "Top bài đăng nhà đất",
-    description: "Lorem ipsum dolor sit ame",
+    description: "Những bài đăng được xem nhiều nhât",
   };
   return (
     <section className="section-all-re">
