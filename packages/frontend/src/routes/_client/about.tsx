@@ -10,7 +10,7 @@ export const About = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <h1 className="page-title">About</h1>
+              <h1 className="page-title">Giới thiệu</h1>
               <h2 className="page-description">sunrise-real-estate.online</h2>
             </div>
           </div>
@@ -44,15 +44,15 @@ Hãy tham gia cùng chúng tôi và khám phá thế giới bất động sản 
                 <div className="about-features">
                   <p className="about-feature">
                     <i className="fas fa-long-arrow-alt-right"></i> 
-                    
+                    <h4>Tiện lợi</h4>
                   </p>
                   <p className="about-feature">
                     <i className="fas fa-long-arrow-alt-right"></i> 
-                    
+                    <h4>Đơn giản</h4>
                   </p>
                   <p className="about-feature">
                     <i className="fas fa-long-arrow-alt-right"></i> 
-                    
+                    <h4>Nhanh chóng</h4>
                   </p>
                   {error?.message}
                 </div>
