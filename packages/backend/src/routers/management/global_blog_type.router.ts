@@ -5,7 +5,6 @@ import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
 import { RequiredString } from "../../utils/ZodUtils.js";
 import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
-import { GlobalBlogType } from "@prisma/client";
 import { TypeGlobalBlogType } from "../../schemas/GlobalBlogType.schema.js";
 
 export const GlobalBlogTypeRouter = trpcRouter.router({

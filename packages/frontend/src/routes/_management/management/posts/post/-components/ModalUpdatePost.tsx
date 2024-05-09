@@ -11,6 +11,7 @@ import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
+import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
 
 type ModalUpdateProps = {
   isOpen: boolean;
@@ -203,6 +204,52 @@ export const ModalUpdatePost: FC<ModalUpdateProps> = ({
           // onCreate={({ values }) => {
           //   append(values);
           // }}
+        />
+        <MantineReactTableRHF
+          legendLabel="Hình ảnh"
+          externalLoading={isFetching}
+          disableEdit
+          name="PostImage"
+          control={control}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Base64Data",
+              header: "Upload",
+              Cell: ({ cell, table, renderedCellValue }) =>
+                table.getState()?.editingCell?.id === cell.id
+                  ? renderedCellValue
+                  : cell.getValue<string>()
+                    ? "Có dữ liệu"
+                    : null,
+              Edit: ({ cell, row, table }) => (
+                <MRT_EditCellFileInput
+                  cell={cell}
+                  table={table}
+                  onChange={(file) => {
+                    if (!file) return;
+                    row._valuesCache["Name"] = file?.name;
+                    row._valuesCache["MimeType"] = file?.type;
+                    row._valuesCache["Size"] = file?.size;
+                  }}
+                />
+              ),
+            },
+          ]}
         />
       </Stack>
     </CustomModal>

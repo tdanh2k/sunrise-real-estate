@@ -198,21 +198,10 @@ export const PostRouter = trpcRouter.router({
     ),
   update: protectedProcedure
     .input(PostSchema)
-    // .output(
-    //   APIResponseSchema(
-    //     PostSchema.omit({
-    //       PostCurrentDetail: true,
-    //       PostFeature: true,
-    //       PostImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(
       async ({
         input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest },
       }) => {
-        //if (ctx.userId == null) return null;
-
         const result = await dbContext.post.update({
           where: {
             Id,
@@ -266,10 +255,7 @@ export const PostRouter = trpcRouter.router({
           Id: input?.Id ?? "00000000-0000-0000-0000-000000000000",
         },
         include: {
-          PostCurrentDetail: true,
-          PostFeature: true,
           PostImage: true,
-          PostStats: true,
         },
       });
 

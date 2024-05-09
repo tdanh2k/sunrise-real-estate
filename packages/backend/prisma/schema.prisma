@@ -28,15 +28,15 @@ model DraftPost {
 }
 
 model DraftPostImage {
-  Id          String    @id(map: "DraftPostImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftPostIma__Id__2645B050") @db.UniqueIdentifier
-  Name        String?   @db.NVarChar(255)
+  Id          String     @id(map: "DraftPostImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftPostIma__Id__2645B050") @db.UniqueIdentifier
+  Name        String?    @db.NVarChar(255)
   Size        Int?
-  MimeType    String?   @db.VarChar(100)
-  Path        String?   @db.NVarChar(255)
-  DraftId     String    @db.UniqueIdentifier
-  CreatedDate DateTime? @default(now(), map: "DF__DraftPost__Creat__0A688BB1") @db.DateTime
-  Code        String?   @db.VarChar(100)
-  DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftPostImage_DraftPost_FK")
+  MimeType    String?    @db.VarChar(100)
+  Path        String?    @db.NVarChar(255)
+  DraftId     String?    @db.UniqueIdentifier
+  CreatedDate DateTime?  @default(now(), map: "DF__DraftPost__Creat__0A688BB1") @db.DateTime
+  Code        String?    @db.VarChar(100)
+  DraftPost   DraftPost? @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftPostImage_DraftPost_FK")
 }
 
 model Post {
@@ -65,11 +65,11 @@ model PostImage {
   Name        String?   @db.NVarChar(255)
   Size        Int?
   Path        String?   @db.NVarChar(255)
-  PostId      String    @db.UniqueIdentifier
+  PostId      String?   @db.UniqueIdentifier
   CreatedDate DateTime? @default(now(), map: "DF__PostImage__Creat__0697FACD") @db.DateTime
   MimeType    String?   @db.VarChar(100)
   Code        String?   @db.VarChar(100)
-  Post        Post      @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostImage_Post_FK")
+  Post        Post?     @relation(fields: [PostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PostImage_Post_FK")
 }
 
 model PostCurrentDetail {
@@ -141,14 +141,14 @@ model Blog {
 
 model BlogImage {
   Id          String    @id(map: "BlogImage_PK") @default(dbgenerated("newid()"), map: "DF__BlogImage__Id__6CD828CA") @db.UniqueIdentifier
-  BlogId      String    @db.UniqueIdentifier
+  BlogId      String?   @db.UniqueIdentifier
   Name        String?   @db.NVarChar(Max)
   Size        Int?
   Path        String?   @db.NVarChar(Max)
   MimeType    String?   @db.VarChar(256)
   CreatedDate DateTime? @default(now(), map: "DF__BlogImage__Creat__10216507") @db.DateTime
   Code        String?   @db.VarChar(100)
-  Blog        Blog      @relation(fields: [BlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "BlogImage_Blog_FK")
+  Blog        Blog?     @relation(fields: [BlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "BlogImage_Blog_FK")
 }
 
 model DraftBlog {
@@ -166,15 +166,15 @@ model DraftBlog {
 }
 
 model DraftBlogImage {
-  Id          String    @id(map: "DraftBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftBlogIma__Id__76619304") @db.UniqueIdentifier
-  DraftBlogId String    @db.UniqueIdentifier
-  Name        String?   @db.NVarChar(Max)
+  Id          String     @id(map: "DraftBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__DraftBlogIma__Id__76619304") @db.UniqueIdentifier
+  DraftBlogId String?    @db.UniqueIdentifier
+  Name        String?    @db.NVarChar(Max)
   Size        Int?
-  Path        String?   @db.NVarChar(Max)
-  MimeType    String?   @db.VarChar(256)
-  CreatedDate DateTime? @default(now(), map: "DF__DraftBlog__Creat__1209AD79") @db.DateTime
-  Code        String?   @db.VarChar(100)
-  DraftBlog   DraftBlog @relation(fields: [DraftBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftBlogImage_DraftBlog_FK")
+  Path        String?    @db.NVarChar(Max)
+  MimeType    String?    @db.VarChar(256)
+  CreatedDate DateTime?  @default(now(), map: "DF__DraftBlog__Creat__1209AD79") @db.DateTime
+  Code        String?    @db.VarChar(100)
+  DraftBlog   DraftBlog? @relation(fields: [DraftBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftBlogImage_DraftBlog_FK")
 }
 
 model BlogStats {
@@ -230,15 +230,15 @@ model PendingBlog {
 }
 
 model PendingBlogImage {
-  Id            String      @id(map: "PendingBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__PendingBlogI__Id__477199F1") @db.UniqueIdentifier
-  PendingBlogId String      @db.UniqueIdentifier
-  Name          String?     @db.NVarChar(Max)
+  Id            String       @id(map: "PendingBlogImage_PK") @default(dbgenerated("newid()"), map: "DF__PendingBlogI__Id__477199F1") @db.UniqueIdentifier
+  PendingBlogId String?      @db.UniqueIdentifier
+  Name          String?      @db.NVarChar(Max)
   Size          Int?
-  Path          String?     @db.NVarChar(Max)
-  MimeType      String?     @db.VarChar(256)
-  CreatedDate   DateTime?   @default(now(), map: "DF__PendingBl__Creat__4865BE2A") @db.DateTime
-  Code          String?     @db.VarChar(100)
-  PendingBlog   PendingBlog @relation(fields: [PendingBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PendingBlogImage_PendingBlog_FK")
+  Path          String?      @db.NVarChar(Max)
+  MimeType      String?      @db.VarChar(256)
+  CreatedDate   DateTime?    @default(now(), map: "DF__PendingBl__Creat__4865BE2A") @db.DateTime
+  Code          String?      @db.VarChar(100)
+  PendingBlog   PendingBlog? @relation(fields: [PendingBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PendingBlogImage_PendingBlog_FK")
 }
 
 model PendingPost {
@@ -283,15 +283,15 @@ model PendingPostFeature {
 }
 
 model PendingPostImage {
-  Id            String      @id(map: "PendingPostImage_PK") @default(dbgenerated("newid()"), map: "DF__PendingPostI__Id__32767D0B") @db.UniqueIdentifier
-  Name          String?     @db.NVarChar(255)
+  Id            String       @id(map: "PendingPostImage_PK") @default(dbgenerated("newid()"), map: "DF__PendingPostI__Id__32767D0B") @db.UniqueIdentifier
+  Name          String?      @db.NVarChar(255)
   Size          Int?
-  Path          String?     @db.NVarChar(255)
-  PendingPostId String      @db.UniqueIdentifier
-  CreatedDate   DateTime?   @default(now(), map: "DF__PendingPo__Creat__336AA144") @db.DateTime
-  MimeType      String?     @db.VarChar(100)
-  Code          String?     @db.VarChar(100)
-  PendingPost   PendingPost @relation(fields: [PendingPostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PendingPostImage_PendingPost_FK")
+  Path          String?      @db.NVarChar(255)
+  PendingPostId String?      @db.UniqueIdentifier
+  CreatedDate   DateTime?    @default(now(), map: "DF__PendingPo__Creat__336AA144") @db.DateTime
+  MimeType      String?      @db.VarChar(100)
+  Code          String?      @db.VarChar(100)
+  PendingPost   PendingPost? @relation(fields: [PendingPostId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PendingPostImage_PendingPost_FK")
 }
 
 model Auth0Profile {
