@@ -83,15 +83,6 @@ export const BlogRouter = trpcRouter.router({
     }),
     publish: protectedProcedure
         .input(AddBlogSchema)
-        // .output(
-        //   APIResponseSchema(
-        //     BlogSchema.omit({
-        //       BlogCurrentDetail: true,
-        //       BlogFeature: true,
-        //       BlogImage: true,
-        //     }).nullable()
-        //   )
-        // )
         .mutation(async ({ ctx, input: { BlogImage, ...rest } }) => {
         if ((await ctx).userId == null)
             throw new TRPCError({
@@ -123,12 +114,6 @@ export const BlogRouter = trpcRouter.router({
                 ...rest,
                 UserId: (await ctx).userId ?? "",
                 BlogImage: {
-                    // connectOrCreate: BlogImage?.map((item) => ({
-                    //   where: {
-                    //     Id: item.Id,
-                    //   },
-                    //   create: item,
-                    // })),
                     createMany: {
                         data: AddImages,
                     },
@@ -141,27 +126,10 @@ export const BlogRouter = trpcRouter.router({
             },
         });
         return { data: result };
-        // return await APIResponseSchema(
-        //   BlogSchema.omit({
-        //     BlogCurrentDetail: true,
-        //     BlogFeature: true,
-        //     BlogImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data: result });
     }),
     update: protectedProcedure
         .input(BlogSchema.omit({ GlobalBlogType: true }))
-        // .output(
-        //   APIResponseSchema(
-        //     BlogSchema.omit({
-        //       BlogCurrentDetail: true,
-        //       BlogFeature: true,
-        //       BlogImage: true,
-        //     }).nullable()
-        //   )
-        // )
         .mutation(async ({ input: { Id, BlogImage, ...rest } }) => {
-        //if (ctx.userId == null) return null;
         const AddImages = [];
         for (const { Base64Data, ...metadata } of BlogImage) {
             if (metadata.Id) {
@@ -211,13 +179,6 @@ export const BlogRouter = trpcRouter.router({
             },
         });
         return { data: result };
-        // return await APIResponseSchema(
-        //   BlogSchema.omit({
-        //     BlogCurrentDetail: true,
-        //     BlogFeature: true,
-        //     BlogImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data: result });
     }),
     delete: protectedProcedure
         .input(z.object({ Id: RequiredString }))

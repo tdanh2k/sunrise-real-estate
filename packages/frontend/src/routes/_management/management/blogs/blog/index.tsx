@@ -137,7 +137,7 @@ export const Route = createFileRoute("/_management/management/blogs/blog/")({
         renderRowActionMenuItems: ({ row }) =>
           RenderCustomActionMenuItems({
             rowId: row.id,
-            actionList: tableRowActions(row.id),
+            actionList: tableRowActions(row?.original?.Id),
             //onClickAction: closeMenu,
           }),
       },

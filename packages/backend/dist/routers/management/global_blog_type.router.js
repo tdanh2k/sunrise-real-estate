@@ -3,6 +3,7 @@ import { dbContext } from "../../utils/prisma.js";
 import { AddGlobalBlogTypeSchema } from "../../schemas/AddGlobalBlogType.schema.js";
 import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
+import { RequiredString } from "../../utils/ZodUtils.js";
 export const GlobalBlogTypeRouter = trpcRouter.router({
     all: protectedProcedure
         .input(z.void())
@@ -67,15 +68,20 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
     }),
     create: protectedProcedure
         .input(AddGlobalBlogTypeSchema)
-        //.output(APIResponseSchema(GlobalBlogTypeSchema.nullable()))
         .mutation(async ({ input }) => {
-        //if (ctx.userId == null) return null;
         const data = await dbContext.globalBlogType.create({
             data: input,
         });
         return { data };
-        // return await APIResponseSchema(
-        //   GlobalBlogTypeSchema.nullable()
-        // ).parseAsync({ data });
+    }),
+    delete: protectedProcedure
+        .input(z.object({ Id: RequiredString }))
+        .mutation(async ({ input }) => {
+        const data = await dbContext.globalBlogType.delete({
+            where: {
+                Id: input?.Id ?? "00000000-0000-0000-0000-000000000000",
+            },
+        });
+        return { data };
     }),
 });

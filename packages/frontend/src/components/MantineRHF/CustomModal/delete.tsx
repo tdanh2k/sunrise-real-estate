@@ -54,9 +54,9 @@ export const ModalConfirmDelete: FC<ModalConfirmDeleteProps> = ({
 
   return (
     <CustomModal
-      size="xl"
-      fullScreen
+      size="sm"
       centered
+      title="Xóa dữ liệu"
       {...modalRootProps}
       onClose={() => {
         if (isPending) return;

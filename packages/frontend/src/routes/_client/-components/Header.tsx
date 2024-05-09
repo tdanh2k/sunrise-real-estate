@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 
 export const Header: FC = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   return (
     <div className="header">
@@ -13,7 +13,7 @@ export const Header: FC = () => {
             <Link className="navbar-brand" to="/">
               <div className="d-flex align-items-center">
                 <i className="fas fa-home"></i>
-                <span className="ms-2">MB</span>
+                <span className="ms-2">Sunrise</span>
               </div>
             </Link>
             <button
@@ -57,7 +57,7 @@ export const Header: FC = () => {
                 {isAuthenticated ? (
                   <li className="nav-item">
                     <Link className="nav-link" to="/">
-                      Hello, Stranger <i className="fas fa-chevron-down"></i>
+                      Hello, {user?.nickname ?? user?.family_name ?? user?.name} <i className="fas fa-chevron-down"></i>
                     </Link>
                     <ul className="sub-ul">
                       <li>

@@ -74,7 +74,6 @@ export const PostRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    //.output(APIResponseSchema(PostSchema.nullable()))
     .query(async ({ input }) => {
       const data = await dbContext.post.findFirst({
         where: {
@@ -253,13 +252,36 @@ export const PostRouter = trpcRouter.router({
         });
 
         return { data: result } as TypeAPIResponse<TypePost>;
-        // return await APIResponseSchema(
-        //   PostSchema.omit({
-        //     PostCurrentDetail: true,
-        //     PostFeature: true,
-        //     PostImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data: result });
       }
     ),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        Id: RequiredString,
+      })
+    )
+    .mutation(async ({ input }) => {
+      const data = await dbContext.post.delete({
+        where: {
+          Id: input?.Id ?? "00000000-0000-0000-0000-000000000000",
+        },
+        include: {
+          PostCurrentDetail: true,
+          PostFeature: true,
+          PostImage: true,
+          PostStats: true,
+        },
+      });
+
+      if (data?.PostImage?.some((r) => r.Code)) {
+        await cloudinary.api.delete_resources(
+          data?.PostImage?.filter((r) => r.Code)?.map(
+            (r) => r.Code
+          ) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
+
+      return { data };
+    }),
 });
