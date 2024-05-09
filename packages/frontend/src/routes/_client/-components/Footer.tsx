@@ -9,8 +9,7 @@ export const Footer: FC = () => {
           <div className="col-lg-6 col-md-6">
             <i className="fas fa-home"></i>
             <span className="footer-other-text d-block mt-3 mb-3">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua
+            SRE sẽ đáp ứng mọi mong muốn của bạn
             </span>
             <div className="footer-social">
               <div className="footer-social-item">
@@ -74,25 +73,31 @@ export const Footer: FC = () => {
                 <div className="footer-info-item">
                   <i className="fas fa-clock"></i>
                 </div>{" "}
-                <span>08:00-18:00</span>
+                <span>08:00-23:00</span>
               </li>
               <li className="d-flex">
                 <div className="footer-info-item">
                   <i className="fas fa-envelope"></i>
                 </div>{" "}
-                <span>info@house.com</span>
+                <span>22630511.danh@student.iuh.edu.vn</span>
+              </li>
+              <li className="d-flex">
+                <div className="footer-info-item">
+                  <i className="fas fa-envelope"></i>
+                </div>{" "}
+                <span>22630071.bao@student.iuh.edu.vn</span>
               </li>
               <li className="d-flex">
                 <div className="footer-info-item">
                   <i className="fas fa-map-marker-alt"></i>
                 </div>{" "}
-                <span>Lorem Ipsum </span>
+                <span>12 Nguyễn Văn Bảo, Q.Gò Vấp, TP.HCM </span>
               </li>
               <li className="d-flex">
                 <div className="footer-info-item">
                   <i className="fas fa-phone-alt"></i>
                 </div>{" "}
-                <span>0500 000 00 00</span>
+                <span>123456789</span>
               </li>
             </ul>
           </div>
