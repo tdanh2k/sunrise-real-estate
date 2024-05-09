@@ -8,7 +8,11 @@ export const BlogItem: FC<{ data: TypeBlog }> = ({ data }) => {
     <div className="col-lg-4">
       <div className="blog-item">
         <div className="blog-img">
-          <img src="/images/product1.jpeg" alt="product" className="w-100" />
+          <img
+            src={data?.BlogImage?.[0]?.Path ?? "/images/product1.jpeg"}
+            alt="product"
+            className="w-100"
+          />
         </div>
         <div className="blog-content">
           <h2 className="blog-title" title={data?.Title}>
@@ -27,7 +31,7 @@ export const BlogItem: FC<{ data: TypeBlog }> = ({ data }) => {
             </div>
             <div className="blog-info-item">
               <i className="far fa-comments"></i>
-              <span>0 Comments</span>
+              <span>0 Bình luận</span>
             </div>
           </div>
           {/* <div className="blog-text">{data?.Description}</div> */}
