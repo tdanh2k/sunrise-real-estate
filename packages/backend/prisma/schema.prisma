@@ -36,7 +36,7 @@ model DraftPostImage {
   DraftId     String    @db.UniqueIdentifier
   CreatedDate DateTime? @default(now(), map: "DF__DraftPost__Creat__0A688BB1") @db.DateTime
   Code        String?   @db.VarChar(100)
-  DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onUpdate: NoAction, map: "DraftPostImage_DraftPost_FK")
+  DraftPost   DraftPost @relation(fields: [DraftId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "DraftPostImage_DraftPost_FK")
 }
 
 model Post {
@@ -148,7 +148,7 @@ model BlogImage {
   MimeType    String?   @db.VarChar(256)
   CreatedDate DateTime? @default(now(), map: "DF__BlogImage__Creat__10216507") @db.DateTime
   Code        String?   @db.VarChar(100)
-  Blog        Blog      @relation(fields: [BlogId], references: [Id], onUpdate: NoAction, map: "BlogImage_Blog_FK")
+  Blog        Blog      @relation(fields: [BlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "BlogImage_Blog_FK")
 }
 
 model DraftBlog {
@@ -238,7 +238,7 @@ model PendingBlogImage {
   MimeType      String?     @db.VarChar(256)
   CreatedDate   DateTime?   @default(now(), map: "DF__PendingBl__Creat__4865BE2A") @db.DateTime
   Code          String?     @db.VarChar(100)
-  PendingBlog   PendingBlog @relation(fields: [PendingBlogId], references: [Id], onUpdate: NoAction, map: "PendingBlogImage_PendingBlog_FK")
+  PendingBlog   PendingBlog @relation(fields: [PendingBlogId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "PendingBlogImage_PendingBlog_FK")
 }
 
 model PendingPost {

@@ -4,15 +4,24 @@ import mkcert from "vite-plugin-mkcert";
 import path from "path";
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { compression } from "vite-plugin-compression2";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    compression({
+      algorithm: "brotliCompress",
+      skipIfLargerOrEqual: true,
+      compressionOptions: {
+        chunkSize: 2 * 1024,
+      },
+    }),
     TanStackRouterVite({
       //routeFilePrefix: "-",
       routesDirectory: "./src/routes",
       generatedRouteTree: "./src/routeTree.gen.ts",
+      enableRouteGeneration: true,
     }),
     mkcert({
       //autoUpgrade: true,
@@ -39,9 +48,6 @@ export default defineConfig({
       ],
     }),
   ],
-  define: {
-    "process.env.NODE_ENV": `'${process.env.NODE_ENV}'`,
-  },
   resolve: {
     alias: [
       {
@@ -76,6 +82,7 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
+        compact: true,
         manualChunks: {
           react_pack: ["react", "react-dom"],
           "@emotion/react": ["@emotion/react"],
@@ -91,6 +98,10 @@ export default defineConfig({
             "@mantine/spotlight",
             "@mantine/tiptap",
           ],
+          "mantine-react-table": ["mantine-react-table"],
+          "@tabler/icons-react": ["@tabler/icons-react"],
+          superjson: ["superjson"],
+          "react-image-gallery": ["react-image-gallery"],
           tiptap_vendor: [
             "@tiptap/react",
             "@tiptap/starter-kit",

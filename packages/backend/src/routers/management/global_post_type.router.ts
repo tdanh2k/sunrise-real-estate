@@ -4,45 +4,31 @@ import { AddGlobalPostTypeSchema } from "../../schemas/AddGlobalPostType.schema.
 import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
 import { RequiredString } from "../../utils/ZodUtils.js";
+import { GlobalPostTypeSchema } from "../../schemas/GlobalPostType.schema.js";
 
 export const GlobalPostTypeRouter = trpcRouter.router({
-  all: protectedProcedure
-    .input(z.void())
-    //.output(APIResponseSchema(z.array(GlobalPostTypeSchema)))
-    .query(async () => {
-      const data = await dbContext.globalPostType.findMany();
+  all: protectedProcedure.input(z.void()).query(async () => {
+    const data = await dbContext.globalPostType.findMany();
 
-      return {
-        data,
-      };
-      // return await APIResponseSchema(z.array(GlobalPostTypeSchema)).parseAsync({
-      //   data,
-      // });
-    }),
-  nextIdx: protectedProcedure
-    .input(z.void())
-    // .output(
-    //   APIResponseSchema(z.object({ Idx: NonNegativeIntegerNumber.nullable() }))
-    // )
-    .query(async () => {
-      const data = await dbContext.globalPostType.aggregate({
-        _max: {
-          Idx: true,
-        },
-      });
+    return {
+      data,
+    };
+  }),
+  nextIdx: protectedProcedure.input(z.void()).query(async () => {
+    const data = await dbContext.globalPostType.aggregate({
+      _max: {
+        Idx: true,
+      },
+    });
 
-      const result = {
-        Idx: (data?._max?.Idx as number) + 1 ?? 1,
-      };
+    const result = {
+      Idx: (data?._max?.Idx as number) + 1 ?? 1,
+    };
 
-      return { data: result };
-      // return await APIResponseSchema(
-      //   z.object({ Idx: NonNegativeIntegerNumber.nullable() })
-      // ).parseAsync({ data: result });
-    }),
+    return { data: result };
+  }),
   byPage: protectedProcedure
     .input(PaginationSchema)
-    //.output(APIResponseSchema(z.array(GlobalPostTypeSchema)))
     .query(async ({ input }) => {
       const page_index = input.paging.page_index ?? 0;
       const page_size = input.paging.page_size ?? 10;
@@ -63,34 +49,31 @@ export const GlobalPostTypeRouter = trpcRouter.router({
           row_count,
         },
       };
-      // return await APIResponseSchema(z.array(GlobalPostTypeSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   create: protectedProcedure
     .input(AddGlobalPostTypeSchema)
-    //.output(APIResponseSchema(GlobalPostTypeSchema.nullable()))
     .mutation(async ({ input }) => {
-      //if (ctx.userId == null) return null;
       const data = await dbContext.globalPostType.create({
         data: input,
       });
 
       return { data };
-      // return await APIResponseSchema(
-      //   GlobalPostTypeSchema.nullable()
-      // ).parseAsync({ data });
+    }),
+  update: protectedProcedure
+    .input(GlobalPostTypeSchema)
+    .mutation(async ({ input }) => {
+      const data = await dbContext.globalPostType.update({
+        data: input,
+        where: {
+          Id: input.Id,
+        },
+      });
+
+      return { data };
     }),
   delete: protectedProcedure
     .input(z.object({ Id: RequiredString }))
-    //.output(APIResponseSchema(OptionalBoolean.nullable()))
     .mutation(async ({ input: { Id } }) => {
-      //if (ctx.userId == null) return null;
       const result = await dbContext.globalPostType.delete({
         where: {
           Id,
@@ -99,8 +82,5 @@ export const GlobalPostTypeRouter = trpcRouter.router({
       return {
         data: result,
       };
-      // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
-      //   data: Boolean(result),
-      // });
     }),
 });

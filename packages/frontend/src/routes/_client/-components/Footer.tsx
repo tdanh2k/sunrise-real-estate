@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { FC } from "react";
 
 export const Footer: FC = () => {
@@ -5,7 +6,7 @@ export const Footer: FC = () => {
     <section className="footer">
       <div className="container">
         <div className="row">
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-6 col-md-6">
             <i className="fas fa-home"></i>
             <span className="footer-other-text d-block mt-3 mb-3">
             SRE sẽ đáp ứng mọi mong muốn của bạn
@@ -26,13 +27,34 @@ export const Footer: FC = () => {
           <div className="col-lg-3 col-md-6">
             <p className="footer-title">Menu</p>
             <ul className="footer-ul">
-              <li>Trang chủ</li>
-              <li>Blog</li>
-              <li>Giới thiệu</li>
-              <li>Liên hệ</li>
+              <li>
+                <Link style={{ color: "white" }} to="/">
+                  Trang chủ
+                </Link>
+              </li>
+              <li>
+                <Link style={{ color: "white" }} to="/blogs">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link style={{ color: "white" }} to="/posts">
+                  Bài đăng nhà
+                </Link>
+              </li>
+              <li>
+                <Link style={{ color: "white" }} to="/about">
+                  Giới thiệu
+                </Link>
+              </li>
+              <li>
+                <Link style={{ color: "white" }} to="/contact">
+                  Liên hệ
+                </Link>
+              </li>
             </ul>
           </div>
-          <div className="col-lg-3 col-md-6">
+          {/* <div className="col-lg-3 col-md-6">
             <div>
               <p className="footer-title">Categories</p>
               <ul className="footer-ul">
@@ -42,7 +64,7 @@ export const Footer: FC = () => {
                 <li>Category 4</li>
               </ul>
             </div>
-          </div>
+          </div> */}
 
           <div className="col-lg-3 col-md-6">
             <p className="footer-title">Contact</p>

@@ -2,6 +2,7 @@ import { publicRoute } from "@utils/trpc";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import htmlParse from "html-react-parser";
+import ImageGallery from "react-image-gallery";
 
 export const Route = createFileRoute("/_client/blogs/$id")({
   component: () => {
@@ -14,10 +15,38 @@ export const Route = createFileRoute("/_client/blogs/$id")({
         <div className="row">
           <div className="col-lg-8">
             <div className="blog-detail">
-              <img
+              {/* <img
                 className="w-100"
-                src="/images/product1.jpeg"
+                src={data?.BlogImage?.[0]?.Path ?? "/images/product1.jpeg"}
                 alt="product"
+              /> */}
+              <ImageGallery
+                flickThreshold={0.5}
+                slideDuration={0}
+                items={
+                  (data?.BlogImage?.length as number) > 0
+                    ? data?.BlogImage?.map((item) => ({
+                        original: item.Path ?? "/images/product1.jpeg",
+                        thumbnail: item.Path ?? "/images/product1.jpeg",
+                      })) ?? []
+                    : [
+                        {
+                          original: "/images/product1.jpeg",
+                          thumbnail: "/images/product1.jpeg",
+                        },
+                        {
+                          original: "/images/product1.jpeg",
+                          thumbnail: "/images/product1.jpeg",
+                        },
+                        {
+                          original: "/images/product1.jpeg",
+                          thumbnail: "/images/product1.jpeg",
+                        },
+                      ]
+                }
+                showNav={false}
+                showFullscreenButton={false}
+                showPlayButton={false}
               />
               <span className="blog-detail-category">
                 {data?.GlobalBlogType?.Name}
