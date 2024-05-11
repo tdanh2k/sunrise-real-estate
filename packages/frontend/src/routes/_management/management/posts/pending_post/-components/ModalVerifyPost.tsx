@@ -12,6 +12,7 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { TypePendingPost } from "@sunrise-backend/src/schemas/PendingPost.schema";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalProps = {
   isOpen: boolean;
@@ -115,7 +116,7 @@ export const ModalVerifyPost: FC<ModalProps> = ({
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="orange"
@@ -234,6 +235,29 @@ export const ModalVerifyPost: FC<ModalProps> = ({
           // onCreate={({ values }) => {
           //   append(values);
           // }}
+        />
+        <FileTableRHF
+          legendLabel="Hình ảnh"
+          name="PendingPostImage"
+          disableEditing
+          control={control}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
+            },
+          ]}
         />
       </Stack>
     </CustomModal>

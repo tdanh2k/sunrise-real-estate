@@ -15,6 +15,7 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -60,6 +61,8 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     reset();
   };
 
+  const isLoading = isFetching || isPending;
+
   return (
     <CustomModal
       size="xl"
@@ -76,7 +79,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="blue"
@@ -88,7 +91,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }
     >
       <LoadingOverlay
-        visible={isPending}
+        visible={isLoading}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
@@ -178,7 +181,7 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           // }}
         />
       </Stack>
-      <MantineReactTableRHF
+      {/* <MantineReactTableRHF
         legendLabel="Hình ảnh"
         externalLoading={isFetching}
         disableEdit
@@ -223,61 +226,36 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
             ),
           },
         ]}
+      /> */}
+      <FileTableRHF
+        legendLabel="Hình ảnh"
+        name="PostImage"
+        disableEditing={isLoading}
+        control={control}
+        saveMapping={({ file, base64File }) => ({
+          Name: file.name,
+          Size: file.size,
+          MimeType: file.type,
+          Base64Data: base64File,
+        })}
+        columns={[
+          {
+            accessorKey: "Name",
+            header: "Tên file",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "MimeType",
+            header: "MIME",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "Size",
+            header: "Kích thước",
+            enableEditing: false,
+          },
+        ]}
       />
     </CustomModal>
   );
 };
-
-// const PostCurrentDetailTable: FC<{
-//   control: Control<TypeAddPost>;
-// }> = ({ control }) => {
-//   const { data: postDetailResponse, isFetching } =
-//     privateRoute.global_post_detail.all.useQuery();
-
-//   return (
-//     <>
-//       <MantineReactTableRHF
-//         legendLabel="Chi tiết bài đăng"
-//         columns={[
-//           {
-//             accessorKey: "DetailId",
-//             header: "DetailId",
-//             editVariant: "select",
-//             mantineEditTextInputProps: ({ row }) => ({
-//               // value: fields?.find((item) => item.Id === row.original.Id)
-//               //   ?.DetailId,
-//             }),
-//             mantineEditSelectProps: ({ row }) => ({
-//               // value: fields?.find((item) => item.Id === row.original.Id)
-//               //   ?.DetailId,
-//               data: postDetailResponse?.data?.map((item) => ({
-//                 label: item.Name,
-//                 value: item.Id,
-//               })),
-//               //error:
-//               //  control?._formState?.errors?.PostCurrentDetail?.[row.index]?.DetailId,
-//             }),
-//           },
-//           {
-//             accessorKey: "Value",
-//             header: "Value",
-//             mantineEditTextInputProps: ({ row }) => ({
-//               //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-//               //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-//               error:
-//                 control?._formState?.errors?.PostCurrentDetail?.[row.index]
-//                   ?.Value?.message,
-//             }),
-//           },
-//         ]}
-//         externalLoading={isFetching}
-//         name="PostCurrentDetail"
-//         control={control}
-//         //methods={methods}
-//         // onCreate={({ values }) => {
-//         //   append(values);
-//         // }}
-//       />
-//     </>
-//   );
-// };

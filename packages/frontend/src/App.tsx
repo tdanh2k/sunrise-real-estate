@@ -10,6 +10,7 @@ import "mantine-react-table/styles.css"; //import MRT styles
 import { routeTree } from "./routeTree.gen";
 import { Auth0Context, Auth0ContextInterface, User } from "@auth0/auth0-react";
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 
 // Create a new router instance
 const router = createRouter({
@@ -37,18 +38,20 @@ declare module "@tanstack/react-router" {
 function App() {
   return (
     <MantineProvider>
-      <CustomAuth0Provider>
-        <Auth0Context.Consumer>
-          {(props) => (
-            <RouterProvider
-              router={router}
-              context={{
-                auth0: props,
-              }}
-            />
-          )}
-        </Auth0Context.Consumer>
-      </CustomAuth0Provider>
+      <ModalsProvider>
+        <CustomAuth0Provider>
+          <Auth0Context.Consumer>
+            {(props) => (
+              <RouterProvider
+                router={router}
+                context={{
+                  auth0: props,
+                }}
+              />
+            )}
+          </Auth0Context.Consumer>
+        </CustomAuth0Provider>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

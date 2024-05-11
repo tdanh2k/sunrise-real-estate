@@ -11,7 +11,7 @@ import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalUpdateProps = {
   isOpen: boolean;
@@ -99,12 +99,12 @@ export const ModalUpdatePost: FC<ModalUpdateProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Tạo bài đăng"
+      title="Cập nhật bài đăng"
       centered
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="blue"
@@ -205,7 +205,7 @@ export const ModalUpdatePost: FC<ModalUpdateProps> = ({
           //   append(values);
           // }}
         />
-        <MantineReactTableRHF
+        {/* <MantineReactTableRHF
           legendLabel="Hình ảnh"
           externalLoading={isFetching}
           disableEdit
@@ -248,6 +248,34 @@ export const ModalUpdatePost: FC<ModalUpdateProps> = ({
                   }}
                 />
               ),
+            },
+          ]}
+        /> */}
+        <FileTableRHF
+          legendLabel="Hình ảnh"
+          name="PostImage"
+          control={control}
+          saveMapping={({ file, base64File }) => ({
+            Name: file.name,
+            Size: file.size,
+            MimeType: file.type,
+            Base64Data: base64File,
+          })}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
             },
           ]}
         />

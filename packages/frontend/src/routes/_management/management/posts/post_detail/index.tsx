@@ -4,11 +4,13 @@ import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
 import { MantineReactTable } from "mantine-react-table";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { TypeGlobalPostDetail } from "@sunrise-backend/src/schemas/GlobalPostDetail.schema";
 import { ModalAddPostDetail } from "./-components/ModalAddPostDetail";
 import { nprogress } from "@mantine/nprogress";
 import { IconCategory2 } from "@tabler/icons-react";
+import { CustomActionMenuItemPropsType, RenderCustomActionMenuItems } from "@components/MantineRT/RenderCustomActionMenuItems";
+import { ModalConfirmDelete } from "@components/MantineRHF/CustomModal/delete";
 
 export const Route = createFileRoute("/_management/management/posts/post_detail/")({
   onEnter: () => {
@@ -22,7 +24,7 @@ export const Route = createFileRoute("/_management/management/posts/post_detail/
     icon: <IconCategory2 />,
   },
   component: () => {
-    // const [selectedId, setSelectedId] = useState<string | undefined>("");
+    const [selectedId, setSelectedId] = useState<string | undefined>("");
 
     const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
       useDisclosure(false);
@@ -30,10 +32,10 @@ export const Route = createFileRoute("/_management/management/posts/post_detail/
     //   openedModalUpdate,
     //   { open: openModalUpdate, close: closeModalUpdate },
     // ] = useDisclosure(false);
-    // const [
-    //   openedModalDelete,
-    //   { open: openModalDelete, close: closeModalDelete },
-    // ] = useDisclosure(false);
+    const [
+      openedModalDelete,
+      { open: openModalDelete, close: closeModalDelete },
+    ] = useDisclosure(false);
 
     const handleOpenModalAdd = useCallback(() => {
       openModalAdd();
@@ -56,18 +58,18 @@ export const Route = createFileRoute("/_management/management/posts/post_detail/
     //   closeModalUpdate();
     // };
 
-    // const handleOpenModalDelete = useCallback(
-    //   (Id: string | undefined) => () => {
-    //     setSelectedId(Id);
-    //     openModalDelete();
-    //   },
-    //   [openModalDelete]
-    // );
+    const handleOpenModalDelete = useCallback(
+      (Id: string | undefined) => () => {
+        setSelectedId(Id);
+        openModalDelete();
+      },
+      [openModalDelete]
+    );
 
-    // const handleCloseModalDelete = () => {
-    //   setSelectedId("");
-    //   closeModalDelete();
-    // };
+    const handleCloseModalDelete = () => {
+      setSelectedId("");
+      closeModalDelete();
+    };
 
     const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
       () => [
@@ -80,23 +82,23 @@ export const Route = createFileRoute("/_management/management/posts/post_detail/
       [handleOpenModalAdd]
     );
 
-    // const tableRowActions = useCallback(
-    //   (Id: string | undefined): CustomActionMenuItemPropsType[] => [
-    //     {
-    //       id: "Update",
-    //       label: "Cập nhật",
-    //       actionType: "Update",
-    //       onClick: handleOpenModalUpdate(Id),
-    //     },
-    //     {
-    //       id: "Remove",
-    //       label: "Xóa",
-    //       actionType: "Delete",
-    //       onClick: handleOpenModalDelete(Id),
-    //     },
-    //   ],
-    //   [handleOpenModalUpdate, handleOpenModalDelete]
-    // );
+    const tableRowActions = useCallback(
+      (Id: string | undefined): CustomActionMenuItemPropsType[] => [
+        // {
+        //   id: "Update",
+        //   label: "Cập nhật",
+        //   actionType: "Update",
+        //   onClick: handleOpenModalUpdate(Id),
+        // },
+        {
+          id: "Remove",
+          label: "Xóa",
+          actionType: "Delete",
+          onClick: handleOpenModalDelete(Id),
+        },
+      ],
+      [handleOpenModalDelete]
+    );
 
     const table = useMantineRTInstance<TypeGlobalPostDetail>({
       columns: [
@@ -123,13 +125,13 @@ export const Route = createFileRoute("/_management/management/posts/post_detail/
         enableRowSelection: false,
         enableMultiRowSelection: false,
         getRowId: (row) => row.Id,
-        // enableRowActions: true,
-        // renderRowActionMenuItems: ({ row }) =>
-        //   RenderCustomActionMenuItems({
-        //     rowId: row.id,
-        //     actionList: tableRowActions(row.id),
-        //     //onClickAction: closeMenu,
-        //   }),
+        enableRowActions: true,
+        renderRowActionMenuItems: ({ row }) =>
+          RenderCustomActionMenuItems({
+            rowId: row.id,
+            actionList: tableRowActions(row.id),
+            //onClickAction: closeMenu,
+          }),
       },
     });
 
@@ -139,6 +141,12 @@ export const Route = createFileRoute("/_management/management/posts/post_detail/
         <ModalAddPostDetail
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
+        />
+        <ModalConfirmDelete
+          opened={openedModalDelete}
+          onClose={handleCloseModalDelete}
+          data={{ Id: selectedId ?? "" }}
+          useMutation={privateRoute.management.global_post_detail.delete.useMutation}
         />
       </>
     );

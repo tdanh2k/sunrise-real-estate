@@ -73,7 +73,7 @@ export const PostRouter = trpcRouter.router({
       // });
     }),
   update: protectedProcedure
-    .input(PostSchema)
+    .input(PostSchema.omit({ PostType: true }))
     // .output(
     //   APIResponseSchema(
     //     PostSchema.omit({

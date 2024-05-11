@@ -8,12 +8,11 @@ import {
 } from "@sunrise-backend/src/schemas/AddBlog.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
-import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -22,7 +21,6 @@ type ModalAddProps = {
 
 const defaultValues: TypeAddBlog = {
   TypeId: "",
-  Code: "",
   Title: "",
   Description: "",
   BlogImage: [],
@@ -61,12 +59,12 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Thêm bài đăng"
+      title="Thêm blog"
       centered
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="blue"
@@ -94,10 +92,9 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
-        <MantineReactTableRHF
+        {/* <MantineReactTableRHF
           legendLabel="Hình ảnh"
           disableEdit
           name="BlogImage"
@@ -139,6 +136,34 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
                   }}
                 />
               ),
+            },
+          ]}
+        /> */}
+        <FileTableRHF
+          legendLabel="Hình ảnh"
+          name="BlogImage"
+          control={control}
+          saveMapping={({ file, base64File }) => ({
+            Name: file.name,
+            Size: file.size,
+            MimeType: file.type,
+            Base64Data: base64File,
+          })}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
             },
           ]}
         />

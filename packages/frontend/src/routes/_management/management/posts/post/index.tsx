@@ -103,13 +103,23 @@ export const Route = createFileRoute("/_management/management/posts/post/")({
     const table = useMantineRTInstance<TypePost>({
       columns: [
         {
-          accessorKey: "Id",
-          header: "Id",
+          accessorKey: "Code",
+          header: "Mã quản lý",
           filterFn: "contains",
         },
         {
-          accessorKey: "Code",
-          header: "Mã quản lý",
+          accessorKey: "Title",
+          header: "Tiêu đề",
+          filterFn: "contains",
+        },
+        {
+          accessorKey: "Area",
+          header: "Diện tích",
+          filterFn: "contains",
+        },
+        {
+          accessorKey: "Price",
+          header: "Giá",
           filterFn: "contains",
         },
       ],

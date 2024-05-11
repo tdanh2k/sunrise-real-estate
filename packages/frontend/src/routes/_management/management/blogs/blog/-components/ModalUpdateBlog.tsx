@@ -5,12 +5,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { BlogSchema, TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
-import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalUpdateProps = {
   isOpen: boolean;
@@ -21,7 +20,6 @@ type ModalUpdateProps = {
 const defaultValues: TypeBlog = {
   Id: "",
   TypeId: "",
-  Code: "",
   Title: "",
   Description: "",
   BlogImage: [],
@@ -52,7 +50,7 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
   });
 
   const { mutateAsync, isPending } =
-    privateRoute.management.blog.publish.useMutation({
+    privateRoute.management.blog.update.useMutation({
       onSuccess: () => {
         utils.management.blog.invalidate();
       },
@@ -77,12 +75,12 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Thêm bài đăng"
+      title="Cập nhật blog"
       centered
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="blue"
@@ -94,7 +92,7 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
       }
     >
       <LoadingOverlay
-        visible={isPending}
+        visible={isLoading}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
@@ -112,12 +110,6 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
           control={control}
         />
         <TextInputRHF
-          name="Code"
-          label="Mã quản lý"
-          control={control}
-          disabled={isLoading}
-        />
-        <TextInputRHF
           name="Title"
           label="Tiêu đề"
           control={control}
@@ -129,7 +121,7 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
           control={control}
           editable={!isLoading}
         />
-        <MantineReactTableRHF
+        {/* <MantineReactTableRHF
           legendLabel="Hình ảnh"
           disableEdit={isLoading}
           name="BlogImage"
@@ -171,6 +163,34 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
                   }}
                 />
               ),
+            },
+          ]}
+        /> */}
+        <FileTableRHF
+          legendLabel="Hình ảnh"
+          name="BlogImage"
+          control={control}
+          saveMapping={({ file, base64File }) => ({
+            Name: file.name,
+            Size: file.size,
+            MimeType: file.type,
+            Base64Data: base64File,
+          })}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
             },
           ]}
         />

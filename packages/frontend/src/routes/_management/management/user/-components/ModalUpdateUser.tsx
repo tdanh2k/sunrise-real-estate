@@ -89,7 +89,7 @@ export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
             loading={isLoading}
             onClick={() => reset()}
           >
-            Clear
+            Reset
           </Button>
           <Button
             color="blue"
