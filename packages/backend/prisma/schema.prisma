@@ -213,20 +213,21 @@ model DraftPostFeature {
 }
 
 model PendingBlog {
-  Id               String             @id(map: "PendingBlog_PK") @default(dbgenerated("newid()"), map: "DF__PendingBlog__Id__42ACE4D4") @db.UniqueIdentifier
-  Idx              Int                @default(autoincrement())
-  Code             String?            @db.VarChar(256)
-  Title            String             @db.NVarChar(256)
-  Description      String?            @db.NVarChar(Max)
-  UserId           String             @db.VarChar(256)
-  TypeId           String             @db.UniqueIdentifier
-  Address          String?            @db.VarChar(Max)
-  ApprovedBy       String?            @db.VarChar(256)
-  ApprovedDate     DateTime?          @db.DateTime
-  CreatedDate      DateTime?          @default(now(), map: "DF__PendingBl__Creat__43A1090D") @db.DateTime
-  Auth0Profile     Auth0Profile       @relation(fields: [UserId], references: [user_id], onUpdate: NoAction, map: "PendingBlog_Auth0Profile_FK")
-  GlobalBlogType   GlobalBlogType     @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingBlog_GlobalBlogType_FK")
-  PendingBlogImage PendingBlogImage[]
+  Id                                                      String             @id(map: "PendingBlog_PK") @default(dbgenerated("newid()"), map: "DF__PendingBlog__Id__42ACE4D4") @db.UniqueIdentifier
+  Idx                                                     Int                @default(autoincrement())
+  Code                                                    String?            @db.VarChar(256)
+  Title                                                   String             @db.NVarChar(256)
+  Description                                             String?            @db.NVarChar(Max)
+  UserId                                                  String             @db.VarChar(256)
+  TypeId                                                  String             @db.UniqueIdentifier
+  Address                                                 String?            @db.VarChar(Max)
+  ApprovedByUserId                                        String?            @db.VarChar(256)
+  ApprovedDate                                            DateTime?          @db.DateTime
+  CreatedDate                                             DateTime?          @default(now(), map: "DF__PendingBl__Creat__43A1090D") @db.DateTime
+  ApprovedByUser Auth0Profile?      @relation("PendingBlog_ApprovedByUserIdToAuth0Profile", fields: [ApprovedByUserId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "PendingBlog_Auth0Profile_ApprovedByUserId_FK")
+  Auth0Profile                                            Auth0Profile       @relation(fields: [UserId], references: [user_id], onUpdate: NoAction, map: "PendingBlog_Auth0Profile_FK")
+  GlobalBlogType                                          GlobalBlogType     @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingBlog_GlobalBlogType_FK")
+  PendingBlogImage                                        PendingBlogImage[]
 }
 
 model PendingBlogImage {
@@ -242,25 +243,26 @@ model PendingBlogImage {
 }
 
 model PendingPost {
-  Id                       String                     @id(map: "PendingPost_PK") @default(dbgenerated("newid()"), map: "DF__PendingPost__Id__2DB1C7EE") @db.UniqueIdentifier
-  Idx                      Int                        @default(autoincrement())
-  Code                     String?                    @db.VarChar(100)
-  Title                    String                     @db.NVarChar(256)
-  Description              String?                    @db.NVarChar(Max)
-  UserId                   String?                    @db.VarChar(256)
-  CreatedDate              DateTime?                  @default(now(), map: "DF__PendingPo__Creat__2EA5EC27") @db.DateTime
-  TypeId                   String                     @db.UniqueIdentifier
-  Address                  String?                    @db.NVarChar(Max)
-  MapUrl                   String?                    @db.VarChar(Max)
-  Price                    Float?
-  ApprovedBy               String?                    @db.VarChar(256)
-  ApprovedDate             DateTime?                  @db.DateTime
-  Area                     Float?
-  Auth0Profile             Auth0Profile?              @relation(fields: [UserId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "PendingPost_Auth0Profile_FK")
-  GlobalPostType           GlobalPostType             @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingPost_GlobalPostType_FK")
-  PendingPostCurrentDetail PendingPostCurrentDetail[]
-  PendingPostFeature       PendingPostFeature[]
-  PendingPostImage         PendingPostImage[]
+  Id                                                      String                     @id(map: "PendingPost_PK") @default(dbgenerated("newid()"), map: "DF__PendingPost__Id__2DB1C7EE") @db.UniqueIdentifier
+  Idx                                                     Int                        @default(autoincrement())
+  Code                                                    String?                    @db.VarChar(100)
+  Title                                                   String                     @db.NVarChar(256)
+  Description                                             String?                    @db.NVarChar(Max)
+  UserId                                                  String?                    @db.VarChar(256)
+  CreatedDate                                             DateTime?                  @default(now(), map: "DF__PendingPo__Creat__2EA5EC27") @db.DateTime
+  TypeId                                                  String                     @db.UniqueIdentifier
+  Address                                                 String?                    @db.NVarChar(Max)
+  MapUrl                                                  String?                    @db.VarChar(Max)
+  Price                                                   Float?
+  ApprovedByUserId                                        String?                    @db.VarChar(256)
+  ApprovedDate                                            DateTime?                  @db.DateTime
+  Area                                                    Float?
+  ApprovedByUser Auth0Profile?              @relation("PendingPost_ApprovedByUserIdToAuth0Profile", fields: [ApprovedByUserId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "PendingPost_Auth0Profile_ApprovedByUserId_FK")
+  Auth0Profile                                            Auth0Profile?              @relation(fields: [UserId], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "PendingPost_Auth0Profile_FK")
+  GlobalPostType                                          GlobalPostType             @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "PendingPost_GlobalPostType_FK")
+  PendingPostCurrentDetail                                PendingPostCurrentDetail[]
+  PendingPostFeature                                      PendingPostFeature[]
+  PendingPostImage                                        PendingPostImage[]
 }
 
 model PendingPostCurrentDetail {
@@ -295,25 +297,27 @@ model PendingPostImage {
 }
 
 model Auth0Profile {
-  user_id        String        @id(map: "Auth0Profile_PK") @db.VarChar(256)
-  user_name      String?       @db.NVarChar(256)
-  email          String        @db.NVarChar(256)
-  email_verified Boolean?
-  phone_number   String?       @db.VarChar(100)
-  phone_verified Boolean?
-  name           String?       @db.NVarChar(256)
-  picture        String?       @db.NVarChar(Max)
-  nickname       String?       @db.NVarChar(256)
-  given_name     String?       @db.NVarChar(256)
-  family_name    String?       @db.NVarChar(256)
-  last_ip        String?       @db.VarChar(100)
-  last_login     DateTime?     @db.DateTime
-  logins_count   Int?
-  blocked        Boolean?
-  Blog           Blog[]
-  DraftBlog      DraftBlog[]
-  DraftPost      DraftPost[]
-  PendingBlog    PendingBlog[]
-  PendingPost    PendingPost[]
-  Post           Post[]
+  user_id                                                String        @id(map: "Auth0Profile_PK") @db.VarChar(256)
+  user_name                                              String?       @db.NVarChar(256)
+  email                                                  String        @db.NVarChar(256)
+  email_verified                                         Boolean?
+  phone_number                                           String?       @db.VarChar(100)
+  phone_verified                                         Boolean?
+  name                                                   String?       @db.NVarChar(256)
+  picture                                                String?       @db.NVarChar(Max)
+  nickname                                               String?       @db.NVarChar(256)
+  given_name                                             String?       @db.NVarChar(256)
+  family_name                                            String?       @db.NVarChar(256)
+  last_ip                                                String?       @db.VarChar(100)
+  last_login                                             DateTime?     @db.DateTime
+  logins_count                                           Int?
+  blocked                                                Boolean?
+  Blog                                                   Blog[]
+  DraftBlog                                              DraftBlog[]
+  DraftPost                                              DraftPost[]
+  ApprovedByUser_PendingBlog PendingBlog[] @relation("PendingBlog_ApprovedByUserIdToAuth0Profile")
+  PendingBlog                                            PendingBlog[]
+  ApprovedByUser_PendingPost PendingPost[] @relation("PendingPost_ApprovedByUserIdToAuth0Profile")
+  PendingPost                                            PendingPost[]
+  Post                                                   Post[]
 }

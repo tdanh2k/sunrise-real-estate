@@ -188,7 +188,7 @@ export const PendingPostRouter = trpcRouter.router({
       const [updatedPendingPost] = await dbContext.$transaction([
         dbContext.pendingPost.update({
           data: {
-            ApprovedBy: (await ctx).userId,
+            ApprovedByUserId: (await ctx).userId,
             ApprovedDate: new Date(),
           },
           where: {

@@ -6,11 +6,12 @@ import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { TypeAPIResponse } from "../../schemas/APIResponse.schema.js";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, trpcRouter } from "../router.js";
+import { v2 as cloudinary } from "cloudinary";
+
 
 export const BlogRouter = trpcRouter.router({
   byPage: protectedProcedure
     .input(PaginationSchema)
-    //.output(APIResponseSchema(z.array(BlogSchema)))
     .query(async ({ ctx, input }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -33,7 +34,12 @@ export const BlogRouter = trpcRouter.router({
             UserId: (await ctx).userId,
           },
         }),
-        dbContext.blog.count(),
+        dbContext.blog.count({
+          where: {
+            UserId:
+              (await ctx)?.userId ?? "00000000-0000-0000-0000-000000000000",
+          },
+        }),
       ]);
 
       return {
@@ -44,14 +50,6 @@ export const BlogRouter = trpcRouter.router({
           row_count,
         },
       } as TypeAPIResponse<TypeBlog[]>;
-      // return await APIResponseSchema(z.array(BlogSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   byId: protectedProcedure
     .input(
@@ -121,12 +119,43 @@ export const BlogRouter = trpcRouter.router({
       });
 
       return { data: result } as TypeAPIResponse<TypeBlog>;
-      // return await APIResponseSchema(
-      //   BlogSchema.omit({
-      //     BlogCurrentDetail: true,
-      //     BlogFeature: true,
-      //     BlogImage: true,
-      //   }).nullable()
-      // ).parseAsync({ data: result });
+    }),
+  delete: protectedProcedure
+    .input(z.object({ Id: RequiredString }))
+    .mutation(async ({ ctx, input: { Id } }) => {
+      if ((await ctx).userId == null)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: ``,
+        });
+
+      const [images, deletedData] = await dbContext.$transaction([
+        dbContext.blogImage.findMany({
+          where: {
+            Blog: {
+              Id: Id ?? "00000000-0000-0000-0000-000000000000",
+              UserId:
+                (await ctx).userId ?? "00000000-0000-0000-0000-000000000000",
+            },
+          },
+        }),
+        dbContext.blog.delete({
+          where: {
+            Id: Id ?? "00000000-0000-0000-0000-000000000000",
+            UserId: (await ctx).userId,
+          },
+        }),
+      ]);
+
+      if (images?.some((r) => r.Code)) {
+        await cloudinary.api.delete_resources(
+          images?.filter((r) => r.Code)?.map((r) => r.Code) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
+
+      return {
+        data: deletedData,
+      };
     }),
 });

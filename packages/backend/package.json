@@ -9,6 +9,7 @@
     "start": "node dist/app.js",
     "dev": "tsx watch src/app.ts",
     "db-pull": "prisma db pull",
+    "db-push": "prisma db push",
     "gen-client": "prisma generate",
     "prisma-studio": "prisma studio",
     "env-pull": "dotenv-vault pull",
@@ -40,7 +41,7 @@
     "@types/node": "^20.12.11",
     "dotenv-vault": "^1.26.1",
     "prisma": "^5.13.0",
-    "tsx": "^4.9.4",
+    "tsx": "^4.10.1",
     "typescript": "^5.4.5"
   }
 }

@@ -37,6 +37,7 @@ import { Route as ManagementManagementPostsPosttypeIndexImport } from './routes/
 import { Route as ManagementManagementPostsPostdetailIndexImport } from './routes/_management/management/posts/post_detail/index'
 import { Route as ManagementManagementPostsPostIndexImport } from './routes/_management/management/posts/post/index'
 import { Route as ManagementManagementPostsPendingpostIndexImport } from './routes/_management/management/posts/pending_post/index'
+import { Route as ManagementManagementBlogsPendingblogIndexImport } from './routes/_management/management/blogs/pending_blog/index'
 import { Route as ManagementManagementBlogsBlogtypeIndexImport } from './routes/_management/management/blogs/blog_type/index'
 import { Route as ManagementManagementBlogsBlogIndexImport } from './routes/_management/management/blogs/blog/index'
 
@@ -185,6 +186,12 @@ const ManagementManagementPostsPendingpostIndexRoute =
     getParentRoute: () => ManagementManagementPostsRouteRoute,
   } as any)
 
+const ManagementManagementBlogsPendingblogIndexRoute =
+  ManagementManagementBlogsPendingblogIndexImport.update({
+    path: '/pending_blog/',
+    getParentRoute: () => ManagementManagementBlogsRouteRoute,
+  } as any)
+
 const ManagementManagementBlogsBlogtypeIndexRoute =
   ManagementManagementBlogsBlogtypeIndexImport.update({
     path: '/blog_type/',
@@ -273,6 +280,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementManagementBlogsBlogtypeIndexImport
       parentRoute: typeof ManagementManagementBlogsRouteImport
     }
+    '/_management/management/blogs/pending_blog/': {
+      preLoaderRoute: typeof ManagementManagementBlogsPendingblogIndexImport
+      parentRoute: typeof ManagementManagementBlogsRouteImport
+    }
     '/_management/management/posts/pending_post/': {
       preLoaderRoute: typeof ManagementManagementPostsPendingpostIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
@@ -333,6 +344,7 @@ export const routeTree = rootRoute.addChildren([
       ManagementManagementBlogsRouteRoute.addChildren([
         ManagementManagementBlogsBlogIndexRoute,
         ManagementManagementBlogsBlogtypeIndexRoute,
+        ManagementManagementBlogsPendingblogIndexRoute,
       ]),
       ManagementManagementPostsRouteRoute.addChildren([
         ManagementManagementPostsPendingpostIndexRoute,

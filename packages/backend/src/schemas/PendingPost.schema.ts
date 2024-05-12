@@ -19,7 +19,7 @@ export const PendingPostSchema = z.object({
   TypeId: RequiredUUID,
   Address: RequiredString,
   Price: OptionalNumber,
-  ApprovedBy: OptionalString,
+  ApprovedByUserId: OptionalString,
   ApprovedDate: OptionalJsDate,
   MapUrl: RequiredString,
   Area: NonNegativeNumber,

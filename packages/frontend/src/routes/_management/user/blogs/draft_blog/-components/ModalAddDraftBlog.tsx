@@ -22,7 +22,6 @@ type ModalAddProps = {
 
 const defaultValues: TypeAddDraftBlog = {
   TypeId: "",
-  Code: "",
   Title: "",
   Description: "",
   DraftBlogImage: [],
@@ -144,7 +143,6 @@ export const ModalAddDraftBlog: FC<ModalAddProps> = ({
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         {/* <MantineReactTableRHF

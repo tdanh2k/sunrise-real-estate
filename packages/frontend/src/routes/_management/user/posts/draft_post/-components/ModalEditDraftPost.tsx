@@ -25,7 +25,6 @@ type ModalEditDraftProps = {
 
 const defaultValues: TypeAddDraftPost = {
   TypeId: "",
-  Code: "",
   Title: "",
   Address: "",
   Description: "",
@@ -175,7 +174,6 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
         <NumberInputRHF name="Price" label="Giá" control={control} />

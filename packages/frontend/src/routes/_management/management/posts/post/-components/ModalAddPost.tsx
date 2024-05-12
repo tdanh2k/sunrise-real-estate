@@ -14,7 +14,6 @@ import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
 import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalAddProps = {
@@ -24,7 +23,6 @@ type ModalAddProps = {
 
 const defaultValues: TypeAddPost = {
   TypeId: "",
-  Code: "",
   Title: "",
   Address: "",
   Description: "",
@@ -107,12 +105,11 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
         <TextInputRHF name="MapUrl" label="Url bản đồ" control={control} />
         <NumberInputRHF name="Price" label="Giá" control={control} />
-        <NumberInputRHF name="Area" label="Diện tích" control={control} />
+        <NumberInputRHF name="Area" label="Diện tích (m2)" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
         <MantineReactTableRHF
           legendLabel="Chi tiết bất động sản"

@@ -36,6 +36,18 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
         //   z.object({ Idx: NonNegativeIntegerNumber.nullable() })
         // ).parseAsync({ data: result });
     }),
+    byId: protectedProcedure
+        .input(z.object({
+        Id: RequiredString,
+    }))
+        .query(async ({ input }) => {
+        const data = await dbContext.globalBlogType.findFirst({
+            where: {
+                Id: input?.Id ?? "00000000-0000-0000-0000-000000000000",
+            },
+        });
+        return { data };
+    }),
     byPage: protectedProcedure
         .input(PaginationSchema)
         //.output(APIResponseSchema(z.array(GlobalBlogTypeSchema)))

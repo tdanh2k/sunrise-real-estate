@@ -1,81 +1,78 @@
 import { TextInputRHF } from "@components/MantineRHF/TextInputRHF";
 import { Button, LoadingOverlay, Stack } from "@mantine/core";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  AddDraftBlogSchema,
-  TypeAddDraftBlog,
-} from "@sunrise-backend/src/schemas/AddDraftBlog.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
-import { useNavigate } from "@tanstack/react-router";
 import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
+import { TypePendingBlog } from "@sunrise-backend/src/schemas/PendingBlog.schema";
 
-type ModalAddProps = {
+type ModalVerifyProps = {
   isOpen: boolean;
+  blogId: string;
   handleClose: () => void;
 };
 
-const defaultValues: TypeAddDraftBlog = {
+const defaultValues: TypePendingBlog = {
+  Id: "",
   TypeId: "",
   Title: "",
   Description: "",
-  DraftBlogImage: [],
+  PendingBlogImage: [],
 };
 
-export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
-  const navigate = useNavigate({ from: "/user/blogs/blog" });
-  const [isDrafting, setIsDrafting] = useState<boolean>(false);
+export const ModalVerifyBlog: FC<ModalVerifyProps> = ({
+  isOpen,
+  blogId,
+  handleClose,
+}) => {
   const utils = privateRoute.useUtils();
 
+  const { data: blogByIdResponse, isFetching } =
+    privateRoute.management.pending_blog.byId.useQuery(
+      { Id: blogId },
+      {
+        enabled: Boolean(blogId),
+      }
+    );
+
   const { handleSubmit, control, reset } = useForm({
-    resolver: isDrafting ? zodResolver(AddDraftBlogSchema) : undefined,
     mode: "all",
-    defaultValues,
+    values: {
+      ...defaultValues,
+      ...(blogByIdResponse?.data ?? {}),
+    },
   });
 
-  const { mutateAsync, isPending: isBlogPending } =
-    privateRoute.user.pending_blog.createFromDraft.useMutation({
+  const { mutateAsync: approveAsync, isPending: isApprovePending } =
+    privateRoute.management.pending_blog.approve.useMutation({
       onSuccess: () => {
-        utils.user.blog.invalidate();
+        utils.management.blog.invalidate();
+      },
+    });
+  const { mutateAsync: rejectAsync, isPending: isRejectPending } =
+    privateRoute.management.pending_blog.reject.useMutation({
+      onSuccess: () => {
+        utils.management.blog.invalidate();
       },
     });
 
-  const { mutateAsync: mutateDraftAsync, isPending: isDraftPending } =
-    privateRoute.user.draft_blog.create.useMutation({
-      onSuccess: () => {
-        utils.user.draft_blog.invalidate();
-        navigate({ to: "/user/blogs/pending_blog" });
-      },
-    });
-
-  const onSubmit: SubmitHandler<TypeAddDraftBlog> = async (values) => {
-    if (!window.confirm("Bạn đã chắc chắn?")) return;
-
-    await mutateAsync(values);
+  const onApprove: SubmitHandler<TypePendingBlog> = async ({ Id }) => {
+    await approveAsync({ Id });
     handleClose();
     reset();
   };
 
-  const onDraftSubmit: SubmitHandler<TypeAddDraftBlog> = async ({
-    DraftBlogImage,
-    ...rest
-  }) => {
-    if (!window.confirm("Bạn đã chắc chắn?")) return;
-
-    await mutateDraftAsync({
-      ...rest,
-      DraftBlogImage: DraftBlogImage ?? [],
-    });
+  const onReject: SubmitHandler<TypePendingBlog> = async ({ Id }) => {
+    await rejectAsync({ Id });
     handleClose();
     reset();
   };
 
-  const isLoading = isDraftPending || isBlogPending;
+  const isLoading = isApprovePending || isRejectPending || isFetching;
 
   return (
     <CustomModal
@@ -88,30 +85,21 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Đăng bài"
+      title="Xác nhận blog"
       centered
       footer={
         <>
-          <Button variant="transparent" onClick={() => reset()}>
-            Reset
-          </Button>
           <Button
-            color="green"
-            onClick={() => {
-              setIsDrafting(true);
-              handleSubmit(onDraftSubmit, (error) => console.error(error))();
-            }}
+            color="red"
+            onClick={handleSubmit(onReject, (error) => console.error(error))}
           >
-            Lưu nháp
+            Từ chối
           </Button>
           <Button
             color="blue"
-            onClick={() => {
-              setIsDrafting(false);
-              handleSubmit(onSubmit, (error) => console.error(error))();
-            }}
+            onClick={handleSubmit(onApprove, (error) => console.error(error))}
           >
-            Submit
+            Đồng ý
           </Button>
         </>
       }
@@ -123,21 +111,35 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       />
 
       <Stack mb={10} style={{ overflow: "auto" }}>
-        <QuerySelectRHF<TypeAddDraftBlog, TypeGlobalBlogType>
+        <QuerySelectRHF<TypePendingBlog, TypeGlobalBlogType>
           name="TypeId"
-          label="Loại bài đăng"
-          useQuery={privateRoute.user.global_blog_type.all.useQuery}
+          label="Loại blog"
+          useQuery={privateRoute.management.global_blog_type.all.useQuery}
           mapOption={(item) => ({
             label: item.Name,
             value: item.Id,
           })}
+          readOnly
+          disabled={isLoading}
           control={control}
         />
-        <TextInputRHF name="Title" label="Tiêu đề" control={control} />
-        <RichTextRHF name="Description" label="Mô tả" control={control} />
+        <TextInputRHF
+          name="Title"
+          label="Tiêu đề"
+          readOnly
+          control={control}
+          disabled={isLoading}
+        />
+        <RichTextRHF
+          name="Description"
+          label="Mô tả"
+          control={control}
+          editable={false}
+        />
         <FileTableRHF
           legendLabel="Hình ảnh"
-          name="DraftBlogImage"
+          name="PendingBlogImage"
+          disableEditing
           control={control}
           saveMapping={({ file, base64File }) => ({
             Name: file.name,

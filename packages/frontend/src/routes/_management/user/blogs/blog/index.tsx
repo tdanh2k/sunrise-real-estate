@@ -99,11 +99,7 @@ export const Route = createFileRoute("/_management/user/blogs/blog/")({
 
     const table = useMantineRTInstance<TypeBlog>({
       columns: [
-        {
-          accessorKey: "Code",
-          header: "Mã quản lý",
-          filterFn: "contains",
-        },
+
         {
           accessorKey: "Title",
           header: "Tiêu đề",

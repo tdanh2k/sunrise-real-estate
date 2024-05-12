@@ -9,7 +9,7 @@ import {
 export type CustomActionMenuItemPropsType = {
   id?: string;
   label: string;
-  actionType: "Add" | "Update" | "Delete" | string;
+  actionType?: "Add" | "Update" | "Delete" | string;
   disabled?: boolean;
   menuItemProps?: MenuItemProps;
   onClick: () => void;
@@ -63,7 +63,7 @@ export const RenderCustomActionMenuItems = ({
           onClick();
           onClickAction?.();
         }}
-        leftSection={actionTypeIcon(actionType)}
+        leftSection={menuItemProps?.leftSection ?? actionTypeIcon(actionType)}
         color={actionTypeColor(actionType)}
         disabled={disabled || isLoading}
       >

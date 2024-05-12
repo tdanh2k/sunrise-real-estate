@@ -125,7 +125,7 @@ export const PublicRouter = trpcRouter.router({
         BlogStats: {
           orderBy: {
             ViewCount: "desc",
-          },
+          }, 
         },
       },
     });
@@ -147,7 +147,6 @@ export const PublicRouter = trpcRouter.router({
           include: {
             BlogImage: true,
             GlobalBlogType: true,
-            BlogStats: true,
             Auth0Profile: true,
           },
         });

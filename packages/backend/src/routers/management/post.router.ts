@@ -184,7 +184,7 @@ export const PostRouter = trpcRouter.router({
             PostImage: {
               connectOrCreate: PostImage?.map((item) => ({
                 where: {
-                  Id: item.Id,
+                  Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                 },
                 create: item,
               })),

@@ -33,6 +33,8 @@ export const PendingBlogRouter = trpcRouter.router({
           include: {
             PendingBlogImage: true,
             GlobalBlogType: true,
+            Auth0Profile: true,
+            ApprovedByUser: true
           },
         }),
         dbContext.blog.count(),
@@ -139,7 +141,7 @@ export const PendingBlogRouter = trpcRouter.router({
             },
           },
         }),
-        dbContext.draftBlog.delete({
+        dbContext.draftBlog.deleteMany({
           where: {
             Id: Id ?? "00000000-0000-0000-0000-000000000000",
             UserId: (await ctx).userId ?? "",
@@ -200,7 +202,7 @@ export const PendingBlogRouter = trpcRouter.router({
       const [updatedPendingBlog] = await dbContext.$transaction([
         dbContext.pendingBlog.update({
           data: {
-            ApprovedBy: (await ctx).userId,
+            ApprovedByUserId: (await ctx).userId,
             ApprovedDate: new Date(),
           },
           where: {

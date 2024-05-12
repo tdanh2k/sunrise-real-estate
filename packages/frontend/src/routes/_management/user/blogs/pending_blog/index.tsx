@@ -1,9 +1,10 @@
 import { useMantineRTInstance } from "@components/MantineRT";
 import { nprogress } from "@mantine/nprogress";
 import { TypePendingBlog } from "@sunrise-backend/src/schemas/PendingBlog.schema";
-import { IconZoomCheck } from "@tabler/icons-react";
+import { IconCheck, IconInfoCircle, IconX, IconZoomCheck } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
+import dayjs from "dayjs";
 import { MantineReactTable } from "mantine-react-table";
 
 export const Route = createFileRoute("/_management/user/blogs/pending_blog/")({
@@ -93,19 +94,36 @@ export const Route = createFileRoute("/_management/user/blogs/pending_blog/")({
     const table = useMantineRTInstance<TypePendingBlog>({
       columns: [
         {
-          accessorKey: "Code",
-          header: "Mã quản lý",
-          filterFn: "contains",
-        },
-        {
           accessorKey: "Title",
           header: "Tiêu đề",
           filterFn: "contains",
         },
         {
-          accessorKey: "GlobalPendingBlogType.Name",
+          accessorKey: "GlobalBlogType.Name",
           header: "Thuộc loại",
           filterFn: "contains",
+        },
+        {
+          accessorKey: "CreatedDate",
+          header: "Đăng ngày",
+          filterFn: "contains",
+          Cell: ({ cell }) =>
+            cell.getValue<string>()
+              ? dayjs(cell.getValue<string>()).format("DD/MM/YYYY")
+              : undefined,
+        },
+        {
+          header: "Trạng thái",
+          Cell: ({ row }) =>
+            row.original.ApprovedByUserId != null ? (
+              row.original.ApprovedByUserId ? (
+                <IconCheck color="green" />
+              ) : (
+                <IconX color="red" />
+              )
+            ) : (
+              <IconInfoCircle />
+            ),
         },
       ],
       useQuery: privateRoute.user.pending_blog.byPage.useQuery,
@@ -115,13 +133,6 @@ export const Route = createFileRoute("/_management/user/blogs/pending_blog/")({
         enableRowSelection: false,
         enableMultiRowSelection: false,
         getRowId: (row) => row.Id,
-        // enableRowActions: true,
-        // renderRowActionMenuItems: ({ row }) =>
-        //   RenderCustomActionMenuItems({
-        //     rowId: row.id,
-        //     actionList: tableRowActions(row.original.Id),
-        //     //onClickAction: closeMenu,
-        //   }),
       },
     });
 
