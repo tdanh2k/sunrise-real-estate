@@ -103,13 +103,23 @@ export const Route = createFileRoute("/_management/management/posts/post/")({
     const table = useMantineRTInstance<TypePost>({
       columns: [
         {
-          accessorKey: "Id",
-          header: "Id",
+          accessorKey: "Title",
+          header: "Tiêu đề",
           filterFn: "contains",
         },
         {
-          accessorKey: "Code",
-          header: "Mã quản lý",
+          accessorKey: "Address",
+          header: "Địa chỉ",
+          filterFn: "contains",
+        },
+        {
+          accessorKey: "Area",
+          header: "Diện tích (m2)",
+          filterFn: "contains",
+        },
+        {
+          accessorKey: "Price",
+          header: "Giá",
           filterFn: "contains",
         },
       ],
@@ -124,7 +134,7 @@ export const Route = createFileRoute("/_management/management/posts/post/")({
         renderRowActionMenuItems: ({ row }) =>
           RenderCustomActionMenuItems({
             rowId: row.id,
-            actionList: tableRowActions(row.id),
+            actionList: tableRowActions(row?.original?.Id),
             //onClickAction: closeMenu,
           }),
       },

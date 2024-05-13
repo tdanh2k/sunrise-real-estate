@@ -1,13 +1,27 @@
 import { useMantineRTInstance } from "@components/MantineRT";
+import {
+  CustomActionMenuItemPropsType,
+  RenderCustomActionMenuItems,
+} from "@components/MantineRT/RenderCustomActionMenuItems";
+import { useDisclosure } from "@mantine/hooks";
 import { nprogress } from "@mantine/nprogress";
-import { TypePendingPost } from "@sunrise-backend/src/schemas/PendingPost.schema";
-import { IconCheck, IconInfoCircle, IconX, IconZoomCheck } from "@tabler/icons-react";
+import { TypePendingBlog } from "@sunrise-backend/src/schemas/PendingBlog.schema";
+import {
+  IconCheck,
+  IconInfoCircle,
+  IconX,
+  IconZoomCheck,
+} from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { privateRoute } from "@utils/trpc";
-import dayjs from "dayjs";
 import { MantineReactTable } from "mantine-react-table";
+import { useCallback, useState } from "react";
+import { ModalVerifyBlog } from "./-components/ModalVerifyBlog";
+import dayjs from "dayjs";
 
-export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
+export const Route = createFileRoute(
+  "/_management/management/blogs/pending_blog/"
+)({
   onEnter: () => {
     nprogress.complete();
   },
@@ -19,7 +33,11 @@ export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
     icon: <IconZoomCheck />,
   },
   component: () => {
-    // const [selectedId, setSelectedId] = useState<string | undefined>("");
+    const [selectedId, setSelectedId] = useState<string | undefined>("");
+    const [
+      openedModalVerify,
+      { open: openModalVerify, close: closeModalVerify },
+    ] = useDisclosure(false);
     // const [openedModalAdd, { open: openModalAdd, close: closeModalAdd }] =
     //   useDisclosure(false);
     // const [
@@ -30,6 +48,16 @@ export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
     //   openedModalDelete,
     //   { open: openModalDelete, close: closeModalDelete },
     // ] = useDisclosure(false);
+
+    const handleOpenModalVerify = (Id: string | undefined) => () => {
+      setSelectedId(Id);
+      openModalVerify();
+    };
+
+    const handleCloseModalVerify = () => {
+      setSelectedId("");
+      closeModalVerify();
+    };
 
     // const handleOpenModalAdd = useCallback(() => {
     //   openModalAdd();
@@ -52,52 +80,58 @@ export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
     //   closeModalUpdate();
     // };
 
-    // const handleOpenModalDelete = useCallback(
-    //   (Id: string | undefined) => () => {
-    //     setSelectedId(Id);
-    //     openModalDelete();
-    //   },
-    //   [openModalDelete]
-    // );
+    // const handleOpenModalDelete = (Id?: string) => () => {
+    //   setSelectedId(Id);
+    //   openModalDelete();
+    // };
 
     // const handleCloseModalDelete = () => {
     //   setSelectedId("");
     //   closeModalDelete();
     // };
 
-    // const tableRowActions = useCallback(
-    //   (Id: string | undefined): CustomActionMenuItemPropsType[] => [
+    // const tableActions = useMemo<CustomToolbarButtonsPropsType[]>(
+    //   () => [
     //     {
-    //       id: "Update",
-    //       label: "Cập nhật",
-    //       actionType: "Update",
-    //       onClick: handleOpenModalUpdate(Id),
-    //     },
-    //     {
-    //       id: "Remove",
-    //       label: "Xóa",
-    //       actionType: "Delete",
-    //       onClick: handleOpenModalDelete(Id),
+    //       label: "Thêm",
+    //       actionType: "Add",
+    //       onClick: handleOpenModalAdd,
     //     },
     //   ],
-    //   [handleOpenModalUpdate, handleOpenModalDelete]
+    //   [handleOpenModalAdd]
     // );
 
-    const table = useMantineRTInstance<TypePendingPost>({
+    const tableRowActions = useCallback(
+      (Id: string | undefined): CustomActionMenuItemPropsType[] => [
+        {
+          id: "Verify",
+          label: "Xác nhận",
+          onClick: handleOpenModalVerify(Id),
+          menuItemProps: {
+            leftSection: <IconZoomCheck />,
+          },
+        },
+        // {
+        //   id: "Update",
+        //   label: "Cập nhật",
+        //   actionType: "Update",
+        //   onClick: handleOpenModalUpdate(Id),
+        // },
+        // {
+        //   id: "Remove",
+        //   label: "Xóa",
+        //   actionType: "Delete",
+        //   onClick: handleOpenModalDelete(Id),
+        // },
+      ],
+      []
+    );
+
+    const table = useMantineRTInstance<TypePendingBlog>({
       columns: [
         {
           accessorKey: "Title",
           header: "Tiêu đề",
-          filterFn: "contains",
-        },
-        {
-          accessorKey: "Area",
-          header: "Diện tích (m2)",
-          filterFn: "contains",
-        },
-        {
-          accessorKey: "Price",
-          header: "Giá",
           filterFn: "contains",
         },
         {
@@ -120,15 +154,6 @@ export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
               : undefined,
         },
         {
-          accessorKey: "ApprovedDate",
-          header: "Ngày xác nhận",
-          filterFn: "contains",
-          Cell: ({ cell }) =>
-            cell.getValue<string>()
-              ? dayjs(cell.getValue<string>()).format("DD/MM/YYYY")
-              : undefined,
-        },
-        {
           header: "Trạng thái",
           Cell: ({ row }) =>
             row.original.ApprovedByUserId != null ? (
@@ -142,33 +167,40 @@ export const Route = createFileRoute("/_management/user/posts/pending_posts/")({
             ),
         },
       ],
-      useQuery: privateRoute.user.pending_post.byPage.useQuery,
+      useQuery: privateRoute.management.pending_blog.byPage.useQuery,
+      //topToolbarActionObjectList: tableActions,
       tableProps: {
         enableGrouping: false,
         enableRowSelection: false,
         enableMultiRowSelection: false,
         getRowId: (row) => row.Id,
-        //enableRowActions: true,
-        // renderRowActionMenuItems: ({ row }) =>
-        //   RenderCustomActionMenuItems({
-        //     rowId: row.id,
-        //     actionList: tableRowActions(row.id),
-        //     //onClickAction: closeMenu,
-        //   }),
+        enableRowActions: true,
+        renderRowActionMenuItems: ({ row }) =>
+          RenderCustomActionMenuItems({
+            rowId: row.id,
+            actionList: tableRowActions(row?.original?.Id),
+            //onClickAction: closeMenu,
+          }),
       },
     });
 
     return (
       <>
         <MantineReactTable table={table} />
-        {/* <ModalAddPost
+        <ModalVerifyBlog
+          isOpen={openedModalVerify && Boolean(selectedId)}
+          blogId={selectedId ?? ""}
+          handleClose={handleCloseModalVerify}
+        />
+        {/* <ModalAddPendingBlog
           isOpen={openedModalAdd}
           handleClose={handleCloseModalAdd}
-        /> */}
-        {/* <ModalEditPendingPost
-          isOpen={openedModalUpdate && Boolean(selectedId)}
-          editId={selectedId}
-          handleClose={handleCloseModalUpdate}
+        />
+        <CustomDeleteModal
+          isOpen={openedModalDelete}
+          handleClose={handleCloseModalDelete}
+          data={{ Id: selectedId ?? "" }}
+          useMutation={privateRoute.user.pending_blog.delete.useMutation}
         /> */}
       </>
     );

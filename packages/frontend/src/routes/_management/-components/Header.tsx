@@ -3,9 +3,12 @@ import { ComponentPropsWithoutRef, FC, forwardRef } from "react";
 import {
   AppShell,
   Avatar,
+  Box,
   Burger,
   Group,
+  LoadingOverlay,
   Menu,
+  Skeleton,
   Text,
   UnstyledButton,
   rem,
@@ -55,7 +58,7 @@ export const Header: FC<{ opened: boolean; toggle: () => void }> = ({
   opened,
   toggle,
 }) => {
-  const { user, logout } = useAuth0();
+  const { user, logout, isLoading } = useAuth0();
   return (
     <AppShell.Header>
       <Group h="100%" px="md" justify="space-between">
@@ -65,16 +68,22 @@ export const Header: FC<{ opened: boolean; toggle: () => void }> = ({
         </Group>
         <Menu withArrow>
           <Menu.Target>
-            <UserButton
-              //image="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-              image={
-                user?.picture ??
-                "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-              }
-              //name={`${user?.family_name} ${user?.given_name}`}
-              name={`Xin chào, ${user?.name}`}
-              email={user?.email ?? ""}
-            />
+            <Box pos="relative">
+              <LoadingOverlay
+                visible={isLoading}
+                overlayProps={{ radius: "sm", blur: 2 }}
+              />
+              <UserButton
+                //image="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+                image={
+                  user?.picture ??
+                  "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+                }
+                //name={`${user?.family_name} ${user?.given_name}`}
+                name={`Xin chào, ${user?.name}`}
+                email={user?.email ?? ""}
+              />
+            </Box>
           </Menu.Target>
           <Menu.Dropdown>
             {/* <Menu.Item

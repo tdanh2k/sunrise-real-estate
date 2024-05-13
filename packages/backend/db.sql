@@ -8,22 +8,22 @@ CREATE SCHEMA dbo;
 -- DROP TABLE [sunrise-real-estate].dbo.Auth0Profile;
 
 CREATE TABLE [sunrise-real-estate].dbo.Auth0Profile (
-	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	Username nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Email nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	EmailVerified bit NULL,
-	PhoneNumber varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	PhoneVerified bit NULL,
-	Name nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Picture nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Nickname nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	GivenName nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	FamilyName nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	LastIp varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	LastLogin datetime NULL,
-	LoginsCount int NULL,
-	Blocked bit NULL,
-	CONSTRAINT Auth0Profile_PK PRIMARY KEY (UserId)
+	user_id varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	user_name nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	email nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	email_verified bit NULL,
+	phone_number varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	phone_verified bit NULL,
+	name nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	picture nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	nickname nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	given_name nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	family_name nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	last_ip varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	last_login datetime NULL,
+	logins_count int NULL,
+	blocked bit NULL,
+	CONSTRAINT Auth0Profile_PK PRIMARY KEY (user_id)
 );
 
 
@@ -84,14 +84,14 @@ CREATE TABLE [sunrise-real-estate].dbo.Blog (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
 	Idx int IDENTITY(0,1) NOT NULL,
 	Code varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	TypeId uniqueidentifier NOT NULL,
 	Address varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	CONSTRAINT Blog_PK PRIMARY KEY (Id),
-	CONSTRAINT Blog_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(UserId),
+	CONSTRAINT Blog_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
 	CONSTRAINT Blog_GlobalBlogType_FK FOREIGN KEY (TypeId) REFERENCES [sunrise-real-estate].dbo.GlobalBlogType(Id)
 );
 
@@ -104,7 +104,7 @@ CREATE TABLE [sunrise-real-estate].dbo.Blog (
 
 CREATE TABLE [sunrise-real-estate].dbo.BlogImage (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
-	BlogId uniqueidentifier NOT NULL,
+	BlogId uniqueidentifier NULL,
 	Name nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	[Size] int NULL,
 	[Path] nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
@@ -112,7 +112,7 @@ CREATE TABLE [sunrise-real-estate].dbo.BlogImage (
 	CreatedDate datetime DEFAULT getdate() NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	CONSTRAINT BlogImage_PK PRIMARY KEY (Id),
-	CONSTRAINT BlogImage_Blog_FK FOREIGN KEY (BlogId) REFERENCES [sunrise-real-estate].dbo.Blog(Id)
+	CONSTRAINT BlogImage_Blog_FK FOREIGN KEY (BlogId) REFERENCES [sunrise-real-estate].dbo.Blog(Id) ON DELETE CASCADE
 );
 
 
@@ -141,14 +141,14 @@ CREATE TABLE [sunrise-real-estate].dbo.BlogStats (
 CREATE TABLE [sunrise-real-estate].dbo.DraftBlog (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
 	Idx int IDENTITY(0,1) NOT NULL,
-	Code varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Code varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	TypeId uniqueidentifier NOT NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	CONSTRAINT DraftBlog_PK PRIMARY KEY (Id),
-	CONSTRAINT DraftBlog_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(UserId),
+	CONSTRAINT DraftBlog_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
 	CONSTRAINT DraftBlog_GlobalBlogType_FK FOREIGN KEY (TypeId) REFERENCES [sunrise-real-estate].dbo.GlobalBlogType(Id)
 );
 
@@ -161,7 +161,7 @@ CREATE TABLE [sunrise-real-estate].dbo.DraftBlog (
 
 CREATE TABLE [sunrise-real-estate].dbo.DraftBlogImage (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
-	DraftBlogId uniqueidentifier NOT NULL,
+	DraftBlogId uniqueidentifier NULL,
 	Name nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	[Size] int NULL,
 	[Path] nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
@@ -184,15 +184,16 @@ CREATE TABLE [sunrise-real-estate].dbo.DraftPost (
 	Idx int IDENTITY(0,1) NOT NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	TypeId uniqueidentifier NOT NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
-	Address nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	MapUrl varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Address nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	MapUrl varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Price float NULL,
+	Area float NULL,
 	CONSTRAINT DraftPost_PK PRIMARY KEY (Id),
-	CONSTRAINT DraftPost_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(UserId),
+	CONSTRAINT DraftPost_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
 	CONSTRAINT DraftPost_GlobalPostType_FK FOREIGN KEY (TypeId) REFERENCES [sunrise-real-estate].dbo.GlobalPostType(Id)
 );
 
@@ -244,11 +245,11 @@ CREATE TABLE [sunrise-real-estate].dbo.DraftPostImage (
 	[Size] int NULL,
 	MimeType varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	[Path] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	DraftId uniqueidentifier NOT NULL,
+	DraftId uniqueidentifier NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	CONSTRAINT DraftPostImage_PK PRIMARY KEY (Id),
-	CONSTRAINT DraftPostImage_DraftPost_FK FOREIGN KEY (DraftId) REFERENCES [sunrise-real-estate].dbo.DraftPost(Id)
+	CONSTRAINT DraftPostImage_DraftPost_FK FOREIGN KEY (DraftId) REFERENCES [sunrise-real-estate].dbo.DraftPost(Id) ON DELETE CASCADE
 );
 
 
@@ -262,16 +263,17 @@ CREATE TABLE [sunrise-real-estate].dbo.PendingBlog (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
 	Idx int IDENTITY(0,1) NOT NULL,
 	Code varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	TypeId uniqueidentifier NOT NULL,
 	Address varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	ApprovedBy varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ApprovedByUserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	ApprovedDate datetime NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	CONSTRAINT PendingBlog_PK PRIMARY KEY (Id),
-	CONSTRAINT PendingBlog_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(UserId),
+	CONSTRAINT PendingBlog_Auth0Profile_ApprovedByUserId_FK FOREIGN KEY (ApprovedByUserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
+	CONSTRAINT PendingBlog_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
 	CONSTRAINT PendingBlog_GlobalBlogType_FK FOREIGN KEY (TypeId) REFERENCES [sunrise-real-estate].dbo.GlobalBlogType(Id)
 );
 
@@ -284,7 +286,7 @@ CREATE TABLE [sunrise-real-estate].dbo.PendingBlog (
 
 CREATE TABLE [sunrise-real-estate].dbo.PendingBlogImage (
 	Id uniqueidentifier DEFAULT newid() NOT NULL,
-	PendingBlogId uniqueidentifier NOT NULL,
+	PendingBlogId uniqueidentifier NULL,
 	Name nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	[Size] int NULL,
 	[Path] nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
@@ -292,7 +294,7 @@ CREATE TABLE [sunrise-real-estate].dbo.PendingBlogImage (
 	CreatedDate datetime DEFAULT getdate() NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	CONSTRAINT PendingBlogImage_PK PRIMARY KEY (Id),
-	CONSTRAINT PendingBlogImage_PendingBlog_FK FOREIGN KEY (PendingBlogId) REFERENCES [sunrise-real-estate].dbo.PendingBlog(Id)
+	CONSTRAINT PendingBlogImage_PendingBlog_FK FOREIGN KEY (PendingBlogId) REFERENCES [sunrise-real-estate].dbo.PendingBlog(Id) ON DELETE CASCADE
 );
 
 
@@ -307,17 +309,19 @@ CREATE TABLE [sunrise-real-estate].dbo.PendingPost (
 	Idx int IDENTITY(0,1) NOT NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Title nvarchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Description nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	TypeId uniqueidentifier NOT NULL,
-	Address nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	MapUrl varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Address nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	MapUrl varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Price float NULL,
-	ApprovedBy varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ApprovedByUserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	ApprovedDate datetime NULL,
+	Area float NULL,
 	CONSTRAINT PendingPost_PK PRIMARY KEY (Id),
-	CONSTRAINT PendingPost_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(UserId),
+	CONSTRAINT PendingPost_Auth0Profile_ApprovedByUserId_FK FOREIGN KEY (ApprovedByUserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
+	CONSTRAINT PendingPost_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
 	CONSTRAINT PendingPost_GlobalPostType_FK FOREIGN KEY (TypeId) REFERENCES [sunrise-real-estate].dbo.GlobalPostType(Id)
 );
 
@@ -368,7 +372,7 @@ CREATE TABLE [sunrise-real-estate].dbo.PendingPostImage (
 	Name nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	[Size] int NULL,
 	[Path] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	PendingPostId uniqueidentifier NOT NULL,
+	PendingPostId uniqueidentifier NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	MimeType varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
@@ -392,11 +396,12 @@ CREATE TABLE [sunrise-real-estate].dbo.Post (
 	UserId varchar(256) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	TypeId uniqueidentifier NOT NULL,
-	Address nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	MapUrl varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Address nvarchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	MapUrl varchar(MAX) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Price float NULL,
+	Area float NULL,
 	CONSTRAINT Post_PK PRIMARY KEY (Id),
-	CONSTRAINT Post_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(UserId),
+	CONSTRAINT Post_Auth0Profile_FK FOREIGN KEY (UserId) REFERENCES [sunrise-real-estate].dbo.Auth0Profile(user_id),
 	CONSTRAINT Post_PostType_FK FOREIGN KEY (TypeId) REFERENCES [sunrise-real-estate].dbo.GlobalPostType(Id)
 );
 
@@ -447,7 +452,7 @@ CREATE TABLE [sunrise-real-estate].dbo.PostImage (
 	Name nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	[Size] int NULL,
 	[Path] nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	PostId uniqueidentifier NOT NULL,
+	PostId uniqueidentifier NULL,
 	CreatedDate datetime DEFAULT getdate() NULL,
 	MimeType varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Code varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,

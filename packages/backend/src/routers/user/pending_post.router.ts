@@ -11,7 +11,6 @@ import { protectedProcedure, trpcRouter } from "../router.js";
 export const PendingPostRouter = trpcRouter.router({
   byPage: protectedProcedure
     .input(PaginationSchema)
-    //.output(APIResponseSchema(z.array(PendingPostSchema)))
     .query(async ({ ctx, input }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -35,7 +34,11 @@ export const PendingPostRouter = trpcRouter.router({
             PendingPostFeature: true,
           },
         }),
-        dbContext.post.count(),
+        dbContext.post.count({
+          where: {
+            UserId: (await ctx).userId,
+          },
+        }),
       ]);
 
       return {
@@ -46,14 +49,6 @@ export const PendingPostRouter = trpcRouter.router({
           row_count,
         },
       } as TypeAPIResponse<TypePendingPost[]>;
-      // return await APIResponseSchema(z.array(PendingPostSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   byId: protectedProcedure
     .input(
@@ -128,7 +123,7 @@ export const PendingPostRouter = trpcRouter.router({
               },
               PendingPostImage: {
                 createMany: {
-                  data: DraftPostImage?.map((item) => ({
+                  data: DraftPostImage?.map(({ Id, Base64Data, ...item }) => ({
                     ...item,
                     Id: undefined,
                   })),
@@ -136,15 +131,10 @@ export const PendingPostRouter = trpcRouter.router({
               },
             },
           }),
-          dbContext.draftPost.delete({
+          dbContext.draftPost.deleteMany({
             where: {
               Id: Id ?? "00000000-0000-0000-0000-000000000000",
               UserId: (await ctx).userId ?? "",
-            },
-            include: {
-              DraftPostCurrentDetail: true,
-              DraftPostFeature: true,
-              DraftPostImage: true,
             },
           }),
         ]);
@@ -188,7 +178,7 @@ export const PendingPostRouter = trpcRouter.router({
       const [updatedPendingPost] = await dbContext.$transaction([
         dbContext.pendingPost.update({
           data: {
-            ApprovedBy: (await ctx).userId,
+            ApprovedByUserId: (await ctx).userId,
             ApprovedDate: new Date(),
           },
           where: {

@@ -12,6 +12,7 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { TypePendingPost } from "@sunrise-backend/src/schemas/PendingPost.schema";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalProps = {
   isOpen: boolean;
@@ -110,12 +111,12 @@ export const ModalVerifyPost: FC<ModalProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Duyệt bài đăng"
+      title="Xác nhận bài đăng"
       centered
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="orange"
@@ -150,12 +151,6 @@ export const ModalVerifyPost: FC<ModalProps> = ({
           control={control}
           readOnly
         />
-        <TextInputRHF
-          name="Code"
-          label="Mã quản lý"
-          control={control}
-          readOnly
-        />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} readOnly />
         <TextInputRHF
           name="Address"
@@ -172,7 +167,7 @@ export const ModalVerifyPost: FC<ModalProps> = ({
         <NumberInputRHF name="Price" label="Giá" control={control} readOnly />
         <NumberInputRHF
           name="Area"
-          label="Diện tích"
+          label="Diện tích (m2)"
           control={control}
           readOnly
         />
@@ -188,7 +183,7 @@ export const ModalVerifyPost: FC<ModalProps> = ({
           columns={[
             {
               accessorKey: "DetailId",
-              header: "DetailId",
+              header: "Chi tiết",
               editVariant: "select",
               mantineEditSelectProps: () => ({
                 // value: fields?.find((item) => item.Id === row.original.Id)
@@ -203,7 +198,7 @@ export const ModalVerifyPost: FC<ModalProps> = ({
             },
             {
               accessorKey: "Value",
-              header: "Value",
+              header: "Giá trị",
             },
           ]}
           externalLoading={isLoading}
@@ -234,6 +229,29 @@ export const ModalVerifyPost: FC<ModalProps> = ({
           // onCreate={({ values }) => {
           //   append(values);
           // }}
+        />
+        <FileTableRHF
+          legendLabel="Hình ảnh"
+          name="PendingPostImage"
+          disableEditing
+          control={control}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
+            },
+          ]}
         />
       </Stack>
     </CustomModal>

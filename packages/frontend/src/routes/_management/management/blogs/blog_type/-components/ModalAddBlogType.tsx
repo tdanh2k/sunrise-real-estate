@@ -77,7 +77,7 @@ export const ModalAddBlogType: FC<ModalAddProps> = ({
 
       <Group justify="space-between" mt="xl">
         <Button variant="transparent" onClick={() => reset()}>
-          Clear
+          Reset
         </Button>
         <Button color="blue" onClick={handleSubmit(onSubmit)}>
           Submit

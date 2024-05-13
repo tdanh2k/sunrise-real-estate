@@ -54,7 +54,6 @@ export const PublicRouter = trpcRouter.router({
         .input(z.object({
         id: RequiredString,
     }))
-        //.output(APIResponseSchema(PostSchema))
         .query(async ({ input }) => {
         const data = await dbContext.post.findFirst({
             where: {
@@ -76,15 +75,11 @@ export const PublicRouter = trpcRouter.router({
         return {
             data,
         };
-        // return await APIResponseSchema(PostSchema).parseAsync({
-        //   data,
-        // });
     }),
     searchPosts: publicProcedure
         .input(z.object({
         keyword: OptionalString,
     }))
-        //.output(APIResponseSchema(PostSchema))
         .query(async ({ input }) => {
         const response = await dbContext.post.findMany({
             include: {
@@ -127,9 +122,7 @@ export const PublicRouter = trpcRouter.router({
         });
         return { data };
     }),
-    getBlogById: 
-    //.output(APIResponseSchema(PostSchema))
-    publicProcedure
+    getBlogById: publicProcedure
         .input(z.object({
         id: RequiredString,
     }))

@@ -32,7 +32,6 @@ export const PostRouter = trpcRouter.router({
     }),
   byPage: protectedProcedure
     .input(PaginationSchema)
-    //.output(APIResponseSchema(z.array(PostSchema)))
     .query(async ({ input }) => {
       const page_index = input.paging.page_index ?? 1;
       const page_size = input.paging.page_size ?? 10;
@@ -59,14 +58,6 @@ export const PostRouter = trpcRouter.router({
           row_count,
         },
       } as TypeAPIResponse<TypePost[]>;
-      // return await APIResponseSchema(z.array(PostSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   byId: protectedProcedure
     .input(
@@ -96,15 +87,6 @@ export const PostRouter = trpcRouter.router({
     }),
   publish: protectedProcedure
     .input(AddPostSchema)
-    // .output(
-    //   APIResponseSchema(
-    //     PostSchema.omit({
-    //       PostCurrentDetail: true,
-    //       PostFeature: true,
-    //       PostImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(
       async ({
         ctx,
@@ -146,34 +128,16 @@ export const PostRouter = trpcRouter.router({
             ...rest,
             UserId: (await ctx).userId ?? "",
             PostCurrentDetail: {
-              // connectOrCreate: PostCurrentDetail?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
               createMany: {
                 data: PostCurrentDetail ?? [],
               },
             },
             PostFeature: {
-              // connectOrCreate: PostFeature?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
               createMany: {
                 data: PostFeature ?? [],
               },
             },
             PostImage: {
-              // connectOrCreate: PostImage?.map((item) => ({
-              //   where: {
-              //     Id: item.Id,
-              //   },
-              //   create: item,
-              // })),
               createMany: {
                 data: AddImages ?? [],
               },
@@ -187,32 +151,14 @@ export const PostRouter = trpcRouter.router({
         });
 
         return { data: result } as TypeAPIResponse<TypePost>;
-        // return await APIResponseSchema(
-        //   PostSchema.omit({
-        //     PostCurrentDetail: true,
-        //     PostFeature: true,
-        //     PostImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data: result });
       }
     ),
   update: protectedProcedure
-    .input(PostSchema)
-    // .output(
-    //   APIResponseSchema(
-    //     PostSchema.omit({
-    //       PostCurrentDetail: true,
-    //       PostFeature: true,
-    //       PostImage: true,
-    //     }).nullable()
-    //   )
-    // )
+    .input(PostSchema.omit({ PostType: true }))
     .mutation(
       async ({
         input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest },
       }) => {
-        //if (ctx.userId == null) return null;
-
         const result = await dbContext.post.update({
           where: {
             Id,
@@ -238,7 +184,7 @@ export const PostRouter = trpcRouter.router({
             PostImage: {
               connectOrCreate: PostImage?.map((item) => ({
                 where: {
-                  Id: item.Id,
+                  Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                 },
                 create: item,
               })),
@@ -266,10 +212,7 @@ export const PostRouter = trpcRouter.router({
           Id: input?.Id ?? "00000000-0000-0000-0000-000000000000",
         },
         include: {
-          PostCurrentDetail: true,
-          PostFeature: true,
           PostImage: true,
-          PostStats: true,
         },
       });
 

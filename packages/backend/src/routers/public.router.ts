@@ -59,7 +59,6 @@ export const PublicRouter = trpcRouter.router({
         id: RequiredString,
       })
     )
-    //.output(APIResponseSchema(PostSchema))
     .query(async ({ input }) => {
       const data = await dbContext.post.findFirst({
         where: {
@@ -82,9 +81,6 @@ export const PublicRouter = trpcRouter.router({
       return {
         data,
       };
-      // return await APIResponseSchema(PostSchema).parseAsync({
-      //   data,
-      // });
     }),
   searchPosts: publicProcedure
     .input(
@@ -92,7 +88,6 @@ export const PublicRouter = trpcRouter.router({
         keyword: OptionalString,
       })
     )
-    //.output(APIResponseSchema(PostSchema))
     .query(async ({ input }) => {
       const response = await dbContext.post.findMany({
         include: {
@@ -130,7 +125,7 @@ export const PublicRouter = trpcRouter.router({
         BlogStats: {
           orderBy: {
             ViewCount: "desc",
-          },
+          }, 
         },
       },
     });
@@ -138,7 +133,6 @@ export const PublicRouter = trpcRouter.router({
     return { data };
   }),
   getBlogById:
-    //.output(APIResponseSchema(PostSchema))
     publicProcedure
       .input(
         z.object({
@@ -153,7 +147,6 @@ export const PublicRouter = trpcRouter.router({
           include: {
             BlogImage: true,
             GlobalBlogType: true,
-            BlogStats: true,
             Auth0Profile: true,
           },
         });

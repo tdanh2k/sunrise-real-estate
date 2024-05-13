@@ -15,7 +15,7 @@ import { TypeGlobalPostType } from "@sunrise-backend/src/schemas/GlobalPostType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { NumberInputRHF } from "@components/MantineRHF/NumberInputRHF";
 import { useNavigate } from "@tanstack/react-router";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalEditDraftProps = {
   isOpen: boolean;
@@ -25,7 +25,6 @@ type ModalEditDraftProps = {
 
 const defaultValues: TypeAddDraftPost = {
   TypeId: "",
-  Code: "",
   Title: "",
   Address: "",
   Description: "",
@@ -135,7 +134,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="green"
@@ -175,7 +174,6 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <TextInputRHF name="Address" label="Địa chỉ" control={control} />
         <NumberInputRHF name="Price" label="Giá" control={control} />
@@ -245,7 +243,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
           // }}
         />
       </Stack>
-      <MantineReactTableRHF
+      {/* <MantineReactTableRHF
         legendLabel="Hình ảnh"
         externalLoading={isLoading}
         disableEdit
@@ -290,61 +288,35 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
             ),
           },
         ]}
+      /> */}
+      <FileTableRHF
+        legendLabel="Hình ảnh"
+        name="DraftPostImage"
+        control={control}
+        saveMapping={({ file, base64File }) => ({
+          Name: file.name,
+          Size: file.size,
+          MimeType: file.type,
+          Base64Data: base64File,
+        })}
+        columns={[
+          {
+            accessorKey: "Name",
+            header: "Tên file",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "MimeType",
+            header: "MIME",
+            enableEditing: false,
+          },
+          {
+            accessorKey: "Size",
+            header: "Kích thước",
+            enableEditing: false,
+          },
+        ]}
       />
     </CustomModal>
   );
 };
-
-// const PostCurrentDetailTable: FC<{
-//   control: Control<TypeAddDraftPost>;
-// }> = ({ control }) => {
-//   const { data: postDetailResponse, isFetching } =
-//     privateRoute.global_post_detail.all.useQuery();
-
-//   return (
-//     <>
-//       <MantineReactTableRHF
-//         legendLabel="Chi tiết bài đăng"
-//         columns={[
-//           {
-//             accessorKey: "DetailId",
-//             header: "DetailId",
-//             editVariant: "select",
-//             mantineEditTextInputProps: ({ row }) => ({
-//               // value: fields?.find((item) => item.Id === row.original.Id)
-//               //   ?.DetailId,
-//             }),
-//             mantineEditSelectProps: ({ row }) => ({
-//               // value: fields?.find((item) => item.Id === row.original.Id)
-//               //   ?.DetailId,
-//               data: postDetailResponse?.data?.map((item) => ({
-//                 label: item.Name,
-//                 value: item.Id,
-//               })),
-//               //error:
-//               //  control?._formState?.errors?.PostCurrentDetail?.[row.index]?.DetailId,
-//             }),
-//           },
-//           {
-//             accessorKey: "Value",
-//             header: "Value",
-//             mantineEditTextInputProps: ({ row }) => ({
-//               //value: fields?.find((item) => item.Id === row.original.Id)?.Value,
-//               //error: control?._formState?.errors?.PostCurrentDetail?.[0]?.Value,
-//               error:
-//                 control?._formState?.errors?.PostCurrentDetail?.[row.index]
-//                   ?.Value?.message,
-//             }),
-//           },
-//         ]}
-//         externalLoading={isFetching}
-//         name="PostCurrentDetail"
-//         control={control}
-//         //methods={methods}
-//         // onCreate={({ values }) => {
-//         //   append(values);
-//         // }}
-//       />
-//     </>
-//   );
-// };

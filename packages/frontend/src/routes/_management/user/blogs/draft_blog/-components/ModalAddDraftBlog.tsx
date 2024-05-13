@@ -8,13 +8,12 @@ import {
 } from "@sunrise-backend/src/schemas/AddDraftBlog.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
-import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { useNavigate } from "@tanstack/react-router";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -23,7 +22,6 @@ type ModalAddProps = {
 
 const defaultValues: TypeAddDraftBlog = {
   TypeId: "",
-  Code: "",
   Title: "",
   Description: "",
   DraftBlogImage: [],
@@ -103,7 +101,7 @@ export const ModalAddDraftBlog: FC<ModalAddProps> = ({
             loading={isLoading}
             onClick={() => reset()}
           >
-            Clear
+            Reset
           </Button>
           <Button
             color="green"
@@ -145,10 +143,9 @@ export const ModalAddDraftBlog: FC<ModalAddProps> = ({
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
-        <MantineReactTableRHF
+        {/* <MantineReactTableRHF
           legendLabel="Hình ảnh"
           externalLoading={isLoading}
           disableEdit
@@ -191,6 +188,34 @@ export const ModalAddDraftBlog: FC<ModalAddProps> = ({
                   }}
                 />
               ),
+            },
+          ]}
+        /> */}
+        <FileTableRHF
+          legendLabel="Hình ảnh"
+          name="DraftBlogImage"
+          control={control}
+          saveMapping={({ file, base64File }) => ({
+            Name: file.name,
+            Size: file.size,
+            MimeType: file.type,
+            Base64Data: base64File,
+          })}
+          columns={[
+            {
+              accessorKey: "Name",
+              header: "Tên file",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "MimeType",
+              header: "MIME",
+              enableEditing: false,
+            },
+            {
+              accessorKey: "Size",
+              header: "Kích thước",
+              enableEditing: false,
             },
           ]}
         />

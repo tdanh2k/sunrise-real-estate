@@ -35,8 +35,11 @@ const defaultValues: TypeAddPost = {
   PostFeature: [],
 };
 
-export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
-  const navigate = useNavigate({ from: "/user/posts/post" });
+export const ModalAddDraftPost: FC<ModalAddProps> = ({
+  isOpen,
+  handleClose,
+}) => {
+  const navigate = useNavigate({ from: "/user/posts/draft_post" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 
@@ -61,7 +64,6 @@ export const ModalAddPost: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
     privateRoute.user.draft_post.create.useMutation({
       onSuccess: () => {
         utils.user.draft_post.invalidate();
-        navigate({ to: "/user/posts/draft_post" });
       },
     });
 

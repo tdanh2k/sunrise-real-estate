@@ -80,7 +80,7 @@ export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Sửa user"
+      title="Cập nhật thông tin tài khoản"
       centered
       footer={
         <>
@@ -89,7 +89,7 @@ export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
             loading={isLoading}
             onClick={() => reset()}
           >
-            Clear
+            Reset
           </Button>
           <Button
             color="blue"

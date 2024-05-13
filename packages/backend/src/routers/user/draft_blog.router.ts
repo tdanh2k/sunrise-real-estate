@@ -38,7 +38,12 @@ export const DraftBlogRouter = trpcRouter.router({
             GlobalBlogType: true,
           },
         }),
-        dbContext.blog.count(),
+        dbContext.blog.count({
+          where: {
+            UserId:
+              (await ctx)?.userId ?? "00000000-0000-0000-0000-000000000000",
+          },
+        }),
       ]);
 
       return {
@@ -65,10 +70,11 @@ export const DraftBlogRouter = trpcRouter.router({
       })
     )
     //.output(APIResponseSchema(DraftBlogSchema.nullable()))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const data = await dbContext.draftBlog.findFirst({
         where: {
           Id: input.Id,
+          UserId: (await ctx)?.userId ?? "00000000-0000-0000-0000-000000000000",
         },
         include: {
           DraftBlogImage: true,
@@ -85,19 +91,6 @@ export const DraftBlogRouter = trpcRouter.router({
     }),
   create: protectedProcedure
     .input(AddDraftBlogSchema.omit({ GlobalBlogType: true }))
-    // .output(
-    //   APIResponseSchema(
-    //     DraftBlogSchema.omit({
-    //       DraftBlogCurrentDetail: true,
-    //       DraftBlogFeature: true,
-    //       DraftBlogImage: true,
-    //     })
-    //       .extend({
-    //         Price: NonNegativeNumber.optional(),
-    //       })
-    //       .nullable()
-    //   )
-    // )
     .mutation(async ({ ctx, input: { Id, DraftBlogImage, ...rest } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -169,23 +162,11 @@ export const DraftBlogRouter = trpcRouter.router({
         },
         where: {
           Id: Id ?? "00000000-0000-0000-0000-000000000000",
-          UserId: (await ctx).userId,
+          UserId: (await ctx).userId ?? "00000000-0000-0000-0000-000000000000",
         },
       });
 
       return { data };
-
-      // return await APIResponseSchema(
-      //   DraftBlogSchema.omit({
-      //     DraftBlogCurrentDetail: true,
-      //     DraftBlogFeature: true,
-      //     DraftBlogImage: true,
-      //   })
-      //     .extend({
-      //       Price: NonNegativeNumber.optional(),
-      //     })
-      //     .nullable()
-      // ).parseAsync({ data });
     }),
   update: protectedProcedure
     .input(DraftBlogSchema.omit({ GlobalBlogType: true }))

@@ -6,13 +6,15 @@ import {
   OptionalJsDate,
   OptionalNumber,
   OptionalString,
+  OptionalUUID,
   RequiredString,
   RequiredUUID,
 } from "../utils/ZodUtils.js";
+import { GlobalPostTypeSchema } from "./GlobalPostType.schema.js";
 
 export const PostSchema = z.object({
   Id: RequiredUUID,
-  Code: RequiredString,
+  Code: OptionalString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,
@@ -21,6 +23,7 @@ export const PostSchema = z.object({
   Price: OptionalNumber,
   MapUrl: RequiredString,
   Area: NonNegativeNumber,
+  PostType: GlobalPostTypeSchema.optional(),
   PostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
@@ -42,12 +45,12 @@ export const PostSchema = z.object({
   ),
   PostImage: z.array(
     z.object({
-      Id: RequiredUUID,
+      Id: OptionalUUID,
       Code: OptionalString,
-      Name: RequiredString,
+      Name: OptionalString,
       Size: NonNegativeIntegerNumber,
-      Path: RequiredString,
-      PostId: RequiredUUID,
+      Path: OptionalString,
+      PostId: OptionalUUID,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,
     })

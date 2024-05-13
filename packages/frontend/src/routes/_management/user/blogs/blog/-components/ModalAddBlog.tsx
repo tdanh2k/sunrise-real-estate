@@ -8,13 +8,12 @@ import {
 } from "@sunrise-backend/src/schemas/AddDraftBlog.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
-import { MantineReactTableRHF } from "@components/MantineRHF/MantineReactTableRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { useNavigate } from "@tanstack/react-router";
-import { MRT_EditCellFileInput } from "@components/MantineRT/MRT_EditCellFileInput";
+import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 
 type ModalAddProps = {
   isOpen: boolean;
@@ -23,7 +22,6 @@ type ModalAddProps = {
 
 const defaultValues: TypeAddDraftBlog = {
   TypeId: "",
-  Code: "",
   Title: "",
   Description: "",
   DraftBlogImage: [],
@@ -90,12 +88,12 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Cập nhật bài nháp"
+      title="Đăng bài"
       centered
       footer={
         <>
           <Button variant="transparent" onClick={() => reset()}>
-            Clear
+            Reset
           </Button>
           <Button
             color="green"
@@ -135,15 +133,18 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
           })}
           control={control}
         />
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Title" label="Tiêu đề" control={control} />
         <RichTextRHF name="Description" label="Mô tả" control={control} />
-        <MantineReactTableRHF
+        <FileTableRHF
           legendLabel="Hình ảnh"
-          externalLoading={isLoading}
-          disableEdit
           name="DraftBlogImage"
           control={control}
+          saveMapping={({ file, base64File }) => ({
+            Name: file.name,
+            Size: file.size,
+            MimeType: file.type,
+            Base64Data: base64File,
+          })}
           columns={[
             {
               accessorKey: "Name",
@@ -159,28 +160,6 @@ export const ModalAddBlog: FC<ModalAddProps> = ({ isOpen, handleClose }) => {
               accessorKey: "Size",
               header: "Kích thước",
               enableEditing: false,
-            },
-            {
-              accessorKey: "Base64Data",
-              header: "Upload",
-              Cell: ({ cell, table, renderedCellValue }) =>
-                table.getState()?.editingCell?.id === cell.id
-                  ? renderedCellValue
-                  : cell.getValue<string>()
-                    ? "Có dữ liệu"
-                    : null,
-              Edit: ({ cell, row, table }) => (
-                <MRT_EditCellFileInput
-                  cell={cell}
-                  table={table}
-                  onChange={(file) => {
-                    if (!file) return;
-                    row._valuesCache["Name"] = file?.name;
-                    row._valuesCache["MimeType"] = file?.type;
-                    row._valuesCache["Size"] = file?.size;
-                  }}
-                />
-              ),
             },
           ]}
         />

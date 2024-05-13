@@ -1,12 +1,13 @@
 import { z } from "zod";
 import {
   OptionalJsDate,
+  OptionalString,
   RequiredBoolean,
   RequiredString,
 } from "../utils/ZodUtils.js";
 
 export const AddGlobalPostDetailSchema = z.object({
-  Code: RequiredString,
+  Code: OptionalString,
   Name: RequiredString,
   Unit: RequiredString,
   IsNumber: RequiredBoolean,

@@ -2,30 +2,29 @@ import { TextInputRHF } from "@components/MantineRHF/TextInputRHF";
 import { Button, LoadingOverlay, Stack } from "@mantine/core";
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { BlogSchema, TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { RichTextRHF } from "@components/MantineRHF/RichTextRHF";
 import { privateRoute } from "@utils/trpc";
 import { QuerySelectRHF } from "@components/MantineRHF/SelectRHF/query";
 import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.schema";
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
+import { TypePendingBlog } from "@sunrise-backend/src/schemas/PendingBlog.schema";
 
-type ModalUpdateProps = {
+type ModalVerifyProps = {
   isOpen: boolean;
   blogId: string;
   handleClose: () => void;
 };
 
-const defaultValues: TypeBlog = {
+const defaultValues: TypePendingBlog = {
   Id: "",
   TypeId: "",
   Title: "",
   Description: "",
-  BlogImage: [],
+  PendingBlogImage: [],
 };
 
-export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
+export const ModalVerifyBlog: FC<ModalVerifyProps> = ({
   isOpen,
   blogId,
   handleClose,
@@ -33,7 +32,7 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
   const utils = privateRoute.useUtils();
 
   const { data: blogByIdResponse, isFetching } =
-    privateRoute.management.blog.byId.useQuery(
+    privateRoute.management.pending_blog.byId.useQuery(
       { Id: blogId },
       {
         enabled: Boolean(blogId),
@@ -41,7 +40,6 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
     );
 
   const { handleSubmit, control, reset } = useForm({
-    resolver: zodResolver(BlogSchema),
     mode: "all",
     values: {
       ...defaultValues,
@@ -49,20 +47,32 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
     },
   });
 
-  const { mutateAsync, isPending } =
-    privateRoute.management.blog.update.useMutation({
+  const { mutateAsync: approveAsync, isPending: isApprovePending } =
+    privateRoute.management.pending_blog.approve.useMutation({
+      onSuccess: () => {
+        utils.management.blog.invalidate();
+      },
+    });
+  const { mutateAsync: rejectAsync, isPending: isRejectPending } =
+    privateRoute.management.pending_blog.reject.useMutation({
       onSuccess: () => {
         utils.management.blog.invalidate();
       },
     });
 
-  const onSubmit: SubmitHandler<TypeBlog> = async (values) => {
-    await mutateAsync(values);
+  const onApprove: SubmitHandler<TypePendingBlog> = async ({ Id }) => {
+    await approveAsync({ Id });
     handleClose();
     reset();
   };
 
-  const isLoading = isPending || isFetching;
+  const onReject: SubmitHandler<TypePendingBlog> = async ({ Id }) => {
+    await rejectAsync({ Id });
+    handleClose();
+    reset();
+  };
+
+  const isLoading = isApprovePending || isRejectPending || isFetching;
 
   return (
     <CustomModal
@@ -75,18 +85,21 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
       }}
       closeOnClickOutside={false}
       closeOnEscape={false}
-      title="Cập nhật blog"
+      title="Xác nhận blog"
       centered
       footer={
         <>
-          <Button variant="transparent" onClick={() => reset()}>
-            Reset
+          <Button
+            color="red"
+            onClick={handleSubmit(onReject, (error) => console.error(error))}
+          >
+            Từ chối
           </Button>
           <Button
             color="blue"
-            onClick={handleSubmit(onSubmit, (error) => console.error(error))}
+            onClick={handleSubmit(onApprove, (error) => console.error(error))}
           >
-            Submit
+            Đồng ý
           </Button>
         </>
       }
@@ -98,7 +111,7 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
       />
 
       <Stack mb={10} style={{ overflow: "auto" }}>
-        <QuerySelectRHF<TypeBlog, TypeGlobalBlogType>
+        <QuerySelectRHF<TypePendingBlog, TypeGlobalBlogType>
           name="TypeId"
           label="Loại blog"
           useQuery={privateRoute.management.global_blog_type.all.useQuery}
@@ -106,12 +119,14 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
             label: item.Name,
             value: item.Id,
           })}
+          readOnly
           disabled={isLoading}
           control={control}
         />
         <TextInputRHF
           name="Title"
           label="Tiêu đề"
+          readOnly
           control={control}
           disabled={isLoading}
         />
@@ -119,56 +134,12 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
           name="Description"
           label="Mô tả"
           control={control}
-          editable={!isLoading}
+          editable={false}
         />
-        {/* <MantineReactTableRHF
-          legendLabel="Hình ảnh"
-          disableEdit={isLoading}
-          name="BlogImage"
-          control={control}
-          columns={[
-            {
-              accessorKey: "Name",
-              header: "Tên file",
-              enableEditing: false,
-            },
-            {
-              accessorKey: "MimeType",
-              header: "MIME",
-              enableEditing: false,
-            },
-            {
-              accessorKey: "Size",
-              header: "Kích thước",
-              enableEditing: false,
-            },
-            {
-              accessorKey: "Base64Data",
-              header: "Upload",
-              Cell: ({ cell, table, renderedCellValue }) =>
-                table.getState()?.editingCell?.id === cell.id
-                  ? renderedCellValue
-                  : cell.getValue<string>()
-                    ? "Có dữ liệu"
-                    : null,
-              Edit: ({ cell, row, table }) => (
-                <MRT_EditCellFileInput
-                  cell={cell}
-                  table={table}
-                  onChange={(file) => {
-                    if (!file) return;
-                    row._valuesCache["Name"] = file?.name;
-                    row._valuesCache["MimeType"] = file?.type;
-                    row._valuesCache["Size"] = file?.size;
-                  }}
-                />
-              ),
-            },
-          ]}
-        /> */}
         <FileTableRHF
           legendLabel="Hình ảnh"
-          name="BlogImage"
+          name="PendingBlogImage"
+          disableEditing
           control={control}
           saveMapping={({ file, base64File }) => ({
             Name: file.name,

@@ -9,8 +9,7 @@ import { protectedProcedure, trpcRouter } from "../router.js";
 export const PostRouter = trpcRouter.router({
   byPage: protectedProcedure
     .input(PaginationSchema)
-    //.output(APIResponseSchema(z.array(PostSchema)))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const page_index = input.paging.page_index ?? 1;
       const page_size = input.paging.page_size ?? 10;
 
@@ -18,6 +17,10 @@ export const PostRouter = trpcRouter.router({
         dbContext.post.findMany({
           skip: page_index,
           take: page_size,
+          where: {
+            UserId:
+              (await ctx)?.userId ?? "00000000-0000-0000-0000-000000000000",
+          },
           include: {
             PostCurrentDetail: true,
             PostImage: true,
@@ -25,7 +28,12 @@ export const PostRouter = trpcRouter.router({
             PostFeature: true,
           },
         }),
-        dbContext.post.count(),
+        dbContext.post.count({
+          where: {
+            UserId:
+              (await ctx)?.userId ?? "00000000-0000-0000-0000-000000000000",
+          },
+        }),
       ]);
 
       return {
@@ -36,14 +44,6 @@ export const PostRouter = trpcRouter.router({
           row_count,
         },
       } as TypeAPIResponse<TypePost[]>;
-      // return await APIResponseSchema(z.array(PostSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   byId: protectedProcedure
     .input(
@@ -73,7 +73,7 @@ export const PostRouter = trpcRouter.router({
       // });
     }),
   update: protectedProcedure
-    .input(PostSchema)
+    .input(PostSchema.omit({ PostType: true }))
     // .output(
     //   APIResponseSchema(
     //     PostSchema.omit({

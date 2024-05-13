@@ -16,7 +16,6 @@ type ModalAddProps = {
 };
 
 const defaultValues: TypeAddGlobalPostDetail = {
-  Code: "",
   Name: "",
   Unit: "",
   IsNumber: false,
@@ -73,7 +72,6 @@ export const ModalAddPostDetail: FC<ModalAddProps> = ({
       />
 
       <Stack mb={10} style={{ overflow: "auto" }}>
-        <TextInputRHF name="Code" label="Mã quản lý" control={control} />
         <TextInputRHF name="Name" label="Tên" control={control} />
         <TextInputRHF name="Unit" label="Đơn vị" control={control} />
         <SwitchRHF name="IsNumber" label="Dạng số" control={control} />
@@ -81,7 +79,7 @@ export const ModalAddPostDetail: FC<ModalAddProps> = ({
 
       <Group justify="space-between" mt="xl">
         <Button variant="transparent" onClick={() => reset()}>
-          Clear
+          Reset
         </Button>
         <Button color="blue" onClick={handleSubmit(onSubmit)}>
           Submit
