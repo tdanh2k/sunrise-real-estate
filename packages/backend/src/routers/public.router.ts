@@ -60,26 +60,60 @@ export const PublicRouter = trpcRouter.router({
       })
     )
     .query(async ({ input }) => {
-      const data = await dbContext.post.findFirst({
-        where: {
-          Id: input.id,
-        },
-        include: {
-          PostCurrentDetail: {
-            include: {
-              PostDetail: true,
+      const today = new Date();
+
+      const [data, stats] = await dbContext.$transaction([
+        dbContext.post.findFirst({
+          where: {
+            Id: input.id,
+          },
+          include: {
+            PostCurrentDetail: {
+              include: {
+                PostDetail: true,
+              },
+            },
+            PostImage: true,
+            PostType: true,
+            PostFeature: true,
+            PostStats: true,
+            Auth0Profile: true,
+          },
+        }),
+        dbContext.postStats.upsert({
+          create: {
+            ViewCount: 1,
+            PostId: input.id ?? "00000000-0000-0000-0000-000000000000",
+            CreatedDate: today,
+          },
+          update: {
+            ViewCount: {
+              increment: 1,
             },
           },
-          PostImage: true,
-          PostType: true,
-          PostFeature: true,
-          PostStats: true,
-          Auth0Profile: true,
-        },
-      });
+          where: {
+            Id: input.id ?? "00000000-0000-0000-0000-000000000000",
+            CreatedDate: {
+              lte: today,
+            },
+            // AND: [
+            //   { Id: input.id ?? "00000000-0000-0000-0000-000000000000" },
+            //   {
+            //     CreatedDate: {
+            //       lte: today,
+            //     },
+            //   },
+            // ],
+          },
+        }),
+      ]);
 
       return {
-        data,
+        data: {
+          ...data,
+          PostStats: undefined,
+          PostStat: stats,
+        },
       };
     }),
   searchPosts: publicProcedure
@@ -125,36 +159,69 @@ export const PublicRouter = trpcRouter.router({
         BlogStats: {
           orderBy: {
             ViewCount: "desc",
-          }, 
+          },
         },
       },
     });
 
     return { data };
   }),
-  getBlogById:
-    publicProcedure
-      .input(
-        z.object({
-          id: RequiredString,
-        })
-      )
-      .query(async ({ input }) => {
-        const data = await dbContext.blog.findFirst({
+  getBlogById: publicProcedure
+    .input(
+      z.object({
+        id: RequiredString,
+      })
+    )
+    .query(async ({ input }) => {
+      const today = new Date();
+      const [data, stats] = await dbContext.$transaction([
+        dbContext.blog.findFirst({
           where: {
             Id: input.id,
           },
           include: {
             BlogImage: true,
             GlobalBlogType: true,
+            BlogStats: true,
             Auth0Profile: true,
           },
-        });
+        }),
+        dbContext.blogStats.upsert({
+          create: {
+            ViewCount: 1,
+            BlogId: input.id ?? "00000000-0000-0000-0000-000000000000",
+            CreatedDate: today,
+          },
+          update: {
+            ViewCount: {
+              increment: 1,
+            },
+          },
+          where: {
+            Id: input.id ?? "00000000-0000-0000-0000-000000000000",
+            CreatedDate: {
+              lte: today,
+            },
+            // AND: [
+            //   { Id: input.id ?? "00000000-0000-0000-0000-000000000000" },
+            //   {
+            //     CreatedDate: {
+            //       lte: today,
+            //     },
+            //   },
+            // ],
+          },
+        }),
+      ]);
 
-        return {
-          data,
-        };
-      }),
+      return {
+        data: {
+          ...data,
+          BlogStats: undefined,
+          BlogStat: stats,
+        },
+      };
+    }),
   searchBlogs: publicProcedure
     .input(
       z.object({

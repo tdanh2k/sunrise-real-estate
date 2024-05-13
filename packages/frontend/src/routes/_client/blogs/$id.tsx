@@ -76,9 +76,10 @@ export const Route = createFileRoute("/_client/blogs/$id")({
                 <p className="widget-title">Thông tin blog</p>
                 <div className="widget-content">
                   <ul className="category-ul">
-                    {data?.BlogStats?.map((item) => (
-                      <li>Lượt xem: {item.ViewCount}</li>
-                    ))}
+                    {/* {data?.BlogStats?.map((item) => (
+                      <li>Lượt xem: {item?.ViewCount ?? 0}</li>
+                    ))} */}
+                    <li>Lượt xem: {data?.BlogStat?.ViewCount ?? 0}</li>
                   </ul>
                 </div>
               </div>

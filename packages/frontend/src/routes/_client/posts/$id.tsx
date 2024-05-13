@@ -116,39 +116,13 @@ export const Route = createFileRoute("/_client/posts/$id")({
                 </div>
                 <div className="col-lg-4">
                   <div className="fd-sidebar-item">
-                    <h4>Recently Added</h4>
-                    <div className="recently-item">
-                      <img
-                        src="/images/product1.jpeg"
-                        alt="detail"
-                        width="50px"
-                      />
-                      <span>Lorem Ipsum Dolor</span>
-                    </div>
-                    <div className="recently-item">
-                      <img
-                        src="/images/product1.jpeg"
-                        alt="detail"
-                        width="50px"
-                      />
-                      <span>Lorem Ipsum Dolor</span>
-                    </div>
-                    <div className="recently-item">
-                      <img
-                        src="/images/product1.jpeg"
-                        alt="detail"
-                        width="50px"
-                      />
-                      <span>Lorem Ipsum Dolor</span>
-                    </div>
-                  </div>
-                  <div className="fd-sidebar-item">
-                    <h4>Danh mục</h4>
+                    <h4>Thông tin bài đăng</h4>
                     <ul className="category-ul">
-                      <li>{data?.PostType?.Name}</li>
+                      <li>Danh mục: {data?.PostType?.Name}</li>
+                      <li>Lượt xem: {data?.PostStat?.ViewCount ?? 0}</li>
                     </ul>
                   </div>
-                  <div className="fd-sidebar-item">
+                  {/* <div className="fd-sidebar-item">
                     <h4>Recently Added</h4>
                     <div className="recently-item">
                       <img
@@ -174,7 +148,35 @@ export const Route = createFileRoute("/_client/posts/$id")({
                       />
                       <span>Lorem Ipsum Dolor</span>
                     </div>
-                  </div>
+                  </div> */}
+
+                  {/* <div className="fd-sidebar-item">
+                    <h4>Recently Added</h4>
+                    <div className="recently-item">
+                      <img
+                        src="/images/product1.jpeg"
+                        alt="detail"
+                        width="50px"
+                      />
+                      <span>Lorem Ipsum Dolor</span>
+                    </div>
+                    <div className="recently-item">
+                      <img
+                        src="/images/product1.jpeg"
+                        alt="detail"
+                        width="50px"
+                      />
+                      <span>Lorem Ipsum Dolor</span>
+                    </div>
+                    <div className="recently-item">
+                      <img
+                        src="/images/product1.jpeg"
+                        alt="detail"
+                        width="50px"
+                      />
+                      <span>Lorem Ipsum Dolor</span>
+                    </div>
+                  </div> */}
                 </div>
               </div>
             </div>
