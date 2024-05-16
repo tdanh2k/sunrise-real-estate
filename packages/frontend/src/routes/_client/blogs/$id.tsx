@@ -3,8 +3,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import htmlParse from "html-react-parser";
 import ImageGallery from "react-image-gallery";
+import { LoadingOverlay } from "@mantine/core";
 
 export const Route = createFileRoute("/_client/blogs/$id")({
+  wrapInSuspense: true,
+  pendingComponent: () => (
+    <LoadingOverlay
+      visible={true}
+      zIndex={1000}
+      overlayProps={{ radius: "sm", blur: 2 }}
+    />
+  ),
   component: () => {
     const { id } = Route.useParams();
 

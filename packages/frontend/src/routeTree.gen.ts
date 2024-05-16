@@ -209,118 +209,205 @@ const ManagementManagementBlogsBlogIndexRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/_client': {
+      id: '/_client'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof ClientImport
       parentRoute: typeof rootRoute
     }
     '/_management': {
+      id: '/_management'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof ManagementImport
       parentRoute: typeof rootRoute
     }
     '/_management/management': {
+      id: '/_management/management'
+      path: '/management'
+      fullPath: '/management'
       preLoaderRoute: typeof ManagementManagementRouteImport
       parentRoute: typeof ManagementImport
     }
     '/_management/user': {
+      id: '/_management/user'
+      path: '/user'
+      fullPath: '/user'
       preLoaderRoute: typeof ManagementUserRouteImport
       parentRoute: typeof ManagementImport
     }
     '/_client/about': {
+      id: '/_client/about'
+      path: '/about'
+      fullPath: '/about'
       preLoaderRoute: typeof ClientAboutImport
       parentRoute: typeof ClientImport
     }
     '/_client/contact': {
+      id: '/_client/contact'
+      path: '/contact'
+      fullPath: '/contact'
       preLoaderRoute: typeof ClientContactImport
       parentRoute: typeof ClientImport
     }
     '/_client/': {
+      id: '/_client/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof ClientIndexImport
       parentRoute: typeof ClientImport
     }
     '/_management/management/blogs': {
+      id: '/_management/management/blogs'
+      path: '/blogs'
+      fullPath: '/management/blogs'
       preLoaderRoute: typeof ManagementManagementBlogsRouteImport
       parentRoute: typeof ManagementManagementRouteImport
     }
     '/_management/management/posts': {
+      id: '/_management/management/posts'
+      path: '/posts'
+      fullPath: '/management/posts'
       preLoaderRoute: typeof ManagementManagementPostsRouteImport
       parentRoute: typeof ManagementManagementRouteImport
     }
     '/_management/user/blogs': {
+      id: '/_management/user/blogs'
+      path: '/blogs'
+      fullPath: '/user/blogs'
       preLoaderRoute: typeof ManagementUserBlogsRouteImport
       parentRoute: typeof ManagementUserRouteImport
     }
     '/_management/user/posts': {
+      id: '/_management/user/posts'
+      path: '/posts'
+      fullPath: '/user/posts'
       preLoaderRoute: typeof ManagementUserPostsRouteImport
       parentRoute: typeof ManagementUserRouteImport
     }
     '/_client/blogs/$id': {
+      id: '/_client/blogs/$id'
+      path: '/blogs/$id'
+      fullPath: '/blogs/$id'
       preLoaderRoute: typeof ClientBlogsIdImport
       parentRoute: typeof ClientImport
     }
     '/_client/posts/$id': {
+      id: '/_client/posts/$id'
+      path: '/posts/$id'
+      fullPath: '/posts/$id'
       preLoaderRoute: typeof ClientPostsIdImport
       parentRoute: typeof ClientImport
     }
     '/_client/blogs/': {
+      id: '/_client/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs'
       preLoaderRoute: typeof ClientBlogsIndexImport
       parentRoute: typeof ClientImport
     }
     '/_client/posts/': {
+      id: '/_client/posts/'
+      path: '/posts'
+      fullPath: '/posts'
       preLoaderRoute: typeof ClientPostsIndexImport
       parentRoute: typeof ClientImport
     }
     '/_management/management/user/': {
+      id: '/_management/management/user/'
+      path: '/user'
+      fullPath: '/management/user'
       preLoaderRoute: typeof ManagementManagementUserIndexImport
       parentRoute: typeof ManagementManagementRouteImport
     }
     '/_management/management/blogs/blog/': {
+      id: '/_management/management/blogs/blog/'
+      path: '/blog'
+      fullPath: '/management/blogs/blog'
       preLoaderRoute: typeof ManagementManagementBlogsBlogIndexImport
       parentRoute: typeof ManagementManagementBlogsRouteImport
     }
     '/_management/management/blogs/blog_type/': {
+      id: '/_management/management/blogs/blog_type/'
+      path: '/blog_type'
+      fullPath: '/management/blogs/blog_type'
       preLoaderRoute: typeof ManagementManagementBlogsBlogtypeIndexImport
       parentRoute: typeof ManagementManagementBlogsRouteImport
     }
     '/_management/management/blogs/pending_blog/': {
+      id: '/_management/management/blogs/pending_blog/'
+      path: '/pending_blog'
+      fullPath: '/management/blogs/pending_blog'
       preLoaderRoute: typeof ManagementManagementBlogsPendingblogIndexImport
       parentRoute: typeof ManagementManagementBlogsRouteImport
     }
     '/_management/management/posts/pending_post/': {
+      id: '/_management/management/posts/pending_post/'
+      path: '/pending_post'
+      fullPath: '/management/posts/pending_post'
       preLoaderRoute: typeof ManagementManagementPostsPendingpostIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
     }
     '/_management/management/posts/post/': {
+      id: '/_management/management/posts/post/'
+      path: '/post'
+      fullPath: '/management/posts/post'
       preLoaderRoute: typeof ManagementManagementPostsPostIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
     }
     '/_management/management/posts/post_detail/': {
+      id: '/_management/management/posts/post_detail/'
+      path: '/post_detail'
+      fullPath: '/management/posts/post_detail'
       preLoaderRoute: typeof ManagementManagementPostsPostdetailIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
     }
     '/_management/management/posts/post_type/': {
+      id: '/_management/management/posts/post_type/'
+      path: '/post_type'
+      fullPath: '/management/posts/post_type'
       preLoaderRoute: typeof ManagementManagementPostsPosttypeIndexImport
       parentRoute: typeof ManagementManagementPostsRouteImport
     }
     '/_management/user/blogs/blog/': {
+      id: '/_management/user/blogs/blog/'
+      path: '/blog'
+      fullPath: '/user/blogs/blog'
       preLoaderRoute: typeof ManagementUserBlogsBlogIndexImport
       parentRoute: typeof ManagementUserBlogsRouteImport
     }
     '/_management/user/blogs/draft_blog/': {
+      id: '/_management/user/blogs/draft_blog/'
+      path: '/draft_blog'
+      fullPath: '/user/blogs/draft_blog'
       preLoaderRoute: typeof ManagementUserBlogsDraftblogIndexImport
       parentRoute: typeof ManagementUserBlogsRouteImport
     }
     '/_management/user/blogs/pending_blog/': {
+      id: '/_management/user/blogs/pending_blog/'
+      path: '/pending_blog'
+      fullPath: '/user/blogs/pending_blog'
       preLoaderRoute: typeof ManagementUserBlogsPendingblogIndexImport
       parentRoute: typeof ManagementUserBlogsRouteImport
     }
     '/_management/user/posts/draft_post/': {
+      id: '/_management/user/posts/draft_post/'
+      path: '/draft_post'
+      fullPath: '/user/posts/draft_post'
       preLoaderRoute: typeof ManagementUserPostsDraftpostIndexImport
       parentRoute: typeof ManagementUserPostsRouteImport
     }
     '/_management/user/posts/pending_posts/': {
+      id: '/_management/user/posts/pending_posts/'
+      path: '/pending_posts'
+      fullPath: '/user/posts/pending_posts'
       preLoaderRoute: typeof ManagementUserPostsPendingpostsIndexImport
       parentRoute: typeof ManagementUserPostsRouteImport
     }
     '/_management/user/posts/post/': {
+      id: '/_management/user/posts/post/'
+      path: '/post'
+      fullPath: '/user/posts/post'
       preLoaderRoute: typeof ManagementUserPostsPostIndexImport
       parentRoute: typeof ManagementUserPostsRouteImport
     }
@@ -329,8 +416,8 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
-  ClientRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
+  ClientRoute: ClientRoute.addChildren({
     ClientAboutRoute,
     ClientContactRoute,
     ClientIndexRoute,
@@ -338,35 +425,37 @@ export const routeTree = rootRoute.addChildren([
     ClientPostsIdRoute,
     ClientBlogsIndexRoute,
     ClientPostsIndexRoute,
-  ]),
-  ManagementRoute.addChildren([
-    ManagementManagementRouteRoute.addChildren([
-      ManagementManagementBlogsRouteRoute.addChildren([
-        ManagementManagementBlogsBlogIndexRoute,
-        ManagementManagementBlogsBlogtypeIndexRoute,
-        ManagementManagementBlogsPendingblogIndexRoute,
-      ]),
-      ManagementManagementPostsRouteRoute.addChildren([
-        ManagementManagementPostsPendingpostIndexRoute,
-        ManagementManagementPostsPostIndexRoute,
-        ManagementManagementPostsPostdetailIndexRoute,
-        ManagementManagementPostsPosttypeIndexRoute,
-      ]),
+  }),
+  ManagementRoute: ManagementRoute.addChildren({
+    ManagementManagementRouteRoute: ManagementManagementRouteRoute.addChildren({
+      ManagementManagementBlogsRouteRoute:
+        ManagementManagementBlogsRouteRoute.addChildren({
+          ManagementManagementBlogsBlogIndexRoute,
+          ManagementManagementBlogsBlogtypeIndexRoute,
+          ManagementManagementBlogsPendingblogIndexRoute,
+        }),
+      ManagementManagementPostsRouteRoute:
+        ManagementManagementPostsRouteRoute.addChildren({
+          ManagementManagementPostsPendingpostIndexRoute,
+          ManagementManagementPostsPostIndexRoute,
+          ManagementManagementPostsPostdetailIndexRoute,
+          ManagementManagementPostsPosttypeIndexRoute,
+        }),
       ManagementManagementUserIndexRoute,
-    ]),
-    ManagementUserRouteRoute.addChildren([
-      ManagementUserBlogsRouteRoute.addChildren([
+    }),
+    ManagementUserRouteRoute: ManagementUserRouteRoute.addChildren({
+      ManagementUserBlogsRouteRoute: ManagementUserBlogsRouteRoute.addChildren({
         ManagementUserBlogsBlogIndexRoute,
         ManagementUserBlogsDraftblogIndexRoute,
         ManagementUserBlogsPendingblogIndexRoute,
-      ]),
-      ManagementUserPostsRouteRoute.addChildren([
+      }),
+      ManagementUserPostsRouteRoute: ManagementUserPostsRouteRoute.addChildren({
         ManagementUserPostsDraftpostIndexRoute,
         ManagementUserPostsPendingpostsIndexRoute,
         ManagementUserPostsPostIndexRoute,
-      ]),
-    ]),
-  ]),
-])
+      }),
+    }),
+  }),
+})
 
 /* prettier-ignore-end */

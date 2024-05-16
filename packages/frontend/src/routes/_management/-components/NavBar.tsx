@@ -50,18 +50,18 @@ const NestedMenu: FC<{
 };
 
 export const NavBar: FC = () => {
-  //console.log(routeTree.children?.filter((item) => item.id === "/_management"));
   return (
     <AppShell.Navbar p="md">
-      {routeTree.children
-        ?.filter((item) => item.id === "/_management")
-        ?.map((item, index) => (
-          <NestedMenu
-            key={item.id}
-            treeItem={item as unknown as Route}
-            index={index}
-          />
-        ))}
+      {(
+        (routeTree.children as unknown as Array<Route>)?.[1]
+          ?.children as unknown as Array<Route>
+      )?.map((item, index) => (
+        <NestedMenu
+          key={item.id}
+          treeItem={item as unknown as Route}
+          index={index}
+        />
+      ))}
     </AppShell.Navbar>
   );
 };

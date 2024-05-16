@@ -1,20 +1,24 @@
 import z from "zod";
 import { NonNegativeIntegerNumber, OptionalJsDate, OptionalString, OptionalUUID, RequiredString, RequiredUUID, } from "../utils/ZodUtils.js";
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
+import { Auth0UserSchema } from "./Auth0User.schema.js";
 export const PendingBlogSchema = z.object({
     Id: RequiredUUID,
-    Code: RequiredString,
+    Code: OptionalString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,
     TypeId: RequiredUUID,
+    ApprovedByUserId: OptionalString,
+    ApprovedDate: OptionalJsDate,
     GlobalBlogType: GlobalBlogTypeSchema.optional(),
+    Auth0Profile: Auth0UserSchema.optional(),
     PendingBlogImage: z.array(z.object({
-        Id: RequiredUUID,
+        Id: OptionalUUID,
         Code: OptionalString,
-        Name: RequiredString,
+        Name: OptionalString,
         Size: NonNegativeIntegerNumber,
-        Path: RequiredString,
+        Path: OptionalString,
         BlogId: OptionalUUID,
         MimeType: OptionalString,
         CreatedDate: OptionalJsDate,

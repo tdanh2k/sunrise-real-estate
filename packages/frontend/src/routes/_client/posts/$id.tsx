@@ -2,8 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { publicRoute } from "@utils/trpc";
 import ImageGallery from "react-image-gallery";
 import htmlParse from "html-react-parser";
+import { LoadingOverlay } from "@mantine/core";
 
 export const Route = createFileRoute("/_client/posts/$id")({
+  wrapInSuspense: true,
+  pendingComponent: () => (
+    <LoadingOverlay
+      visible={true}
+      zIndex={1000}
+      overlayProps={{ radius: "sm", blur: 2 }}
+    />
+  ),
   component: () => {
     const { id } = Route.useParams();
 

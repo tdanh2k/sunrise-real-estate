@@ -2,6 +2,8 @@ import z from "zod";
 import { dbContext } from "../utils/prisma.js";
 import { publicProcedure, trpcRouter } from "./router.js";
 import { OptionalString, RequiredString } from "../utils/ZodUtils.js";
+import { TRPCError } from "@trpc/server";
+import { RemoteAuth0UserSchema } from "../schemas/RemoteAuth0User.schema.js";
 
 export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure
@@ -62,6 +64,16 @@ export const PublicRouter = trpcRouter.router({
     .query(async ({ input }) => {
       const today = new Date();
 
+      const postStat = await dbContext.postStats.findFirst({
+        where: {
+          PostId: input.id ?? "00000000-0000-0000-0000-000000000000",
+          CreatedDate: {
+            gte: new Date(today.toISOString().slice(0, 10)), // Greater than or equal to the start of today
+            lt: new Date(today.toISOString().slice(0, 10) + "T23:59:59"), // Less than the end of today
+          },
+        },
+      });
+
       const [data, stats] = await dbContext.$transaction([
         dbContext.post.findFirst({
           where: {
@@ -92,18 +104,7 @@ export const PublicRouter = trpcRouter.router({
             },
           },
           where: {
-            Id: input.id ?? "00000000-0000-0000-0000-000000000000",
-            CreatedDate: {
-              lte: today,
-            },
-            // AND: [
-            //   { Id: input.id ?? "00000000-0000-0000-0000-000000000000" },
-            //   {
-            //     CreatedDate: {
-            //       lte: today,
-            //     },
-            //   },
-            // ],
+            Id: postStat?.Id ?? "00000000-0000-0000-0000-000000000000",
           },
         }),
       ]);
@@ -174,6 +175,17 @@ export const PublicRouter = trpcRouter.router({
     )
     .query(async ({ input }) => {
       const today = new Date();
+
+      const blogStat = await dbContext.blogStats.findFirst({
+        where: {
+          BlogId: input.id ?? "00000000-0000-0000-0000-000000000000",
+          CreatedDate: {
+            gte: new Date(today.toISOString().slice(0, 10)), // Greater than or equal to the start of today
+            lt: new Date(today.toISOString().slice(0, 10) + "T23:59:59"), // Less than the end of today
+          },
+        },
+      });
+
       const [data, stats] = await dbContext.$transaction([
         dbContext.blog.findFirst({
           where: {
@@ -186,6 +198,7 @@ export const PublicRouter = trpcRouter.router({
             Auth0Profile: true,
           },
         }),
+
         dbContext.blogStats.upsert({
           create: {
             ViewCount: 1,
@@ -198,18 +211,8 @@ export const PublicRouter = trpcRouter.router({
             },
           },
           where: {
-            Id: input.id ?? "00000000-0000-0000-0000-000000000000",
-            CreatedDate: {
-              lte: today,
-            },
-            // AND: [
-            //   { Id: input.id ?? "00000000-0000-0000-0000-000000000000" },
-            //   {
-            //     CreatedDate: {
-            //       lte: today,
-            //     },
-            //   },
-            // ],
+            //Id: input.id ?? "00000000-0000-0000-0000-000000000000",
+            Id: blogStat?.Id ?? "00000000-0000-0000-0000-000000000000",
           },
         }),
       ]);
@@ -255,4 +258,49 @@ export const PublicRouter = trpcRouter.router({
 
       return { data: response };
     }),
+  addUserAfterRegistration: publicProcedure
+    .input(
+      z.object({
+        user: RemoteAuth0UserSchema,
+        client_secret: RequiredString,
+      })
+    )
+    .mutation(
+      async ({
+        input: {
+          user: {
+            user_id,
+            username,
+            created_at,
+            updated_at,
+            last_login,
+            ...userInfo
+          },
+          client_secret,
+        },
+      }) => {
+        if (process.env.AUTH0_MANAGEMENT_CLIENT_SECRET !== client_secret)
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: ``,
+          });
+
+        const response = await dbContext.auth0Profile.upsert({
+          create: {
+            user_id,
+            ...userInfo,
+            user_name: username,
+            last_login: last_login ? new Date(last_login) : undefined,
+          },
+          update: { ...userInfo, user_name: username },
+          where: {
+            user_id,
+          },
+        });
+
+        return {
+          data: response,
+        };
+      }
+    ),
 });

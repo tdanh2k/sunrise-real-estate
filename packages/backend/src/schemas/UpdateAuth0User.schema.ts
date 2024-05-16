@@ -7,7 +7,7 @@ import {
 
 export const UpdateAuth0UserSchema = z.object({
   email: RequiredEmail,
-  username: OptionalString,
+  //username: OptionalString,
   password: OptionalString,
   phone_number: OptionalString,
   //user_id: RequiredString,

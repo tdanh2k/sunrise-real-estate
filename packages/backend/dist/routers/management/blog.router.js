@@ -8,10 +8,7 @@ import { TRPCError } from "@trpc/server";
 import { protectedProcedure, trpcRouter } from "../router.js";
 import { v2 as cloudinary } from "cloudinary";
 export const BlogRouter = trpcRouter.router({
-    all: protectedProcedure
-        .input(z.void())
-        //.output(APIResponseSchema(z.array(BlogSchema)))
-        .query(async () => {
+    all: protectedProcedure.input(z.void()).query(async () => {
         const data = await dbContext.blog.findMany({
             include: {
                 BlogImage: true,
@@ -27,7 +24,6 @@ export const BlogRouter = trpcRouter.router({
     }),
     byPage: protectedProcedure
         .input(PaginationSchema)
-        //.output(APIResponseSchema(z.array(BlogSchema)))
         .query(async ({ input }) => {
         const page_index = input.paging.page_index ?? 1;
         const page_size = input.paging.page_size ?? 10;
@@ -63,7 +59,6 @@ export const BlogRouter = trpcRouter.router({
         .input(z.object({
         Id: RequiredString,
     }))
-        //.output(APIResponseSchema(BlogSchema.nullable()))
         .query(async ({ input }) => {
         const data = await dbContext.blog.findFirst({
             where: {
@@ -152,19 +147,21 @@ export const BlogRouter = trpcRouter.router({
         }
         const result = await dbContext.blog.update({
             where: {
-                Id,
+                Id: Id ?? "00000000-0000-0000-0000-000000000000",
             },
             data: {
                 ...rest,
                 BlogImage: {
-                    connectOrCreate: AddImages?.map((item) => ({
+                    connectOrCreate: AddImages?.map(({ BlogId, ...item }) => ({
                         create: item,
                         where: {
                             Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                            BlogId: BlogId ?? "00000000-0000-0000-0000-000000000000",
                         },
                     })),
                     deleteMany: AddImages?.some((r) => r.Id)
                         ? {
+                            BlogId: Id ?? "00000000-0000-0000-0000-000000000000",
                             Id: {
                                 notIn: AddImages?.map((r) => r.Id),
                             },
@@ -182,7 +179,6 @@ export const BlogRouter = trpcRouter.router({
     }),
     delete: protectedProcedure
         .input(z.object({ Id: RequiredString }))
-        //.output(APIResponseSchema(OptionalBoolean.nullable()))
         .mutation(async ({ ctx, input: { Id } }) => {
         if ((await ctx).userId == null)
             throw new TRPCError({
@@ -192,9 +188,9 @@ export const BlogRouter = trpcRouter.router({
         const [images, deletedData] = await dbContext.$transaction([
             dbContext.blogImage.findMany({
                 where: {
-                    BlogId: Id,
                     Blog: {
-                        UserId: (await ctx).userId,
+                        Id: Id ?? "00000000-0000-0000-0000-000000000000",
+                        UserId: (await ctx).userId ?? "00000000-0000-0000-0000-000000000000",
                     },
                 },
             }),
@@ -211,8 +207,5 @@ export const BlogRouter = trpcRouter.router({
         return {
             data: deletedData,
         };
-        // return await APIResponseSchema(OptionalBoolean.nullable()).parseAsync({
-        //   data: Boolean(result),
-        // });
     }),
 });

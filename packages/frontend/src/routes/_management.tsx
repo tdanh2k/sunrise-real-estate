@@ -12,6 +12,9 @@ import { NavigationProgress } from "@mantine/nprogress";
 export const Route = createFileRoute("/_management")({
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
+  beforeLoad: () => {
+    console.log("Management loaded!")
+  },
   component: withAuthenticationRequired(
     () => {
       const [opened, { toggle }] = useDisclosure();

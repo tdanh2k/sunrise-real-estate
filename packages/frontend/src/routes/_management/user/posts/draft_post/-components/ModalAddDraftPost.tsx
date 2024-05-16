@@ -39,7 +39,7 @@ export const ModalAddDraftPost: FC<ModalAddProps> = ({
   isOpen,
   handleClose,
 }) => {
-  const navigate = useNavigate({ from: "/user/posts/draft_post" });
+  const navigate = useNavigate({ from: "/user/posts/draft_post/" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 

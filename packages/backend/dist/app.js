@@ -9,8 +9,14 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import { notFoundHandler } from "./middlewares/not-found.middleware.js";
 import { validateAccessToken } from "./middlewares/auth0.middleware.js";
 import { v2 as cloudinary } from "cloudinary";
+import { ManagementClient } from "auth0";
 const app = express();
 const port = process.env.port || 8080;
+export const auth0Management = new ManagementClient({
+    domain: process.env.AUTH0_DOMAIN ?? "",
+    clientId: process.env.AUTH0_MANAGEMENT_CLIENT_ID ?? "",
+    clientSecret: process.env.AUTH0_MANAGEMENT_CLIENT_SECRET ?? "",
+});
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
