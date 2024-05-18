@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: node-app
-          path: release.zip
+          path: ./packages/backend/release.zip
           if-no-files-found: error
 
   deploy:
