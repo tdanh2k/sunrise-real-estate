@@ -105,8 +105,8 @@ export const DraftBlogRouter = trpcRouter.router({
                 });
             }
         }
-        const data = await dbContext.draftBlog.upsert({
-            create: {
+        const data = await dbContext.draftBlog.create({
+            data: {
                 ...rest,
                 TypeId: rest.TypeId ?? "",
                 Code: rest.Code ?? "",
@@ -119,46 +119,15 @@ export const DraftBlogRouter = trpcRouter.router({
                     },
                 },
             },
-            update: {
-                ...rest,
-                DraftBlogImage: {
-                    connectOrCreate: AddImages?.map((item) => ({
-                        create: item,
-                        where: {
-                            Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
-                        },
-                    })),
-                    deleteMany: AddImages?.some((r) => r.Id)
-                        ? {
-                            Id: {
-                                notIn: AddImages?.map((r) => r.Id),
-                            },
-                        }
-                        : undefined,
-                },
-            },
             include: {
                 DraftBlogImage: true,
                 GlobalBlogType: true,
-            },
-            where: {
-                Id: Id ?? "00000000-0000-0000-0000-000000000000",
-                UserId: (await ctx).userId ?? "00000000-0000-0000-0000-000000000000",
             },
         });
         return { data };
     }),
     update: protectedProcedure
         .input(DraftBlogSchema.omit({ GlobalBlogType: true }))
-        // .output(
-        //   APIResponseSchema(
-        //     DraftBlogSchema.omit({
-        //       DraftBlogCurrentDetail: true,
-        //       DraftBlogFeature: true,
-        //       DraftBlogImage: true,
-        //     }).nullable()
-        //   )
-        // )
         .mutation(async ({ ctx, input: { Id, DraftBlogImage, ...rest } }) => {
         if ((await ctx).userId == null)
             throw new TRPCError({
@@ -185,34 +154,6 @@ export const DraftBlogRouter = trpcRouter.router({
                 });
             }
         }
-        // const result = await dbContext.draftBlog.update({
-        //   where: {
-        //     Id: Id ?? "00000000-0000-0000-0000-000000000000",
-        //     UserId: (await ctx).userId,
-        //   },
-        //   include: {
-        //     DraftBlogImage: true,
-        //     GlobalBlogType: true,
-        //   },
-        //   data: {
-        //     ...rest,
-        //     DraftBlogImage: {
-        //       connectOrCreate: AddImages?.map((item) => ({
-        //         where: {
-        //           Id: item.Id,
-        //         },
-        //         create: item,
-        //       })),
-        //       deleteMany: AddImages?.some((r) => r.Id)
-        //         ? {
-        //             Id: {
-        //               notIn: AddImages?.map((r) => r.Id) as string[],
-        //             },
-        //           }
-        //         : undefined,
-        //     },
-        //   },
-        // });
         const [updatedDraftBlog, deletedImages, { count }] = await dbContext.$transaction([
             dbContext.draftBlog.update({
                 where: {
@@ -232,28 +173,33 @@ export const DraftBlogRouter = trpcRouter.router({
                             },
                             create: item,
                         })),
-                        // deleteMany: AddImages?.some((r) => r.Id)
-                        //   ? {
-                        //       Id: {
-                        //         notIn: AddImages?.map((r) => r.Id) as string[],
-                        //       },
-                        //     }
-                        //   : undefined,
                     },
                 },
             }),
             dbContext.draftBlogImage.findMany({
                 where: {
-                    Id: {
-                        notIn: AddImages?.map((r) => r.Id),
+                    // Id: {
+                    //   notIn:
+                    //     (AddImages?.filter((r) => r.Id)?.map(
+                    //       (r) => r.Id
+                    //     ) as string[]) ?? [],
+                    // },
+                    Code: {
+                        notIn: AddImages?.map((r) => r.Code) ?? [],
                     },
                     DraftBlogId: Id,
                 },
             }),
             dbContext.draftBlogImage.deleteMany({
                 where: {
-                    Id: {
-                        notIn: AddImages?.map((r) => r.Id),
+                    // Id: {
+                    //   notIn:
+                    //     (AddImages?.filter((r) => r.Id)?.map(
+                    //       (r) => r.Id
+                    //     ) as string[]) ?? [],
+                    // },
+                    Code: {
+                        notIn: AddImages?.map((r) => r.Code) ?? [],
                     },
                     DraftBlogId: Id,
                 },

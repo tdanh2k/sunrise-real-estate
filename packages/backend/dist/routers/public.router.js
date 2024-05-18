@@ -146,6 +146,7 @@ export const PublicRouter = trpcRouter.router({
             take: 5,
             include: {
                 BlogImage: true,
+                GlobalBlogType: true,
                 BlogStats: {
                     orderBy: {
                         ViewCount: "desc",

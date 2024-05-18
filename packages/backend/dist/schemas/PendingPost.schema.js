@@ -15,7 +15,7 @@ export const PendingPostSchema = z.object({
     Area: NonNegativeNumber,
     PendingPostCurrentDetail: z.array(z.object({
         Id: RequiredUUID,
-        PendingPostId: RequiredUUID,
+        //PendingPostId: RequiredUUID,
         DetailId: RequiredUUID,
         Value: RequiredString,
         IsNumber: OptionalBoolean,
@@ -23,7 +23,7 @@ export const PendingPostSchema = z.object({
     })),
     PendingPostFeature: z.array(z.object({
         Id: RequiredUUID,
-        PendingPostId: RequiredUUID,
+        //PendingPostId: RequiredUUID,
         Title: RequiredString,
         Description: RequiredString,
         CreatedDate: OptionalJsDate,
@@ -33,7 +33,7 @@ export const PendingPostSchema = z.object({
         Name: RequiredString,
         Size: NonNegativeIntegerNumber,
         Path: RequiredString,
-        PendingPostId: RequiredUUID,
+        //PendingPostId: RequiredUUID,
         MimeType: OptionalString,
         CreatedDate: OptionalJsDate,
     })),

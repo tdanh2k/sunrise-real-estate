@@ -29,9 +29,7 @@ declare module "@tanstack/react-router" {
   interface StaticDataRouteOption {
     routeName?: string;
     icon?: JSX.Element;
-    // icon?: ForwardRefExoticComponent<
-    //   Omit<IconProps, "ref"> & RefAttributes<Icon>
-    // >;
+    required_role?: string;
   }
 }
 

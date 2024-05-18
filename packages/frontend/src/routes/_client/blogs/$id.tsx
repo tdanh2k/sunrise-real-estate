@@ -88,6 +88,7 @@ export const Route = createFileRoute("/_client/blogs/$id")({
                     {/* {data?.BlogStats?.map((item) => (
                       <li>Lượt xem: {item?.ViewCount ?? 0}</li>
                     ))} */}
+                    <li>Đăng bởi: {data?.Auth0Profile?.name}</li>
                     <li>Lượt xem: {data?.BlogStat?.ViewCount ?? 0}</li>
                   </ul>
                 </div>

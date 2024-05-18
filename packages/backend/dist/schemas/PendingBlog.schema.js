@@ -19,7 +19,7 @@ export const PendingBlogSchema = z.object({
         Name: OptionalString,
         Size: NonNegativeIntegerNumber,
         Path: OptionalString,
-        BlogId: OptionalUUID,
+        //PendingBlogId: OptionalUUID,
         MimeType: OptionalString,
         CreatedDate: OptionalJsDate,
     })),

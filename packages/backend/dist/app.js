@@ -13,7 +13,7 @@ import { ManagementClient } from "auth0";
 const app = express();
 const port = process.env.port || 8080;
 export const auth0Management = new ManagementClient({
-    domain: process.env.AUTH0_DOMAIN ?? "",
+    domain: process.env.AUTH0_DOMAIN?.replace(/^https?\:\/\//i, "") ?? "",
     clientId: process.env.AUTH0_MANAGEMENT_CLIENT_ID ?? "",
     clientSecret: process.env.AUTH0_MANAGEMENT_CLIENT_SECRET ?? "",
 });

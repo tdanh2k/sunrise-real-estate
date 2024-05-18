@@ -21,7 +21,7 @@ export const AddBlogSchema = z.object({
       Name: OptionalString,
       Size: NonNegativeIntegerNumber,
       Path: OptionalString,
-      BlogId: OptionalString,
+      //BlogId: OptionalString,
       MimeType: OptionalString,
       Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,

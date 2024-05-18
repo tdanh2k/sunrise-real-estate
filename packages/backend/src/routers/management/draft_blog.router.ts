@@ -6,6 +6,7 @@ import { AddDraftBlogSchema } from "../../schemas/AddDraftBlog.schema.js";
 import { TRPCError } from "@trpc/server";
 import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const DraftBlogRouter = trpcRouter.router({
   all: protectedProcedure
@@ -105,6 +106,32 @@ export const DraftBlogRouter = trpcRouter.router({
           message: ``,
         });
 
+      const AddImages: Omit<(typeof DraftBlogImage)[number], "Base64Data">[] =
+        [];
+
+      for (const { Base64Data, ...metadata } of DraftBlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
+            },
+            (error, result) => {
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url ?? "",
+                  Size: result?.bytes ?? metadata?.Size,
+                });
+            }
+          );
+        }
+      }
+
       const data = await dbContext.draftBlog.create({
         data: {
           ...rest,
@@ -115,14 +142,8 @@ export const DraftBlogRouter = trpcRouter.router({
           UserId: (await ctx).userId ?? "",
           DraftBlogImage: {
             createMany: {
-              data: DraftBlogImage,
+              data: AddImages,
             },
-            // connectOrCreate: DraftBlogImage?.map((item) => ({
-            //   where: {
-            //     Id: item.Id,
-            //   },
-            //   create: item,
-            // })),
           },
         },
         include: {
@@ -132,62 +153,98 @@ export const DraftBlogRouter = trpcRouter.router({
       });
 
       return { data };
-      // return await APIResponseSchema(
-      //   DraftBlogSchema.omit({
-      //     DraftBlogCurrentDetail: true,
-      //     DraftBlogFeature: true,
-      //     DraftBlogImage: true,
-      //   }).nullable()
-      // ).parseAsync({ data });
     }),
   update: protectedProcedure
     .input(DraftBlogSchema.omit({ GlobalBlogType: true }))
-    // .output(
-    //   APIResponseSchema(
-    //     DraftBlogSchema.omit({
-    //       DraftBlogCurrentDetail: true,
-    //       DraftBlogFeature: true,
-    //       DraftBlogImage: true,
-    //     }).nullable()
-    //   )
-    // )
-    .mutation(
-      async ({
-        input: {
-          Id,
-          DraftBlogImage,
-          ...rest
-        },
-      }) => {
-        //if (ctx.userId == null) return null;
+    .mutation(async ({ input: { Id, DraftBlogImage, ...rest } }) => {
+      const AddImages: Omit<(typeof DraftBlogImage)[number], "Base64Data">[] =
+        [];
 
-        const result = await dbContext.draftBlog.update({
-          where: {
-            Id,
-          },
-          data: {
-            ...rest,
-            DraftBlogImage: {
-              connectOrCreate: DraftBlogImage?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
+      for (const { Base64Data, ...metadata } of DraftBlogImage) {
+        if (metadata.Id) {
+          AddImages.push(metadata);
+        } else if (Base64Data != null) {
+          await cloudinary.uploader.upload(
+            Base64Data,
+            {
+              use_filename: true,
+              access_mode: "public",
             },
-          },
-        });
-
-        return { data: result };
-        // return await APIResponseSchema(
-        //   DraftBlogSchema.omit({
-        //     DraftBlogCurrentDetail: true,
-        //     DraftBlogFeature: true,
-        //     DraftBlogImage: true,
-        //   })
-        // ).parseAsync({ data: result });
+            (error, result) => {
+              if (!error)
+                AddImages.push({
+                  ...metadata,
+                  Code: result?.public_id,
+                  Path: result?.secure_url ?? "",
+                  Size: result?.bytes ?? metadata?.Size,
+                });
+            }
+          );
+        }
       }
-    ),
+
+      const [updatedDraftBlog, deletedImages, { count }] =
+        await dbContext.$transaction([
+          dbContext.draftBlog.update({
+            where: {
+              Id: Id ?? "00000000-0000-0000-0000-000000000000",
+              //UserId: (await ctx).userId,
+            },
+            include: {
+              DraftBlogImage: true,
+              GlobalBlogType: true,
+            },
+            data: {
+              ...rest,
+              DraftBlogImage: {
+                connectOrCreate: AddImages?.map((item) => ({
+                  where: {
+                    Id: item.Id,
+                  },
+                  create: item,
+                })),
+              },
+            },
+          }),
+          dbContext.draftBlogImage.findMany({
+            where: {
+              // Id: {
+              //   notIn:
+              //     (AddImages?.filter((r) => r.Id)?.map(
+              //       (r) => r.Id
+              //     ) as string[]) ?? [],
+              // },
+              Code: {
+                notIn: (AddImages?.map((r) => r.Code) as string[]) ?? [],
+              },
+              DraftBlogId: Id,
+            },
+          }),
+          dbContext.draftBlogImage.deleteMany({
+            where: {
+              // Id: {
+              //   notIn:
+              //     (AddImages?.filter((r) => r.Id)?.map(
+              //       (r) => r.Id
+              //     ) as string[]) ?? [],
+              // },
+              Code: {
+                notIn: (AddImages?.map((r) => r.Code) as string[]) ?? [],
+              },
+              DraftBlogId: Id,
+            },
+          }),
+        ]);
+
+      if (deletedImages?.some((r) => r.Code) && count > 0) {
+        await cloudinary.api.delete_resources(
+          deletedImages?.filter((r) => r.Code)?.map((r) => r.Code) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
+
+      return { data: updatedDraftBlog };
+    }),
 
   delete: protectedProcedure
     .input(z.object({ Id: RequiredString }))

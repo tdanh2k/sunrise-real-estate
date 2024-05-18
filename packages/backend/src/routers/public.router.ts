@@ -4,6 +4,8 @@ import { publicProcedure, trpcRouter } from "./router.js";
 import { OptionalString, RequiredString } from "../utils/ZodUtils.js";
 import { TRPCError } from "@trpc/server";
 import { RemoteAuth0UserSchema } from "../schemas/RemoteAuth0User.schema.js";
+import { TypeAPIResponse } from "../schemas/APIResponse.schema.js";
+import { TypeBlog } from "../schemas/Blog.schema.js";
 
 export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure
@@ -157,6 +159,7 @@ export const PublicRouter = trpcRouter.router({
       take: 5,
       include: {
         BlogImage: true,
+        GlobalBlogType: true,
         BlogStats: {
           orderBy: {
             ViewCount: "desc",
@@ -165,7 +168,7 @@ export const PublicRouter = trpcRouter.router({
       },
     });
 
-    return { data };
+    return { data } as TypeAPIResponse<TypeBlog[]>;
   }),
   getBlogById: publicProcedure
     .input(

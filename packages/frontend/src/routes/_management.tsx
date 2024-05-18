@@ -1,5 +1,9 @@
-import { ErrorComponent, Outlet, createFileRoute } from "@tanstack/react-router";
-import { AppShell } from "@mantine/core";
+import {
+  ErrorComponent,
+  Outlet,
+  createFileRoute,
+} from "@tanstack/react-router";
+import { AppShell, LoadingOverlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import { Header } from "./_management/-components/Header";
@@ -10,11 +14,16 @@ import { NotFoundComponent } from "./-components/NotFound";
 import { NavigationProgress } from "@mantine/nprogress";
 
 export const Route = createFileRoute("/_management")({
+  wrapInSuspense: true,
+  pendingComponent: () => (
+    <LoadingOverlay
+      visible={true}
+      zIndex={1000}
+      overlayProps={{ radius: "sm", blur: 2 }}
+    />
+  ),
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
-  beforeLoad: () => {
-    console.log("Management loaded!")
-  },
   component: withAuthenticationRequired(
     () => {
       const [opened, { toggle }] = useDisclosure();

@@ -128,6 +128,7 @@ export const Route = createFileRoute("/_client/posts/$id")({
                     <h4>Thông tin bài đăng</h4>
                     <ul className="category-ul">
                       <li>Danh mục: {data?.PostType?.Name}</li>
+                      <li>Đăng bởi: {data?.Auth0Profile?.name}</li>
                       <li>Lượt xem: {data?.PostStat?.ViewCount ?? 0}</li>
                     </ul>
                   </div>

@@ -1,5 +1,5 @@
 import { Banner } from "./-components/Banner";
-import { BestPostList } from "./-components/BestPostList";
+import { BestBlogList } from "./-components/BestBlogList";
 import { PostList } from "./-components/PostList";
 //import { References } from "./-components/References";
 import { Subscribe } from "./-components/Subscribe";
@@ -11,7 +11,7 @@ const Home = () => {
     <>
       <Banner />
       <PostList />
-      <BestPostList />
+      <BestBlogList />
       <Subscribe />
       <TeamList />
       {/* <References /> */}

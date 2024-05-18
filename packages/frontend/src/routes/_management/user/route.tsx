@@ -5,6 +5,7 @@ export const Route = createFileRoute("/_management/user")({
   staticData: {
     routeName: "Người dùng",
     icon: <IconUser />,
+    required_role: import.meta.env.VITE_USER_ROLE_ID,
   },
   component: () => <Outlet />,
   // beforeLoad: async ({ context }) => {

@@ -1,6 +1,6 @@
 import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
-import { UpdateAuth0UserSchema, } from "../../schemas/UpdateAuth0User.schema.js";
+import { UpdateAuth0UserSchema } from "../../schemas/UpdateAuth0User.schema.js";
 import { dbContext } from "../../utils/prisma.js";
 import { RequiredString } from "../../utils/ZodUtils.js";
 import { z } from "zod";
@@ -36,7 +36,14 @@ export const AdminUserRouter = trpcRouter.router({
         .mutation(async ({ ctx, input }) => {
         const userUpdateResponse = await auth0Management.users.update({
             id: (await ctx).userId ?? "",
-        }, input);
+        }, {
+            //...input,
+            connection: "sunrise-real-estate-db",
+            client_id: process.env.AUTH0_MANAGEMENT_CLIENT_ID,
+            email: input?.email,
+            password: input?.password ? input.password : undefined,
+            //phone_number: input?.phone_number ? input.phone_number : undefined,
+        });
         const auth0_user = userUpdateResponse?.data;
         await dbContext.auth0Profile.upsert({
             create: {

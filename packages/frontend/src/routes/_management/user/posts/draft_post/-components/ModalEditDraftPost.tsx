@@ -40,7 +40,7 @@ export const ModalEditDraftPost: FC<ModalEditDraftProps> = ({
   draftPostId,
   handleClose,
 }) => {
-  const navigate = useNavigate({ from: "/user/posts/draft_post/" });
+  const navigate = useNavigate({ from: "/user/posts/draft_post" });
   const [isDrafting, setIsDrafting] = useState<boolean>(false);
   const utils = privateRoute.useUtils();
 

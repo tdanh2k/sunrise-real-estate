@@ -15,7 +15,7 @@ export const DraftBlogSchema = z.object({
         Name: RequiredString,
         Size: NonNegativeIntegerNumber,
         Path: RequiredString,
-        BlogId: OptionalUUID,
+        //BlogId: OptionalUUID,
         MimeType: OptionalString,
         Base64Data: OptionalString,
         CreatedDate: OptionalJsDate,
