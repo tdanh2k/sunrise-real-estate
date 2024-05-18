@@ -62,9 +62,9 @@ app.use(
   })
 );
 
-// app.get("/", async (req, res) => {
-//   res.json({ message: "Test" });
-// });
+app.get("/", async (req, res) => {
+  res.json({ message: "Test" });
+});
 
 app.use(
   "/private",

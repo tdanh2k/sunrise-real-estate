@@ -48,9 +48,9 @@ app.use(helmet({
         action: "deny",
     },
 }));
-// app.get("/", async (req, res) => {
-//   res.json({ message: "Test" });
-// });
+app.get("/", async (req, res) => {
+    res.json({ message: "Test" });
+});
 app.use("/private", validateAccessToken, 
 //checkRequiredPermissions(["use:trpc"]),
 trpcExpress.createExpressMiddleware({
