@@ -41,12 +41,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
-      - name: Install dependencies, generate Prisma
+      - name: Install dependencies, generate Prisma, tsc
         env:
           PRISMA_CLI_BINARY_TARGETS: 'debian-openssl-3.0.x'
         run: |
           pnpm install --no-frozen-lockfile
           pnpm gen-client
+          pnpm tsc
         working-directory: ./packages/backend
         
       - name: Zip artifact for deployment
