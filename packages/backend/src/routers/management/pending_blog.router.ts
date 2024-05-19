@@ -25,9 +25,6 @@ export const PendingBlogRouter = trpcRouter.router({
 
       const [data, row_count] = await dbContext.$transaction([
         dbContext.pendingBlog.findMany({
-          where: {
-            UserId: (await ctx).userId,
-          },
           skip: page_index,
           take: page_size,
           include: {
