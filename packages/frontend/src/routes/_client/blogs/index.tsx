@@ -5,11 +5,20 @@ import { TypeBlog } from "@sunrise-backend/src/schemas/Blog.schema";
 import { OptionalString } from "@utils/ZodUtils";
 import { useState } from "react";
 import { z } from "zod";
+import { LoadingOverlay } from "@mantine/core";
 
 export const Route = createFileRoute("/_client/blogs/")({
   validateSearch: z.object({
     keyword: OptionalString.catch(""),
   }),
+  wrapInSuspense: true,
+  pendingComponent: () => (
+    <LoadingOverlay
+      visible={true}
+      zIndex={1000}
+      overlayProps={{ radius: "sm", blur: 2 }}
+    />
+  ),
   component: () => {
     const navigate = Route.useNavigate();
     const { keyword } = Route.useSearch();

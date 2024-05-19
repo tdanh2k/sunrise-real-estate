@@ -6,6 +6,7 @@ import { PaginationSchema } from "../../schemas/Pagination.schema.js";
 import { RequiredString } from "../../utils/ZodUtils.js";
 import { dbContext } from "../../utils/prisma.js";
 import { protectedProcedure, trpcRouter } from "../router.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const DraftPostRouter = trpcRouter.router({
   all: protectedProcedure
@@ -131,6 +132,32 @@ export const DraftPostRouter = trpcRouter.router({
             message: ``,
           });
 
+        const AddImages: Omit<(typeof DraftPostImage)[number], "Base64Data">[] =
+          [];
+
+        for (const { Base64Data, ...metadata } of DraftPostImage) {
+          if (metadata.Id) {
+            AddImages.push(metadata);
+          } else if (Base64Data != null) {
+            await cloudinary.uploader.upload(
+              Base64Data,
+              {
+                use_filename: true,
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (!error)
+                  AddImages.push({
+                    ...metadata,
+                    Code: result?.public_id,
+                    Path: result?.secure_url ?? "",
+                    Size: result?.bytes ?? metadata?.Size,
+                  });
+              }
+            );
+          }
+        }
+
         const data = await dbContext.draftPost.create({
           data: {
             ...rest,
@@ -163,7 +190,7 @@ export const DraftPostRouter = trpcRouter.router({
             },
             DraftPostImage: {
               createMany: {
-                data: DraftPostImage,
+                data: AddImages,
               },
               // connectOrCreate: DraftPostImage?.map((item) => ({
               //   where: {
@@ -176,26 +203,10 @@ export const DraftPostRouter = trpcRouter.router({
         });
 
         return { data };
-        // return await APIResponseSchema(
-        //   DraftPostSchema.omit({
-        //     DraftPostCurrentDetail: true,
-        //     DraftPostFeature: true,
-        //     DraftPostImage: true,
-        //   }).nullable()
-        // ).parseAsync({ data });
       }
     ),
   update: protectedProcedure
     .input(DraftPostSchema.omit({ GlobalPostType: true }))
-    // .output(
-    //   APIResponseSchema(
-    //     DraftPostSchema.omit({
-    //       DraftPostCurrentDetail: true,
-    //       DraftPostFeature: true,
-    //       DraftPostImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(
       async ({
         input: {
@@ -206,49 +217,100 @@ export const DraftPostRouter = trpcRouter.router({
           ...rest
         },
       }) => {
-        //if (ctx.userId == null) return null;
+        const AddImages: Omit<(typeof DraftPostImage)[number], "Base64Data">[] =
+          [];
 
-        const result = await dbContext.draftPost.update({
-          where: {
-            Id,
-          },
-          data: {
-            ...rest,
-            DraftPostCurrentDetail: {
-              connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-            DraftPostFeature: {
-              connectOrCreate: DraftPostFeature?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-            DraftPostImage: {
-              connectOrCreate: DraftPostImage?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-          },
-        });
+        for (const { Base64Data, ...metadata } of DraftPostImage) {
+          if (metadata.Id) {
+            AddImages.push(metadata);
+          } else if (Base64Data != null) {
+            await cloudinary.uploader.upload(
+              Base64Data,
+              {
+                use_filename: true,
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (!error)
+                  AddImages.push({
+                    ...metadata,
+                    Code: result?.public_id,
+                    Path: result?.secure_url ?? "",
+                    Size: result?.bytes ?? metadata?.Size,
+                  });
+              }
+            );
+          }
+        }
 
-        return { data: result };
-        // return await APIResponseSchema(
-        //   DraftPostSchema.omit({
-        //     DraftPostCurrentDetail: true,
-        //     DraftPostFeature: true,
-        //     DraftPostImage: true,
-        //   })
-        // ).parseAsync({ data: result });
+        const [updatedDraftPost, deletedImages, { count }] =
+          await dbContext.$transaction([
+            dbContext.draftPost.update({
+              where: {
+                Id: Id ?? "00000000-0000-0000-0000-000000000000",
+              },
+              data: {
+                ...rest,
+                DraftPostCurrentDetail: {
+                  connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
+                    where: {
+                      Id: item.Id,
+                    },
+                    create: item,
+                  })),
+                },
+                DraftPostFeature: {
+                  connectOrCreate: DraftPostFeature?.map((item) => ({
+                    where: {
+                      Id: item.Id,
+                    },
+                    create: item,
+                  })),
+                },
+                DraftPostImage: {
+                  connectOrCreate: AddImages?.map((item) => ({
+                    where: {
+                      Id: item.Id,
+                    },
+                    create: item,
+                  })),
+                },
+              },
+            }),
+            dbContext.draftPostImage.findMany({
+              where: {
+                Id: {
+                  notIn:
+                    (AddImages?.filter((r) => r.Id)?.map(
+                      (r) => r.Id
+                    ) as string[]) ?? [],
+                },
+                DraftId: Id,
+              },
+            }),
+            dbContext.draftPostImage.deleteMany({
+              where: {
+                Id: {
+                  notIn:
+                    (AddImages?.filter((r) => r.Id)?.map(
+                      (r) => r.Id
+                    ) as string[]) ?? [],
+                },
+                DraftId: Id,
+              },
+            }),
+          ]);
+
+        if (deletedImages?.some((r) => r.Code) && count > 0) {
+          await cloudinary.api.delete_resources(
+            deletedImages
+              ?.filter((r) => r.Code)
+              ?.map((r) => r.Code) as string[],
+            { type: "upload", resource_type: "image" }
+          );
+        }
+
+        return { data: updatedDraftPost };
       }
     ),
 

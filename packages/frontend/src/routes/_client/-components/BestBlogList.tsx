@@ -1,8 +1,10 @@
 import { FC } from "react";
 import Slider, { Settings } from "react-slick";
 import { Title } from "./Title";
+import { publicRoute } from "@utils/trpc";
+import { BestBlogItem } from "./BestBlogItem";
 
-export const BestPostList: FC = () => {
+export const BestBlogList: FC = () => {
   const title = {
     text: "Top bài Blog",
     description: "Những bài blog được xem nhiều nhất",
@@ -37,7 +39,7 @@ export const BestPostList: FC = () => {
     ],
   };
 
-  //const { data: response } = publicRoute.topPost.useQuery();
+  const [{ data }] = publicRoute.topBlogs.useSuspenseQuery();
 
   return (
     <section className="section-best-estate">
@@ -46,15 +48,13 @@ export const BestPostList: FC = () => {
           <div className="col-lg-12">
             <Title title={title.text} description={title.description} />
             <Slider {...settings}>
-              {/* {response?.data?.map((item) => (
-                <BestPostItem key={item.Id} data={item} />
-              ))} */}
-              {/* <BestPostItem flatState="For Rent" />
-              <BestPostItem flatState="For Sale" />
-              <BestPostItem flatState="For Rent" />
-              <BestPostItem flatState="For Rent" />
-              <BestPostItem flatState="For Sale" />
-              <BestPostItem flatState="For Rent" /> */}
+              {data?.map((item) => <BestBlogItem key={item.Id} data={item} />)}
+              {/* <BestBlogItem flatState="For Rent" />
+              <BestBlogItem flatState="For Sale" />
+              <BestBlogItem flatState="For Rent" />
+              <BestBlogItem flatState="For Rent" />
+              <BestBlogItem flatState="For Sale" />
+              <BestBlogItem flatState="For Rent" /> */}
             </Slider>
           </div>
         </div>

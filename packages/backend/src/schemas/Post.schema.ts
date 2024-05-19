@@ -27,7 +27,7 @@ export const PostSchema = z.object({
   PostCurrentDetail: z.array(
     z.object({
       Id: RequiredUUID,
-      PostId: RequiredUUID,
+      //PostId: RequiredUUID,
       DetailId: RequiredUUID,
       Value: RequiredString,
       IsNumber: OptionalBoolean,
@@ -37,7 +37,7 @@ export const PostSchema = z.object({
   PostFeature: z.array(
     z.object({
       Id: RequiredUUID,
-      PostId: RequiredUUID,
+      //PostId: RequiredUUID,
       Title: RequiredString,
       Description: RequiredString,
       CreatedDate: OptionalJsDate,
@@ -50,8 +50,9 @@ export const PostSchema = z.object({
       Name: OptionalString,
       Size: NonNegativeIntegerNumber,
       Path: OptionalString,
-      PostId: OptionalUUID,
+      //PostId: OptionalUUID,
       MimeType: OptionalString,
+      Base64Data: OptionalString,
       CreatedDate: OptionalJsDate,
     })
   ),

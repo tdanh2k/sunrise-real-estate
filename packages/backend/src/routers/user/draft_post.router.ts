@@ -82,25 +82,9 @@ export const DraftPostRouter = trpcRouter.router({
       return {
         data,
       } as TypeAPIResponse<TypeDraftPost>;
-      // return await APIResponseSchema(DraftPostSchema.nullable()).parseAsync({
-      //   data,
-      // });
     }),
   create: protectedProcedure
     .input(AddDraftPostSchema)
-    // .output(
-    //   APIResponseSchema(
-    //     DraftPostSchema.omit({
-    //       DraftPostCurrentDetail: true,
-    //       DraftPostFeature: true,
-    //       DraftPostImage: true,
-    //     })
-    //       .extend({
-    //         Price: NonNegativeNumber.optional(),
-    //       })
-    //       .nullable()
-    //   )
-    // )
     .mutation(
       async ({
         ctx,
@@ -144,8 +128,8 @@ export const DraftPostRouter = trpcRouter.router({
           }
         }
 
-        const data = await dbContext.draftPost.upsert({
-          create: {
+        const data = await dbContext.draftPost.create({
+          data: {
             ...rest,
             UserId: (await ctx).userId ?? "",
             Title: rest.Title ?? "",
@@ -173,115 +157,13 @@ export const DraftPostRouter = trpcRouter.router({
               },
             },
           },
-          update: {
-            ...rest,
-            DraftPostCurrentDetail: {
-              connectOrCreate:
-                DraftPostCurrentDetail?.map((item) => ({
-                  where: {
-                    Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
-                  },
-                  create: { ...item, Value: item?.Value ?? "" },
-                })) ?? [],
-            },
-            DraftPostFeature: {
-              connectOrCreate:
-                DraftPostFeature?.map((item) => ({
-                  where: {
-                    Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
-                  },
-                  create: item,
-                })) ?? [],
-            },
-            DraftPostImage: {
-              connectOrCreate:
-                AddImages?.map((item) => ({
-                  where: {
-                    Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
-                  },
-                  create: item,
-                })) ?? [],
-              deleteMany: AddImages?.some((r) => r.Id)
-                ? {
-                    Id: {
-                      notIn: AddImages?.map((r) => r.Id) as string[],
-                    },
-                  }
-                : undefined,
-            },
-          },
-          where: {
-            Id: Id ?? "00000000-0000-0000-0000-000000000000",
-            UserId: (await ctx).userId,
-          },
         });
 
-        // const data = await dbContext.draftPost.create({
-        //   data: {
-        //     ...rest,
-        //     UserId: (await ctx).userId ?? "",
-        //     DraftPostCurrentDetail: {
-        //       createMany: {
-        //         data: DraftPostCurrentDetail,
-        //       },
-        //       // connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
-        //       //   where: {
-        //       //     Id: item.Id,
-        //       //   },
-        //       //   create: item,
-        //       // })),
-        //     },
-        //     DraftPostFeature: {
-        //       createMany: {
-        //         data: DraftPostFeature,
-        //       },
-        //       // connectOrCreate: DraftPostFeature?.map((item) => ({
-        //       //   where: {
-        //       //     Id: item.Id,
-        //       //   },
-        //       //   create: item,
-        //       // })),
-        //     },
-        //     DraftPostImage: {
-        //       createMany: {
-        //         data: DraftPostImage,
-        //       },
-        //       // connectOrCreate: DraftPostImage?.map((item) => ({
-        //       //   where: {
-        //       //     Id: item.Id,
-        //       //   },
-        //       //   create: item,
-        //       // })),
-        //     },
-        //   },
-        // });
-
         return { data };
-
-        // return await APIResponseSchema(
-        //   DraftPostSchema.omit({
-        //     DraftPostCurrentDetail: true,
-        //     DraftPostFeature: true,
-        //     DraftPostImage: true,
-        //   })
-        //     .extend({
-        //       Price: NonNegativeNumber.optional(),
-        //     })
-        //     .nullable()
-        // ).parseAsync({ data });
       }
     ),
   update: protectedProcedure
     .input(DraftPostSchema.omit({ GlobalPostType: true }))
-    // .output(
-    //   APIResponseSchema(
-    //     DraftPostSchema.omit({
-    //       DraftPostCurrentDetail: true,
-    //       DraftPostFeature: true,
-    //       DraftPostImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(
       async ({
         ctx,
@@ -337,7 +219,7 @@ export const DraftPostRouter = trpcRouter.router({
                 DraftPostCurrentDetail: {
                   connectOrCreate: DraftPostCurrentDetail?.map((item) => ({
                     where: {
-                      Id: item.Id,
+                      Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                     },
                     create: item,
                   })),
@@ -345,7 +227,7 @@ export const DraftPostRouter = trpcRouter.router({
                 DraftPostFeature: {
                   connectOrCreate: DraftPostFeature?.map((item) => ({
                     where: {
-                      Id: item.Id,
+                      Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                     },
                     create: item,
                   })),
@@ -363,17 +245,23 @@ export const DraftPostRouter = trpcRouter.router({
             dbContext.draftPostImage.findMany({
               where: {
                 Id: {
-                  notIn: AddImages?.map((r) => r.Id) as string[],
+                  notIn:
+                    (AddImages?.filter((r) => r.Id)?.map(
+                      (r) => r.Id
+                    ) as string[]) ?? [],
                 },
-                DraftId: Id,
+                DraftId: Id ?? "00000000-0000-0000-0000-000000000000",
               },
             }),
             dbContext.draftPostImage.deleteMany({
               where: {
                 Id: {
-                  notIn: AddImages?.map((r) => r.Id) as string[],
+                  notIn:
+                    (AddImages?.filter((r) => r.Id)?.map(
+                      (r) => r.Id
+                    ) as string[]) ?? [],
                 },
-                DraftId: Id,
+                DraftId: Id ?? "00000000-0000-0000-0000-000000000000",
               },
             }),
           ]);
@@ -388,14 +276,6 @@ export const DraftPostRouter = trpcRouter.router({
         }
 
         return { data: updatedDraftPost };
-
-        // return await APIResponseSchema(
-        //   DraftPostSchema.omit({
-        //     DraftPostCurrentDetail: true,
-        //     DraftPostFeature: true,
-        //     DraftPostImage: true,
-        //   })
-        // ).parseAsync({ data: result });
       }
     ),
 

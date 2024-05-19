@@ -30,7 +30,9 @@ export const PendingBlogRouter = trpcRouter.router({
                     GlobalBlogType: true,
                 },
             }),
-            dbContext.blog.count(),
+            dbContext.blog.count({
+                where: { UserId: (await ctx).userId },
+            }),
         ]);
         return {
             data,
@@ -123,7 +125,7 @@ export const PendingBlogRouter = trpcRouter.router({
                     },
                 },
             }),
-            dbContext.draftBlog.delete({
+            dbContext.draftBlog.deleteMany({
                 where: {
                     Id: Id ?? "00000000-0000-0000-0000-000000000000",
                     UserId: (await ctx).userId ?? "",
@@ -163,21 +165,10 @@ export const PendingBlogRouter = trpcRouter.router({
                 PendingBlogImage: true,
             },
         });
-        // const response = await axios<TypeAuth0User>({
-        //   url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-        //   method: "GET",
-        //   params: {
-        //     search_engine: "v3",
-        //   },
-        //   headers: {
-        //     Authorization: `Bearer ${(await ctx).management_token}`,
-        //   },
-        // });
-        // const user = response?.data;
         const [updatedPendingBlog] = await dbContext.$transaction([
             dbContext.pendingBlog.update({
                 data: {
-                    ApprovedBy: (await ctx).userId,
+                    ApprovedByUserId: (await ctx).userId,
                     ApprovedDate: new Date(),
                 },
                 where: {

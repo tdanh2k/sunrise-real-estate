@@ -3,8 +3,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import htmlParse from "html-react-parser";
 import ImageGallery from "react-image-gallery";
+import { LoadingOverlay } from "@mantine/core";
 
 export const Route = createFileRoute("/_client/blogs/$id")({
+  wrapInSuspense: true,
+  pendingComponent: () => (
+    <LoadingOverlay
+      visible={true}
+      zIndex={1000}
+      overlayProps={{ radius: "sm", blur: 2 }}
+    />
+  ),
   component: () => {
     const { id } = Route.useParams();
 
@@ -76,9 +85,11 @@ export const Route = createFileRoute("/_client/blogs/$id")({
                 <p className="widget-title">Thông tin blog</p>
                 <div className="widget-content">
                   <ul className="category-ul">
-                    {data?.BlogStats?.map((item) => (
-                      <li>Lượt xem: {item.ViewCount}</li>
-                    ))}
+                    {/* {data?.BlogStats?.map((item) => (
+                      <li>Lượt xem: {item?.ViewCount ?? 0}</li>
+                    ))} */}
+                    <li>Đăng bởi: {data?.Auth0Profile?.name}</li>
+                    <li>Lượt xem: {data?.BlogStat?.ViewCount ?? 0}</li>
                   </ul>
                 </div>
               </div>

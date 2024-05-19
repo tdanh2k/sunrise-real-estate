@@ -165,38 +165,66 @@ export const BlogRouter = trpcRouter.router({
         }
       }
 
-      const result = await dbContext.blog.update({
-        where: {
-          Id: Id ?? "00000000-0000-0000-0000-000000000000",
-        },
-        data: {
-          ...rest,
-          BlogImage: {
-            connectOrCreate: AddImages?.map(({ BlogId, ...item }) => ({
-              create: item,
-              where: {
-                Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
-                BlogId: BlogId ?? "00000000-0000-0000-0000-000000000000",
-              },
-            })),
-            deleteMany: AddImages?.some((r) => r.Id)
-              ? {
-                  BlogId: Id ?? "00000000-0000-0000-0000-000000000000",
-                  Id: {
-                    notIn: AddImages?.map((r) => r.Id) as string[],
+      const [updatedBlog, deletedImages, { count }] =
+        await dbContext.$transaction([
+          dbContext.blog.update({
+            where: {
+              Id: Id ?? "00000000-0000-0000-0000-000000000000",
+            },
+            include: {
+              BlogImage: true,
+              GlobalBlogType: true,
+            },
+            data: {
+              ...rest,
+              BlogImage: {
+                connectOrCreate: AddImages?.map((item) => ({
+                  where: {
+                    Id: item.Id,
                   },
-                }
-              : undefined,
-          },
-        },
-        include: {
-          BlogImage: true,
-          BlogStats: true,
-          GlobalBlogType: true,
-        },
-      });
+                  create: item,
+                })),
+              },
+            },
+          }),
+          dbContext.blogImage.findMany({
+            where: {
+              // Id: {
+              //   notIn:
+              //     (AddImages?.filter((r) => r.Id)?.map(
+              //       (r) => r.Id
+              //     ) as string[]) ?? [],
+              // },
+              Code: {
+                notIn: (AddImages?.map((r) => r.Code) as string[]) ?? [],
+              },
+              BlogId: Id,
+            },
+          }),
+          dbContext.blogImage.deleteMany({
+            where: {
+              // Id: {
+              //   notIn:
+              //     (AddImages?.filter((r) => r.Id)?.map(
+              //       (r) => r.Id
+              //     ) as string[]) ?? [],
+              // },
+              Code: {
+                notIn: (AddImages?.map((r) => r.Code) as string[]) ?? [],
+              },
+              BlogId: Id,
+            },
+          }),
+        ]);
+        
+      if (deletedImages?.some((r) => r.Code) && count > 0) {
+        await cloudinary.api.delete_resources(
+          deletedImages?.filter((r) => r.Code)?.map((r) => r.Code) as string[],
+          { type: "upload", resource_type: "image" }
+        );
+      }
 
-      return { data: result } as TypeAPIResponse<TypeBlog>;
+      return { data: updatedBlog };
     }),
   delete: protectedProcedure
     .input(z.object({ Id: RequiredString }))

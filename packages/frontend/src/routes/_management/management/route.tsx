@@ -6,6 +6,7 @@ export const Route = createFileRoute("/_management/management")({
   staticData: {
     routeName: "Admin",
     icon: <IconScript />,
+    required_role: import.meta.env.VITE_ADMIN_ROLE_ID,
   },
   component: () => <Outlet />,
   notFoundComponent: NotFoundComponent,

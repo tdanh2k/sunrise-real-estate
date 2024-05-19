@@ -1,6 +1,7 @@
 import { InsufficientScopeError, InvalidTokenError, UnauthorizedError, } from "express-oauth2-jwt-bearer";
 export const errorHandler = (error, request, response, next) => {
-    //console.log({error})
+    request;
+    next;
     if (error instanceof InsufficientScopeError) {
         const message = "Permission denied";
         response.status(error.status).json({ message });
@@ -20,4 +21,5 @@ export const errorHandler = (error, request, response, next) => {
     const message = error;
     console.log({ message });
     response.status(status).json({ message });
+    //return next()
 };

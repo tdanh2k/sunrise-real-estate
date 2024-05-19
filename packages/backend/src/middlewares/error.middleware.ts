@@ -11,7 +11,8 @@ export const errorHandler = (
   response: Response,
   next: NextFunction
 ) => {
-  //console.log({error})
+  request;
+  next;
   if (error instanceof InsufficientScopeError) {
     const message = "Permission denied";
 
@@ -41,4 +42,6 @@ export const errorHandler = (
   console.log({message})
 
   response.status(status).json({ message });
+
+  //return next()
 };

@@ -8,7 +8,6 @@ import {
 
 export const GlobalPostDetailSchema = z.object({
   Id: RequiredUUID,
-  Code: RequiredString,
   Name: RequiredString,
   Unit: RequiredString,
   IsNumber: OptionalBoolean,

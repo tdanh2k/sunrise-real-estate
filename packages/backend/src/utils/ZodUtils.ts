@@ -98,7 +98,7 @@ export const RequiredBoolean = z.boolean({
   required_error: "Vui lòng không bỏ trống dữ liệu này",
 });
 
-export const OptionalBoolean = RequiredBoolean.optional().nullable();
+export const OptionalBoolean = RequiredBoolean.optional();
 
 export const RequiredArray = (elementType: ZodType) =>
   z.array(elementType).min(1, "Vui lòng không bỏ trống dữ liệu này");

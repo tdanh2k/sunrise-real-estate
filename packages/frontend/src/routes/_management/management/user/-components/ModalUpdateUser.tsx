@@ -17,7 +17,7 @@ type ModalUpdateProps = {
 };
 
 const defaultValues: TypeUpdateAuth0User = {
-  username: "",
+  //username: "",
   email: "",
   phone_number: "",
   name: "",
@@ -26,6 +26,7 @@ const defaultValues: TypeUpdateAuth0User = {
   picture: "",
   family_name: "",
   given_name: "",
+  blocked: false,
 };
 
 export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
@@ -49,6 +50,7 @@ export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
     values: {
       ...defaultValues,
       ...auth0UserByIdResponse?.data,
+      blocked: auth0UserByIdResponse?.data?.blocked ?? false,
     },
   });
 
@@ -108,28 +110,20 @@ export const ModalUpdateAuth0User: FC<ModalUpdateProps> = ({
       />
 
       <Stack mb={10} style={{ overflow: "auto" }}>
-        <TextInputRHF name="username" label="Username" control={control} />
+        {/* <TextInputRHF name="username" label="Username" control={control} /> */}
         <TextInputRHF name="email" label="Email" control={control} />
         <TextInputRHF
           name="phone_number"
           label="Số điện thoại"
           control={control}
         />
-        <TextInputRHF
-          name="name"
-          label="Tên"
-          control={control}
-        />
+        <TextInputRHF name="name" label="Tên" control={control} />
         <TextInputRHF
           name="picture"
           label="URL hình đại diện"
           control={control}
         />
-        <TextInputRHF
-          name="password"
-          label="Mật khẩu"
-          control={control}
-        />
+        <TextInputRHF name="password" label="Mật khẩu" control={control} />
       </Stack>
     </CustomModal>
   );

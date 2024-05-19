@@ -186,19 +186,6 @@ export const PendingBlogRouter = trpcRouter.router({
         },
       });
 
-      // const response = await axios<TypeAuth0User>({
-      //   url: `${(await ctx).domain}api/v2/users/${(await ctx).userId}`,
-      //   method: "GET",
-      //   params: {
-      //     search_engine: "v3",
-      //   },
-      //   headers: {
-      //     Authorization: `Bearer ${(await ctx).management_token}`,
-      //   },
-      // });
-
-      // const user = response?.data;
-
       const [updatedPendingBlog] = await dbContext.$transaction([
         dbContext.pendingBlog.update({
           data: {

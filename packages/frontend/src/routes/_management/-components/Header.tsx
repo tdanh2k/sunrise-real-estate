@@ -8,7 +8,6 @@ import {
   Group,
   LoadingOverlay,
   Menu,
-  Skeleton,
   Text,
   UnstyledButton,
   rem,

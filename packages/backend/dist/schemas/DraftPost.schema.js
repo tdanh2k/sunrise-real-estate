@@ -21,7 +21,7 @@ export const DraftPostSchema = z.object({
         .optional(),
     DraftPostCurrentDetail: z.array(z.object({
         Id: RequiredUUID,
-        DraftId: RequiredUUID,
+        //DraftId: RequiredUUID,
         DetailId: RequiredUUID,
         Value: RequiredString,
         IsNumber: OptionalBoolean,
@@ -29,7 +29,7 @@ export const DraftPostSchema = z.object({
     })),
     DraftPostFeature: z.array(z.object({
         Id: RequiredUUID,
-        DraftId: RequiredUUID,
+        //DraftId: RequiredUUID,
         Title: RequiredString,
         Description: RequiredString,
         CreatedDate: OptionalJsDate,
@@ -40,7 +40,7 @@ export const DraftPostSchema = z.object({
         Name: RequiredString,
         Size: NonNegativeIntegerNumber,
         Path: RequiredString,
-        DraftId: RequiredUUID,
+        //DraftId: RequiredUUID,
         MimeType: OptionalString,
         Base64Data: OptionalString,
         CreatedDate: OptionalJsDate,

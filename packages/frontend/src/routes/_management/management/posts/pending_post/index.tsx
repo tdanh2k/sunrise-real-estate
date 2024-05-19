@@ -184,7 +184,7 @@ export const Route = createFileRoute(
             ),
         },
       ],
-      useQuery: privateRoute.management.post.byPage.useQuery,
+      useQuery: privateRoute.management.pending_post.byPage.useQuery,
       //topToolbarActionObjectList: tableActions,
       tableProps: {
         enableGrouping: false,

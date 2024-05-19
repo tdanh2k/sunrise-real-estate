@@ -2,8 +2,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { TRPCContext } from "./context.js";
 import SuperJSON from "superjson";
 import { dbContext } from "../utils/prisma.js";
-import axios from "axios";
-import { TypeAuth0User } from "../schemas/Auth0User.schema.js";
+import { auth0Management } from "../app.js";
 
 export const trpcRouter = initTRPC.context<TRPCContext>().create({
   transformer: SuperJSON,
@@ -20,17 +19,10 @@ export const protectedProcedure = trpcRouter.procedure.use(
         user_id: (await ctx).userId,
       },
     });
-    
+
     if (!user) {
-      const userResponse = await axios<TypeAuth0User>({
-        url: `${(await ctx).domain}api/v2/users/${encodeURIComponent((await ctx).userId ?? "")}`,
-        method: "GET",
-        params: {
-          search_engine: "v3",
-        },
-        headers: {
-          Authorization: `Bearer ${(await ctx).management_token}`,
-        },
+      const userResponse = await auth0Management.users.get({
+        id: (await ctx).userId ?? "",
       });
 
       const auth0_user = userResponse?.data;
@@ -38,7 +30,10 @@ export const protectedProcedure = trpcRouter.procedure.use(
       if (!auth0_user) throw new TRPCError({ code: "UNAUTHORIZED" });
 
       await dbContext.auth0Profile.create({
-        data: auth0_user,
+        data: {
+          ...auth0_user,
+          last_login: new Date(auth0_user?.last_login as string),
+        },
       });
     }
 

@@ -159,45 +159,105 @@ export const PostRouter = trpcRouter.router({
       async ({
         input: { Id, PostCurrentDetail, PostFeature, PostImage, ...rest },
       }) => {
-        const result = await dbContext.post.update({
-          where: {
-            Id,
-          },
-          data: {
-            ...rest,
-            PostCurrentDetail: {
-              connectOrCreate: PostCurrentDetail?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-            PostFeature: {
-              connectOrCreate: PostFeature?.map((item) => ({
-                where: {
-                  Id: item.Id,
-                },
-                create: item,
-              })),
-            },
-            PostImage: {
-              connectOrCreate: PostImage?.map((item) => ({
-                where: {
-                  Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
-                },
-                create: item,
-              })),
-            },
-          },
-          include: {
-            PostCurrentDetail: true,
-            PostFeature: true,
-            PostImage: true,
-          },
-        });
+        const AddImages: Omit<(typeof PostImage)[number], "Base64Data">[] = [];
 
-        return { data: result } as TypeAPIResponse<TypePost>;
+        for (const { Base64Data, ...metadata } of PostImage ?? []) {
+          if (metadata.Id) {
+            AddImages.push(metadata);
+          } else if (Base64Data != null) {
+            await cloudinary.uploader.upload(
+              Base64Data,
+              {
+                use_filename: true,
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (!error)
+                  AddImages.push({
+                    ...metadata,
+                    Code: result?.public_id,
+                    Path: result?.secure_url ?? "",
+                    Size: result?.bytes ?? metadata?.Size,
+                  });
+              }
+            );
+          }
+        }
+
+        const [updatedPost, deletedImages, { count }] =
+          await dbContext.$transaction([
+            dbContext.post.update({
+              where: {
+                Id: Id ?? "00000000-0000-0000-0000-000000000000",
+              },
+              data: {
+                ...rest,
+                PostCurrentDetail: {
+                  connectOrCreate: PostCurrentDetail?.map((item) => ({
+                    where: {
+                      Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                    },
+                    create: item,
+                  })),
+                },
+                PostFeature: {
+                  connectOrCreate: PostFeature?.map((item) => ({
+                    where: {
+                      Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                    },
+                    create: item,
+                  })),
+                },
+                PostImage: {
+                  connectOrCreate: AddImages?.map((item) => ({
+                    where: {
+                      Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
+                    },
+                    create: item,
+                  })),
+                },
+              },
+            }),
+            dbContext.postImage.findMany({
+              where: {
+                // Id: {
+                //   notIn:
+                //     (AddImages?.filter((r) => r.Id)?.map(
+                //       (r) => r.Id
+                //     ) as string[]) ?? [],
+                // },
+                Code: {
+                  notIn: (AddImages?.map((r) => r.Code) as string[]) ?? [],
+                },
+                PostId: Id ?? "00000000-0000-0000-0000-000000000000",
+              },
+            }),
+            dbContext.postImage.deleteMany({
+              where: {
+                // Id: {
+                //   notIn:
+                //     (AddImages?.filter((r) => r.Id)?.map(
+                //       (r) => r.Id
+                //     ) as string[]) ?? [],
+                // },
+                Code: {
+                  notIn: (AddImages?.map((r) => r.Code) as string[]) ?? [],
+                },
+                PostId: Id ?? "00000000-0000-0000-0000-000000000000",
+              },
+            }),
+          ]);
+
+        if (deletedImages?.some((r) => r.Code) && count > 0) {
+          await cloudinary.api.delete_resources(
+            deletedImages
+              ?.filter((r) => r.Code)
+              ?.map((r) => r.Code) as string[],
+            { type: "upload", resource_type: "image" }
+          );
+        }
+
+        return { data: updatedPost };
       }
     ),
   delete: protectedProcedure

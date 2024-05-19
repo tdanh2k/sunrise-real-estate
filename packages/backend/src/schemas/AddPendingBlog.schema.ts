@@ -22,7 +22,7 @@ export const AddPendingBlogSchema = z.object({
       Name: RequiredString,
       Size: NonNegativeIntegerNumber,
       Path: RequiredString,
-      BlogId: RequiredUUID,
+      //BlogId: RequiredUUID,
       MimeType: OptionalString,
       CreatedDate: OptionalJsDate,
     })

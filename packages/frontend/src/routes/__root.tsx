@@ -32,6 +32,9 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
       overlayProps={{ radius: "sm", blur: 2 }}
     />
   ),
+  // onEnter: (match) => {
+  //   console.log("Test")
+  // },
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
   component: () => (

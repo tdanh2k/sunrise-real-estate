@@ -2,7 +2,7 @@ import { z } from "zod";
 import { OptionalBoolean, OptionalString, RequiredEmail, } from "../utils/ZodUtils.js";
 export const UpdateAuth0UserSchema = z.object({
     email: RequiredEmail,
-    username: OptionalString,
+    //username: OptionalString,
     password: OptionalString,
     phone_number: OptionalString,
     //user_id: RequiredString,
