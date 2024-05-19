@@ -42,6 +42,8 @@ jobs:
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
+        env:
+          PRISMA_CLI_BINARY_TARGETS: 'debian-openssl-3.0.x'
         run: |
           pnpm install --no-frozen-lockfile
         working-directory: ./packages/backend
