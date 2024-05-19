@@ -72,3 +72,4 @@ jobs:
         type: ZIP,
         clean: true,
         restart: true
+        additional-arguments: '-r "**" --delete-destination-directory'
