@@ -158,15 +158,6 @@ export const PendingPostRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    // .output(
-    //   APIResponseSchema(
-    //     PendingPostSchema.omit({
-    //       PendingCurrentDetail: true,
-    //       PendingFeature: true,
-    //       PendingPostImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(async ({ ctx, input: { Id } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -179,9 +170,27 @@ export const PendingPostRouter = trpcRouter.router({
           Id,
         },
         include: {
-          PendingPostCurrentDetail: true,
-          PendingPostFeature: true,
-          PendingPostImage: true,
+          PendingPostCurrentDetail: {
+            select: {
+              DetailId: true,
+              Value: true,
+            },
+          },
+          PendingPostFeature: {
+            select: {
+              Title: true,
+              Description: true,
+            },
+          },
+          PendingPostImage: {
+            select: {
+              Code: true,
+              Name: true,
+              Size: true,
+              Path: true,
+              MimeType: true,
+            },
+          },
         },
       });
 
@@ -208,11 +217,7 @@ export const PendingPostRouter = trpcRouter.router({
             UserId: data?.UserId ?? (await ctx).userId ?? "",
             PostCurrentDetail: {
               createMany: {
-                data:
-                  data?.PendingPostCurrentDetail?.map((item) => ({
-                    ...item,
-                    PendingPostId: undefined,
-                  })) ?? [],
+                data: data?.PendingPostCurrentDetail ?? [],
               },
             },
             PostFeature: {
@@ -221,17 +226,12 @@ export const PendingPostRouter = trpcRouter.router({
                   data?.PendingPostFeature?.map((item) => ({
                     ...item,
                     Description: item.Description ?? "",
-                    PendingPostId: undefined,
                   })) ?? [],
               },
             },
             PostImage: {
               createMany: {
-                data:
-                  data?.PendingPostImage?.map((item) => ({
-                    ...item,
-                    PendingPostId: undefined,
-                  })) ?? [],
+                data: data?.PendingPostImage ?? [],
               },
             },
           },
@@ -241,13 +241,6 @@ export const PendingPostRouter = trpcRouter.router({
       return {
         data: updatedPendingPost,
       };
-      // return await APIResponseSchema(
-      //   PendingPostSchema.omit({
-      //     PendingCurrentDetail: true,
-      //     PendingFeature: true,
-      //     PendingPostImage: true,
-      //   }).nullable()
-      // ).parseAsync({ data });
     }),
   reject: protectedProcedure
     .input(
@@ -255,15 +248,6 @@ export const PendingPostRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    // .output(
-    //   APIResponseSchema(
-    //     PendingPostSchema.omit({
-    //       PendingCurrentDetail: true,
-    //       PendingFeature: true,
-    //       PendingPostImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(async ({ ctx, input: { Id } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -276,9 +260,27 @@ export const PendingPostRouter = trpcRouter.router({
           Id,
         },
         include: {
-          PendingPostCurrentDetail: true,
-          PendingPostFeature: true,
-          PendingPostImage: true,
+          PendingPostCurrentDetail: {
+            select: {
+              DetailId: true,
+              Value: true,
+            },
+          },
+          PendingPostFeature: {
+            select: {
+              Title: true,
+              Description: true,
+            },
+          },
+          PendingPostImage: {
+            select: {
+              Code: true,
+              Name: true,
+              Size: true,
+              Path: true,
+              MimeType: true,
+            },
+          },
         },
       });
 
@@ -296,11 +298,7 @@ export const PendingPostRouter = trpcRouter.router({
             UserId: data?.UserId ?? (await ctx).userId ?? "",
             DraftPostCurrentDetail: {
               createMany: {
-                data:
-                  data?.PendingPostCurrentDetail?.map((item) => ({
-                    ...item,
-                    PendingPostId: undefined,
-                  })) ?? [],
+                data: data?.PendingPostCurrentDetail ?? [],
               },
             },
             DraftPostFeature: {
@@ -315,11 +313,7 @@ export const PendingPostRouter = trpcRouter.router({
             },
             DraftPostImage: {
               createMany: {
-                data:
-                  data?.PendingPostImage?.map((item) => ({
-                    ...item,
-                    PendingPostId: undefined,
-                  })) ?? [],
+                data: data?.PendingPostImage ?? [],
               },
             },
           },
@@ -337,12 +331,5 @@ export const PendingPostRouter = trpcRouter.router({
       ]);
 
       return { data: pendingPost };
-      // return await APIResponseSchema(
-      //   PendingPostSchema.omit({
-      //     PendingCurrentDetail: true,
-      //     PendingFeature: true,
-      //     PendingPostImage: true,
-      //   }).nullable()
-      // ).parseAsync({ data: pendingPost });
     }),
 });
