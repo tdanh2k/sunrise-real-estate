@@ -9,7 +9,6 @@ import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 
 export const AddDraftBlogSchema = z.object({
   Id: OptionalUUID,
-  Code: OptionalString,
   Title: OptionalString,
   Description: OptionalString,
   CreatedDate: OptionalJsDate,

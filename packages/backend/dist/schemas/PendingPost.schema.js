@@ -2,7 +2,6 @@ import z from "zod";
 import { NonNegativeIntegerNumber, NonNegativeNumber, OptionalBoolean, OptionalJsDate, OptionalNumber, OptionalString, RequiredString, RequiredUUID, } from "../utils/ZodUtils.js";
 export const PendingPostSchema = z.object({
     Id: RequiredUUID,
-    Code: RequiredString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,

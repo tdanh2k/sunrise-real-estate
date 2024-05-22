@@ -27,6 +27,7 @@ import { Route as ManagementUserBlogsRouteImport } from './routes/_management/us
 import { Route as ManagementManagementPostsRouteImport } from './routes/_management/management/posts/route'
 import { Route as ManagementManagementBlogsRouteImport } from './routes/_management/management/blogs/route'
 import { Route as ManagementManagementUserIndexImport } from './routes/_management/management/user/index'
+import { Route as ManagementManagementFeedbackIndexImport } from './routes/_management/management/feedback/index'
 import { Route as ManagementUserPostsPostIndexImport } from './routes/_management/user/posts/post/index'
 import { Route as ManagementUserPostsPendingpostsIndexImport } from './routes/_management/user/posts/pending_posts/index'
 import { Route as ManagementUserPostsDraftpostIndexImport } from './routes/_management/user/posts/draft_post/index'
@@ -123,6 +124,12 @@ const ManagementManagementBlogsRouteRoute =
 const ManagementManagementUserIndexRoute =
   ManagementManagementUserIndexImport.update({
     path: '/user/',
+    getParentRoute: () => ManagementManagementRouteRoute,
+  } as any)
+
+const ManagementManagementFeedbackIndexRoute =
+  ManagementManagementFeedbackIndexImport.update({
+    path: '/feedback/',
     getParentRoute: () => ManagementManagementRouteRoute,
   } as any)
 
@@ -313,6 +320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientPostsIndexImport
       parentRoute: typeof ClientImport
     }
+    '/_management/management/feedback/': {
+      id: '/_management/management/feedback/'
+      path: '/feedback'
+      fullPath: '/management/feedback'
+      preLoaderRoute: typeof ManagementManagementFeedbackIndexImport
+      parentRoute: typeof ManagementManagementRouteImport
+    }
     '/_management/management/user/': {
       id: '/_management/management/user/'
       path: '/user'
@@ -441,6 +455,7 @@ export const routeTree = rootRoute.addChildren({
           ManagementManagementPostsPostdetailIndexRoute,
           ManagementManagementPostsPosttypeIndexRoute,
         }),
+      ManagementManagementFeedbackIndexRoute,
       ManagementManagementUserIndexRoute,
     }),
     ManagementUserRouteRoute: ManagementUserRouteRoute.addChildren({

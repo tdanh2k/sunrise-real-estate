@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
@@ -11,7 +11,6 @@ datasource db {
 model DraftPost {
   Id                     String                   @id(map: "DraftPost_PK") @default(dbgenerated("newid()"), map: "DF__DraftPost__Id__2180FB33") @db.UniqueIdentifier
   Idx                    Int                      @default(autoincrement())
-  Code                   String?                  @db.VarChar(100)
   Title                  String                   @db.NVarChar(256)
   Description            String?                  @db.NVarChar(Max)
   UserId                 String?                  @db.VarChar(256)
@@ -43,7 +42,6 @@ model DraftPostImage {
 model Post {
   Id                String              @id(map: "Post_PK") @default(dbgenerated("newid()"), map: "DF__Post__Id__2B0A656D") @db.UniqueIdentifier
   Idx               Int                 @default(autoincrement())
-  Code              String?             @db.VarChar(100)
   Title             String?             @db.NVarChar(256)
   Description       String?             @db.NVarChar(Max)
   UserId            String              @db.VarChar(256)
@@ -126,7 +124,6 @@ model GlobalBlogType {
 model Blog {
   Id             String         @id(map: "Blog_PK") @default(dbgenerated("newid()"), map: "DF__Blog__Id__6442E2C9") @db.UniqueIdentifier
   Idx            Int            @default(autoincrement())
-  Code           String?        @db.VarChar(256)
   Title          String         @db.NVarChar(256)
   Description    String?        @db.NVarChar(Max)
   UserId         String         @db.VarChar(256)
@@ -154,7 +151,6 @@ model BlogImage {
 model DraftBlog {
   Id             String           @id(map: "DraftBlog_PK") @default(dbgenerated("newid()"), map: "DF__DraftBlog__Id__719CDDE7") @db.UniqueIdentifier
   Idx            Int              @default(autoincrement())
-  Code           String?          @db.VarChar(256)
   Title          String           @db.NVarChar(256)
   Description    String?          @db.NVarChar(Max)
   UserId         String           @db.VarChar(256)
@@ -215,7 +211,6 @@ model DraftPostFeature {
 model PendingBlog {
   Id               String             @id(map: "PendingBlog_PK") @default(dbgenerated("newid()"), map: "DF__PendingBlog__Id__42ACE4D4") @db.UniqueIdentifier
   Idx              Int                @default(autoincrement())
-  Code             String?            @db.VarChar(256)
   Title            String             @db.NVarChar(256)
   Description      String?            @db.NVarChar(Max)
   UserId           String             @db.VarChar(256)
@@ -245,7 +240,6 @@ model PendingBlogImage {
 model PendingPost {
   Id                       String                     @id(map: "PendingPost_PK") @default(dbgenerated("newid()"), map: "DF__PendingPost__Id__2DB1C7EE") @db.UniqueIdentifier
   Idx                      Int                        @default(autoincrement())
-  Code                     String?                    @db.VarChar(100)
   Title                    String                     @db.NVarChar(256)
   Description              String?                    @db.NVarChar(Max)
   UserId                   String?                    @db.VarChar(256)
@@ -320,4 +314,14 @@ model Auth0Profile {
   ApprovedByUser_PendingPost PendingPost[] @relation("PendingPost_ApprovedByUserIdToAuth0Profile")
   PendingPost                PendingPost[]
   Post                       Post[]
+}
+
+model Feedback {
+  Id          String    @id(map: "Feedback_PK") @default(dbgenerated("newid()"), map: "DF__Feedback__Id__67DE6983") @db.UniqueIdentifier
+  Name        String    @db.NVarChar(256)
+  Phone       String?   @db.VarChar(100)
+  Title       String    @db.NVarChar(Max)
+  Description String    @db.NVarChar(Max)
+  CreatedDate DateTime? @default(now(), map: "DF__Feedback__Create__68D28DBC") @db.DateTime
+  Email       String?   @db.NVarChar(256)
 }

@@ -9,6 +9,7 @@ import { TypeGlobalBlogType } from "@sunrise-backend/src/schemas/GlobalBlogType.
 import { CustomModal } from "@components/MantineRHF/CustomModal";
 import { FileTableRHF } from "@components/MantineRHF/FileTableRHF";
 import { TypePendingBlog } from "@sunrise-backend/src/schemas/PendingBlog.schema";
+import { useNavigate } from "@tanstack/react-router";
 
 type ModalVerifyProps = {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export const ModalVerifyBlog: FC<ModalVerifyProps> = ({
   blogId,
   handleClose,
 }) => {
+  const navigate = useNavigate({ from: "/management/blogs/pending_blog" });
   const utils = privateRoute.useUtils();
 
   const { data: blogByIdResponse, isFetching } =
@@ -51,6 +53,7 @@ export const ModalVerifyBlog: FC<ModalVerifyProps> = ({
     privateRoute.management.pending_blog.approve.useMutation({
       onSuccess: () => {
         utils.management.blog.invalidate();
+        navigate({ to: "/management/blogs/blog" });
       },
     });
   const { mutateAsync: rejectAsync, isPending: isRejectPending } =

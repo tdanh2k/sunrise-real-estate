@@ -3,7 +3,6 @@ import { NonNegativeIntegerNumber, OptionalJsDate, OptionalString, OptionalUUID,
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 export const DraftBlogSchema = z.object({
     Id: RequiredUUID,
-    Code: RequiredString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,

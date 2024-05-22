@@ -121,7 +121,6 @@ export const DraftBlogRouter = trpcRouter.router({
         const data = await dbContext.draftBlog.create({
             data: {
                 ...rest,
-                Code: rest?.Code ?? "",
                 Title: rest?.Title ?? "",
                 Description: rest?.Description ?? "",
                 TypeId: rest?.TypeId ?? "",

@@ -12,7 +12,6 @@ import {
 
 export const DraftPostSchema = z.object({
   Id: RequiredUUID,
-  Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,

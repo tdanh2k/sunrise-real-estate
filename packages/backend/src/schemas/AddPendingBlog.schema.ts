@@ -9,7 +9,6 @@ import {
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 
 export const AddPendingBlogSchema = z.object({
-  Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,

@@ -14,7 +14,6 @@ import { GlobalPostTypeSchema } from "./GlobalPostType.schema.js";
 
 export const PostSchema = z.object({
   Id: RequiredUUID,
-  Code: OptionalString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,

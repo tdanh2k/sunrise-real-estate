@@ -128,7 +128,6 @@ export const DraftBlogRouter = trpcRouter.router({
         data: {
           ...rest,
           TypeId: rest.TypeId ?? "",
-          Code: rest.Code ?? "",
           Title: rest.Title ?? "",
           Description: rest.Description ?? "",
           UserId: (await ctx).userId ?? "",

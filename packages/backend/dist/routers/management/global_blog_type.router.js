@@ -50,7 +50,6 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
     }),
     byPage: protectedProcedure
         .input(PaginationSchema)
-        //.output(APIResponseSchema(z.array(GlobalBlogTypeSchema)))
         .query(async ({ input }) => {
         const page_index = input.paging.page_index ?? 0;
         const page_size = input.paging.page_size ?? 10;
@@ -69,14 +68,6 @@ export const GlobalBlogTypeRouter = trpcRouter.router({
                 row_count,
             },
         };
-        // return await APIResponseSchema(z.array(GlobalBlogTypeSchema)).parseAsync({
-        //   data,
-        //   paging: {
-        //     page_index,
-        //     page_size,
-        //     row_count,
-        //   },
-        // });
     }),
     create: protectedProcedure
         .input(AddGlobalBlogTypeSchema)

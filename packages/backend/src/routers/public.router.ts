@@ -6,6 +6,7 @@ import { TRPCError } from "@trpc/server";
 import { RemoteAuth0UserSchema } from "../schemas/RemoteAuth0User.schema.js";
 import { TypeAPIResponse } from "../schemas/APIResponse.schema.js";
 import { TypeBlog } from "../schemas/Blog.schema.js";
+import { AddFeedbackSchema } from "../schemas/AddFeedback.schema.js";
 
 export const PublicRouter = trpcRouter.router({
   topPost: publicProcedure
@@ -306,4 +307,13 @@ export const PublicRouter = trpcRouter.router({
         };
       }
     ),
+  addFeedback: publicProcedure
+    .input(AddFeedbackSchema)
+    .mutation(async ({ input }) => {
+      const data = await dbContext.feedback.create({
+        data: input,
+      });
+
+      return { data };
+    }),
 });

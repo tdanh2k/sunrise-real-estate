@@ -11,6 +11,7 @@ import { GlobalBlogTypeRouter } from "./global_blog_type.router.js";
 import { PendingBlogRouter } from "./pending_blog.router.js";
 import { PendingPostRouter } from "./pending_post.router.js";
 import { auth0Management } from "../../app.js";
+import { FeedbackRouter } from "./feedback.router.js";
 
 export const managementRouter = trpcRouter.router({
   post: PostRouter,
@@ -23,6 +24,7 @@ export const managementRouter = trpcRouter.router({
   draft_blog: DraftBlogRouter,
   pending_blog: PendingBlogRouter,
   global_blog_type: GlobalBlogTypeRouter,
+  feedback: FeedbackRouter,
   getCurrentUserRoles: publicProcedure.query(async ({ ctx }) => {
     if ((await ctx).userId == null)
       throw new TRPCError({

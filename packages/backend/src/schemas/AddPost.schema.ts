@@ -12,7 +12,6 @@ import {
 } from "../utils/ZodUtils.js";
 
 export const AddPostSchema = z.object({
-  Code: OptionalString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,

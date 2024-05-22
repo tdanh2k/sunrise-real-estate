@@ -4,6 +4,7 @@ import { publicProcedure, trpcRouter } from "./router.js";
 import { OptionalString, RequiredString } from "../utils/ZodUtils.js";
 import { TRPCError } from "@trpc/server";
 import { RemoteAuth0UserSchema } from "../schemas/RemoteAuth0User.schema.js";
+import { AddFeedbackSchema } from "../schemas/AddFeedback.schema.js";
 export const PublicRouter = trpcRouter.router({
     topPost: publicProcedure
         .input(z.void())
@@ -264,5 +265,13 @@ export const PublicRouter = trpcRouter.router({
         return {
             data: response,
         };
+    }),
+    addFeedback: publicProcedure
+        .input(AddFeedbackSchema)
+        .mutation(async ({ input }) => {
+        const data = await dbContext.feedback.create({
+            data: input,
+        });
+        return { data };
     }),
 });

@@ -49,6 +49,7 @@ app.use(helmet({
     },
 }));
 app.get("/", async (req, res) => {
+    req;
     res.json({ message: "Test" });
 });
 app.use("/private", validateAccessToken, 

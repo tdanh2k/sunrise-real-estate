@@ -1,7 +1,6 @@
 import z from "zod";
 import { NonNegativeIntegerNumber, NonNegativeNumber, OptionalBoolean, OptionalJsDate, OptionalNumber, OptionalString, OptionalUUID, RequiredString, RequiredUUID, } from "../utils/ZodUtils.js";
 export const AddPostSchema = z.object({
-    Code: OptionalString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,

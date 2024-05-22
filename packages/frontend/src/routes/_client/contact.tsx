@@ -1,7 +1,47 @@
+import { LoadingOverlay } from "@mantine/core";
+import {
+  AddFeedbackSchema,
+  TypeAddFeedback,
+} from "@sunrise-backend/src/schemas/AddFeedback.schema";
 import { createFileRoute } from "@tanstack/react-router";
+import { publicRoute } from "@utils/trpc";
 import { FC } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const Contact: FC = () => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm<TypeAddFeedback>({
+    resolver: zodResolver(AddFeedbackSchema),
+    mode: "all",
+    defaultValues: {
+      Name: "",
+      Email: "",
+      Phone: "",
+      Title: "",
+      Description: "",
+    },
+  });
+
+  const { mutateAsync: addFeedbackAsync, isPending } =
+    publicRoute.addFeedback.useMutation({
+      onSuccess: () => {
+        reset();
+        // notifications.show({
+        //   title: "Thông báo",
+        //   message: "Gửi phản hồi thành công!",
+        // });
+      },
+    });
+
+  const onSubmit: SubmitHandler<TypeAddFeedback> = async (values) => {
+    await addFeedbackAsync(values);
+  };
+
   return (
     <section className="contact">
       <div className="page-top">
@@ -14,6 +54,11 @@ export const Contact: FC = () => {
           </div>
         </div>
       </div>
+      <LoadingOverlay
+        visible={isPending}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
       <div className="page-content">
         <div className="container">
           <div className="row">
@@ -41,27 +86,54 @@ export const Contact: FC = () => {
               </div>
             </div>
             <div className="col-lg-12">
-              <div className="row mt-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="row mt-5">
+                <div className="col-lg-12">
+                  <label style={{ color: errors?.Name ? "red" : undefined }}>
+                    Tên người gửi
+                  </label>
+                  <input {...register("Name")} className="inp-contact" />
+                  <p className="text-danger">{errors.Name?.message}</p>
+                </div>
                 <div className="col-lg-6">
-                  <label>Tên người gửi</label>
-                  <input type="text" className="inp-contact" />
+                  <label style={{ color: errors?.Phone ? "red" : undefined }}>
+                    Số điện thoại
+                  </label>
+                  <input {...register("Phone")} className="inp-contact" />
+                  <p className="text-danger">{errors.Phone?.message}</p>
                 </div>
                 <div className="col-lg-6">
-                  <label>Số điện thoại</label>
-                  <input type="text" className="inp-contact" />
+                  <label style={{ color: errors?.Email ? "red" : undefined }}>
+                    Email
+                  </label>
+                  <input {...register("Email")} className="inp-contact" />
+                  <p className="text-danger">{errors.Email?.message}</p>
                 </div>
                 <div className="col-lg-12">
-                  <label>Chủ đề</label>
-                  <input type="text" className="inp-contact" />
+                  <label style={{ color: errors?.Title ? "red" : undefined }}>
+                    Chủ đề
+                  </label>
+                  <input {...register("Title")} className="inp-contact" />
+                  <p className="text-danger">{errors.Title?.message}</p>
                 </div>
                 <div className="col-lg-12">
-                  <label>Nội dung</label>
-                  <textarea className="ta-contact" rows={4} />
+                  <label
+                    style={{ color: errors?.Description ? "red" : undefined }}
+                  >
+                    Nội dung
+                  </label>
+                  <textarea
+                    {...register("Description")}
+                    className="ta-contact"
+                    rows={4}
+                  />
+                  <p className="text-danger">{errors.Description?.message}</p>
                 </div>
                 <div className="col-lg-12">
-                  <button className="btn-contact">Gửi nội dung</button>
+                  <button type="submit" className="btn-contact">
+                    Gửi nội dung
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>

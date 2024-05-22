@@ -5,6 +5,7 @@ import "@mantine/core/styles.css"; //import Mantine V7 styles needed by MRT
 import "@mantine/dates/styles.css"; //if using mantine date picker features
 import "@mantine/nprogress/styles.css";
 import "mantine-react-table/styles.css"; //import MRT styles
+import "@mantine/notifications/styles.css";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";

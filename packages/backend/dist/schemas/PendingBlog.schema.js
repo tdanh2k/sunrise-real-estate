@@ -4,7 +4,6 @@ import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 import { Auth0UserSchema } from "./Auth0User.schema.js";
 export const PendingBlogSchema = z.object({
     Id: RequiredUUID,
-    Code: OptionalString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,

@@ -23,7 +23,6 @@ type ModalProps = {
 const defaultValues: TypePendingPost = {
   Id: "",
   TypeId: "",
-  Code: "",
   Title: "",
   Address: "",
   Description: "",

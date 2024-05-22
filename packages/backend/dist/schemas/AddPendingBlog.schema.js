@@ -2,7 +2,6 @@ import z from "zod";
 import { NonNegativeIntegerNumber, OptionalJsDate, OptionalString, RequiredString, RequiredUUID, } from "../utils/ZodUtils.js";
 import { GlobalBlogTypeSchema } from "./GlobalBlogType.schema.js";
 export const AddPendingBlogSchema = z.object({
-    Code: RequiredString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,

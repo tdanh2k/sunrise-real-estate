@@ -1,7 +1,6 @@
 import z from "zod";
 import { NonNegativeIntegerNumber, OptionalJsDate, OptionalString, OptionalUUID, RequiredString, RequiredUUID, } from "../utils/ZodUtils.js";
 export const AddBlogSchema = z.object({
-    Code: OptionalString,
     Title: RequiredString,
     Description: RequiredString,
     CreatedDate: OptionalJsDate,

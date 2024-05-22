@@ -11,8 +11,6 @@ import {
 } from "../utils/ZodUtils.js";
 
 export const AddPendingPostSchema = z.object({
-  //Id: RequiredUUID,
-  Code: RequiredString,
   Title: RequiredString,
   Description: RequiredString,
   CreatedDate: OptionalJsDate,
