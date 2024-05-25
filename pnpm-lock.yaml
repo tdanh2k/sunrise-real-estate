@@ -85,7 +85,7 @@ importers:
         version: 3.4.0(react-hook-form@7.51.4(react@18.3.1))
       '@mantine/carousel':
         specifier: ^7.9.2
-        version: 7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.1(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.3(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/core':
         specifier: ^7.9.2
         version: 7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -123,8 +123,8 @@ importers:
         specifier: ^5.37.1
         version: 5.37.1(react@18.3.1)
       '@tanstack/react-router':
-        specifier: ^1.33.1
-        version: 1.33.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.33.4
+        version: 1.33.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tiptap/extension-highlight':
         specifier: ^2.4.0
         version: 2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))
@@ -171,8 +171,8 @@ importers:
         specifier: ^16.4.5
         version: 16.4.5
       embla-carousel-react:
-        specifier: ^8.1.1
-        version: 8.1.1(react@18.3.1)
+        specifier: ^8.1.3
+        version: 8.1.3(react@18.3.1)
       html-react-parser:
         specifier: ^5.1.10
         version: 5.1.10(@types/react@18.3.2)(react@18.3.1)
@@ -211,8 +211,8 @@ importers:
         specifier: ^5.37.1
         version: 5.37.1(@tanstack/react-query@5.37.1(react@18.3.1))(react@18.3.1)
       '@tanstack/router-devtools':
-        specifier: ^1.33.1
-        version: 1.33.1(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.33.4
+        version: 1.33.4(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/router-vite-plugin':
         specifier: ^1.32.17
         version: 1.32.17(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
@@ -277,8 +277,8 @@ importers:
         specifier: ^1.17.5
         version: 1.17.5(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
       vite-plugin-static-copy:
-        specifier: ^1.0.4
-        version: 1.0.4(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        specifier: ^1.0.5
+        version: 1.0.5(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
 
 packages:
 
@@ -661,14 +661,14 @@ packages:
   '@floating-ui/dom@1.6.5':
     resolution: {integrity: sha512-Nsdud2X65Dz+1RHjAIP0t8z5e2ff/IRbei6BqFrl1urT8sDVzM1HMQ+R0XcU5ceRfyO3I6ayeqIfh+6Wb8LGTw==}
 
-  '@floating-ui/react-dom@2.0.9':
-    resolution: {integrity: sha512-q0umO0+LQK4+p6aGyvzASqKbKOJcAHJ7ycE9CuUvfx3s9zTHWmGJTPOIlM/hmSBfUfg/XfY5YhLBLR/LHwShQQ==}
+  '@floating-ui/react-dom@2.1.0':
+    resolution: {integrity: sha512-lNzj5EQmEKn5FFKc04+zasr09h/uX8RtJRNj5gUXsSQIXHVWTVh+hVAg1vOMCexkX8EgvemMvIFpQfkosnVNyA==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@floating-ui/react@0.26.15':
-    resolution: {integrity: sha512-WKmfLkxTwCm09Dxq4LpjL3EPbZVSp5wvnap1jmculsfnzg2Ag/pCkP+OPyjE5dFMXqX97hsLIqJehboZ5XAHXw==}
+  '@floating-ui/react@0.26.16':
+    resolution: {integrity: sha512-HEf43zxZNAI/E781QIVpYSF3K2VH4TTYZpqecjdsFkjsaU1EbaWcM++kw0HXFffj7gDUcBFevX8s0rQGQpxkow==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -1138,8 +1138,8 @@ packages:
     peerDependencies:
       react: ^18.0.0
 
-  '@tanstack/react-router@1.33.1':
-    resolution: {integrity: sha512-8VMpjvsbK/ohQcISmc9MDV2TXUJcpVbK+Wp5cTS7RNXd/oSTiHRmoRDnteo1jvv0dJi4gHa88A19BSJYEg5kMw==}
+  '@tanstack/react-router@1.33.4':
+    resolution: {integrity: sha512-aT8Tz0Opp0fHa+5h1eQRu3VRrIofqvcIODKfVVuhwif4O7Y0qrxmB24c1qSpkv6YlrbAkRPYgk3SyG+jBSR77g==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
@@ -1164,8 +1164,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  '@tanstack/router-devtools@1.33.1':
-    resolution: {integrity: sha512-Ay73qyS+RjMwnmjgBZvnz+flLG1TNaby2UQbWox2ZwTPVz0ULZKpXnEOqeiblOALkEwKdXq5TfjobIUF2coctA==}
+  '@tanstack/router-devtools@1.33.4':
+    resolution: {integrity: sha512-8UB9QJy29Zw1qChXn3CzG+RBwI6DKkywQ1fssS0KpZBXHea3xU5NvJdsDEcSDHtJXrwgXpKZK25YjNs8qoQptg==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
@@ -1630,8 +1630,8 @@ packages:
     resolution: {integrity: sha512-umlAogwQDUYvL1Pd4RnViyps7lkvntZ3+VVDW+/4ML7/GzkJcq6VGJ20Nb60eYosQkxa7up1n9lrA4Of+BZsUg==}
     engines: {node: '>=18'}
 
-  axios@1.6.8:
-    resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
+  axios@1.7.1:
+    resolution: {integrity: sha512-+LV37nQcd1EpFalkXksWNBiA17NZ5m5/WspmHGmZmdx1qBOg/VNq/c4eRJiA9VQQHBOs+N0ZhhdU10h2TyNK7Q==}
 
   b4a@1.6.6:
     resolution: {integrity: sha512-5Tk1HLk6b6ctmjIkAcU/Ujv/1WqiDl0F0JdRCR80VsOcUlHcu7pWeWRlOqQLHfDEsVx9YH/aif5AG4ehoCtTmg==}
@@ -1944,18 +1944,18 @@ packages:
   electron-to-chromium@1.4.774:
     resolution: {integrity: sha512-132O1XCd7zcTkzS3FgkAzKmnBuNJjK8WjcTtNuoylj7MYbqw5eXehjQ5OK91g0zm7OTKIPeaAG4CPoRfD9M1Mg==}
 
-  embla-carousel-react@8.1.1:
-    resolution: {integrity: sha512-VuIrNyGneFKlDzAvkRGeXjEOw+FW2Ob76R/Y+kdSuKj68bnaAJCEf8PlHtJJWle1/rR/Sfv9NTIa00zlA8iXgw==}
+  embla-carousel-react@8.1.3:
+    resolution: {integrity: sha512-YrezDPgxPDKa+OKMhSrwuPEU2OgF5147vFW473EWT3bx9DETV3W/RyWTxq0/2pf3M4VXkjqFNbS/W1xM8lTaVg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
-  embla-carousel-reactive-utils@8.1.1:
-    resolution: {integrity: sha512-zlsaorYN56qtoXoVNw8hA/IbUjxq0pdggZpl9b5V2Cxvrd47ZSL5Lat7GgC+kgyUEdEocP1iOmw5+vpCX9rZPA==}
+  embla-carousel-reactive-utils@8.1.3:
+    resolution: {integrity: sha512-D8tAK6NRQVEubMWb+b/BJ3VvGPsbEeEFOBM6cCCwfiyfLzNlacOAt0q2dtUEA9DbGxeWkB8ExgXzFRxhGV2Hig==}
     peerDependencies:
-      embla-carousel: 8.1.1
+      embla-carousel: 8.1.3
 
-  embla-carousel@8.1.1:
-    resolution: {integrity: sha512-PfdhNbPoNl7V5YnwuKe2zmKd0+/HY+Q4O59xQcVvinsgv2LkpAVQ1NB/q5STqAde8nZ56U2uQOe6X+9u4IZlhA==}
+  embla-carousel@8.1.3:
+    resolution: {integrity: sha512-GiRpKtzidV3v50oVMly8S+D7iE1r96ttt7fSlvtyKHoSkzrAnVcu8fX3c4j8Ol2hZSQlVfDqDIqdrFPs0u5TWQ==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3369,8 +3369,8 @@ packages:
     peerDependencies:
       vite: '>=3'
 
-  vite-plugin-static-copy@1.0.4:
-    resolution: {integrity: sha512-UtyOttgoeotSCwmBugsEZCZJZcIpjE9NGO7jlZ9OeedYpBueBdspD8waRZrjE+yQLH6qGNU2CvYB2FILviCQjg==}
+  vite-plugin-static-copy@1.0.5:
+    resolution: {integrity: sha512-02k0Rox+buYdEOfeilKZSgs1gXfPf9RjVztZEIYZgVIxjsVZi6AXssjzdi+qW6zYt00d3bq+tpP2voVXN2fKLw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
@@ -3843,15 +3843,15 @@ snapshots:
       '@floating-ui/core': 1.6.2
       '@floating-ui/utils': 0.2.2
 
-  '@floating-ui/react-dom@2.0.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@floating-ui/react-dom@2.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/dom': 1.6.5
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@floating-ui/react@0.26.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@floating-ui/react@0.26.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@floating-ui/react-dom': 2.0.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@floating-ui/react-dom': 2.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/utils': 0.2.2
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -3899,17 +3899,17 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@mantine/carousel@7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.1(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@mantine/carousel@7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.3(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@mantine/core': 7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/hooks': 7.9.2(react@18.3.1)
-      embla-carousel-react: 8.1.1(react@18.3.1)
+      embla-carousel-react: 8.1.3(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
   '@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@floating-ui/react': 0.26.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@floating-ui/react': 0.26.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/hooks': 7.9.2(react@18.3.1)
       clsx: 2.1.0
       react: 18.3.1
@@ -4369,7 +4369,7 @@ snapshots:
       '@tanstack/query-core': 5.36.1
       react: 18.3.1
 
-  '@tanstack/react-router@1.33.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-router@1.33.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/history': 1.31.16
       '@tanstack/react-store': 0.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4397,9 +4397,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@tanstack/router-devtools@1.33.1(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tanstack/router-devtools@1.33.4(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@tanstack/react-router': 1.33.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-router': 1.33.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       clsx: 2.1.1
       date-fns: 2.30.0
       goober: 2.1.14(csstype@3.1.3)
@@ -4946,7 +4946,7 @@ snapshots:
       jose: 4.15.5
       uuid: 9.0.1
 
-  axios@1.6.8(debug@4.3.4):
+  axios@1.7.1(debug@4.3.4):
     dependencies:
       follow-redirects: 1.15.6(debug@4.3.4)
       form-data: 4.0.0
@@ -5245,7 +5245,7 @@ snapshots:
       '@oclif/plugin-not-found': 2.4.3(@swc/core@1.5.7)(@types/node@20.12.12)(typescript@5.4.5)
       '@oclif/plugin-update': 3.2.4(@swc/core@1.5.7)(@types/node@20.12.12)(typescript@5.4.5)
       '@oclif/plugin-warn-if-update-available': 2.1.1(@swc/core@1.5.7)(@types/node@20.12.12)(typescript@5.4.5)
-      axios: 1.6.8(debug@4.3.4)
+      axios: 1.7.1(debug@4.3.4)
       chalk: 4.1.2
       dotenv: 16.4.5
     transitivePeerDependencies:
@@ -5273,17 +5273,17 @@ snapshots:
 
   electron-to-chromium@1.4.774: {}
 
-  embla-carousel-react@8.1.1(react@18.3.1):
+  embla-carousel-react@8.1.3(react@18.3.1):
     dependencies:
-      embla-carousel: 8.1.1
-      embla-carousel-reactive-utils: 8.1.1(embla-carousel@8.1.1)
+      embla-carousel: 8.1.3
+      embla-carousel-reactive-utils: 8.1.3(embla-carousel@8.1.3)
       react: 18.3.1
 
-  embla-carousel-reactive-utils@8.1.1(embla-carousel@8.1.1):
+  embla-carousel-reactive-utils@8.1.3(embla-carousel@8.1.3):
     dependencies:
-      embla-carousel: 8.1.1
+      embla-carousel: 8.1.3
 
-  embla-carousel@8.1.1: {}
+  embla-carousel@8.1.3: {}
 
   emoji-regex@8.0.0: {}
 
@@ -6779,14 +6779,14 @@ snapshots:
   vite-plugin-mkcert@1.17.5(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       '@octokit/rest': 20.1.1
-      axios: 1.6.8(debug@4.3.4)
+      axios: 1.7.1(debug@4.3.4)
       debug: 4.3.4(supports-color@8.1.1)
       picocolors: 1.0.1
       vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-static-copy@1.0.4(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-plugin-static-copy@1.0.5(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       chokidar: 3.6.0
       fast-glob: 3.3.2

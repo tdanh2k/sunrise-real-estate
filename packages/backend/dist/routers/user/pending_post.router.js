@@ -161,7 +161,6 @@ export const PendingPostRouter = trpcRouter.router({
             }),
             dbContext.post.create({
                 data: {
-                    Idx: data?.Idx,
                     Code: data?.Code,
                     Title: data?.Title ?? "",
                     Description: data?.Description ?? "",
@@ -241,7 +240,6 @@ export const PendingPostRouter = trpcRouter.router({
         const [, pendingPost] = await dbContext.$transaction([
             dbContext.draftPost.create({
                 data: {
-                    Idx: data?.Idx,
                     Code: data?.Code,
                     Title: data?.Title ?? "",
                     Description: data?.Description ?? "",

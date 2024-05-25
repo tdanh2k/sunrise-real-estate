@@ -9,5 +9,5 @@
         ".gitignore",
     ],
     "appService.defaultWebAppToDeploy": "None",
-    "appService.showBuildDuringDeployPrompt": false,
+    "appService.showBuildDuringDeployPrompt": true,
 }

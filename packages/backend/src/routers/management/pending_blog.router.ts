@@ -25,16 +25,13 @@ export const PendingBlogRouter = trpcRouter.router({
 
       const [data, row_count] = await dbContext.$transaction([
         dbContext.pendingBlog.findMany({
-          where: {
-            UserId: (await ctx).userId,
-          },
           skip: page_index,
           take: page_size,
           include: {
             PendingBlogImage: true,
             GlobalBlogType: true,
             Auth0Profile: true,
-            ApprovedByUser: true
+            ApprovedByUser: true,
           },
         }),
         dbContext.blog.count(),
@@ -48,14 +45,6 @@ export const PendingBlogRouter = trpcRouter.router({
           row_count,
         },
       } as TypeAPIResponse<TypePendingBlog[]>;
-      // return await APIResponseSchema(z.array(PendingBlogSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   byId: protectedProcedure
     .input(
@@ -63,7 +52,6 @@ export const PendingBlogRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    //.output(APIResponseSchema(PendingBlogSchema.nullable()))
     .query(async ({ input }) => {
       const data = await dbContext.pendingBlog.findFirst({
         where: {
@@ -78,9 +66,6 @@ export const PendingBlogRouter = trpcRouter.router({
       return {
         data,
       } as TypeAPIResponse<TypePendingBlog>;
-      // return await APIResponseSchema(PendingBlogSchema.nullable()).parseAsync({
-      //   data,
-      // });
     }),
   createFromDraft: protectedProcedure
     .input(AddDraftBlogSchema.omit({ GlobalBlogType: true }))
@@ -126,12 +111,6 @@ export const PendingBlogRouter = trpcRouter.router({
             Title: rest?.Title ?? "",
             Description: rest.Description ?? "",
             PendingBlogImage: {
-              // createMany: {
-              //   data: DraftBlogImage?.map((item) => ({
-              //     ...item,
-              //     Id: undefined,
-              //   })),
-              // },
               connectOrCreate: AddImages?.map((item) => ({
                 create: item,
                 where: {
@@ -161,15 +140,6 @@ export const PendingBlogRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    // .output(
-    //   APIResponseSchema(
-    //     PendingBlogSchema.omit({
-    //       PendingCurrentDetail: true,
-    //       PendingFeature: true,
-    //       PendingBlogImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(async ({ ctx, input: { Id } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -182,7 +152,15 @@ export const PendingBlogRouter = trpcRouter.router({
           Id,
         },
         include: {
-          PendingBlogImage: true,
+          PendingBlogImage: {
+            select: {
+              Code: true,
+              Name: true,
+              Size: true,
+              Path: true,
+              MimeType: true,
+            },
+          },
         },
       });
 
@@ -198,7 +176,6 @@ export const PendingBlogRouter = trpcRouter.router({
         }),
         dbContext.blog.create({
           data: {
-            Idx: data?.Idx,
             Code: data?.Code,
             Title: data?.Title ?? "",
             Description: data?.Description ?? "",
@@ -207,11 +184,7 @@ export const PendingBlogRouter = trpcRouter.router({
             UserId: data?.UserId ?? (await ctx).userId ?? "",
             BlogImage: {
               createMany: {
-                data:
-                  data?.PendingBlogImage?.map((item) => ({
-                    ...item,
-                    PendingBlogId: undefined,
-                  })) ?? [],
+                data: data?.PendingBlogImage ?? [],
               },
             },
           },
@@ -221,13 +194,6 @@ export const PendingBlogRouter = trpcRouter.router({
       return {
         data: updatedPendingBlog,
       };
-      // return await APIResponseSchema(
-      //   PendingBlogSchema.omit({
-      //     PendingCurrentDetail: true,
-      //     PendingFeature: true,
-      //     PendingBlogImage: true,
-      //   }).nullable()
-      // ).parseAsync({ data });
     }),
   reject: protectedProcedure
     .input(
@@ -235,15 +201,6 @@ export const PendingBlogRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    // .output(
-    //   APIResponseSchema(
-    //     PendingBlogSchema.omit({
-    //       PendingCurrentDetail: true,
-    //       PendingFeature: true,
-    //       PendingBlogImage: true,
-    //     }).nullable()
-    //   )
-    // )
     .mutation(async ({ ctx, input: { Id } }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -256,14 +213,21 @@ export const PendingBlogRouter = trpcRouter.router({
           Id,
         },
         include: {
-          PendingBlogImage: true,
+          PendingBlogImage: {
+            select: {
+              Code: true,
+              Name: true,
+              Size: true,
+              Path: true,
+              MimeType: true,
+            },
+          },
         },
       });
 
       const [, pendingBlog] = await dbContext.$transaction([
         dbContext.draftBlog.create({
           data: {
-            Idx: data?.Idx,
             Code: data?.Code ?? "",
             Title: data?.Title ?? "",
             Description: data?.Description ?? "",
@@ -271,11 +235,7 @@ export const PendingBlogRouter = trpcRouter.router({
             UserId: data?.UserId ?? "",
             DraftBlogImage: {
               createMany: {
-                data:
-                  data?.PendingBlogImage?.map((item) => ({
-                    ...item,
-                    PendingBlogId: undefined,
-                  })) ?? [],
+                data: data?.PendingBlogImage ?? [],
               },
             },
           },
@@ -288,12 +248,5 @@ export const PendingBlogRouter = trpcRouter.router({
       ]);
 
       return { data: pendingBlog };
-      // return await APIResponseSchema(
-      //   PendingBlogSchema.omit({
-      //     PendingCurrentDetail: true,
-      //     PendingFeature: true,
-      //     PendingBlogImage: true,
-      //   }).nullable()
-      // ).parseAsync({ data: pendingBlog });
     }),
 });

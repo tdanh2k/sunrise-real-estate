@@ -63,6 +63,7 @@ app.use(
 );
 
 app.get("/", async (req, res) => {
+  req;
   res.json({ message: "Test" });
 });
 
