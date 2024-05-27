@@ -159,7 +159,7 @@ export const BlogRouter = trpcRouter.router({
                     BlogImage: {
                         connectOrCreate: AddImages?.map((item) => ({
                             where: {
-                                Id: item.Id,
+                                Id: item.Id ?? "00000000-0000-0000-0000-000000000000",
                             },
                             create: item,
                         })),
@@ -177,7 +177,7 @@ export const BlogRouter = trpcRouter.router({
                     Code: {
                         notIn: AddImages?.map((r) => r.Code) ?? [],
                     },
-                    BlogId: Id,
+                    BlogId: Id ?? "00000000-0000-0000-0000-000000000000",
                 },
             }),
             dbContext.blogImage.deleteMany({
@@ -191,7 +191,7 @@ export const BlogRouter = trpcRouter.router({
                     Code: {
                         notIn: AddImages?.map((r) => r.Code) ?? [],
                     },
-                    BlogId: Id,
+                    BlogId: Id ?? "00000000-0000-0000-0000-000000000000",
                 },
             }),
         ]);

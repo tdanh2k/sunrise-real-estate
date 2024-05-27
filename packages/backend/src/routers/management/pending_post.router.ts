@@ -11,7 +11,6 @@ import { AddDraftPostSchema } from "../../schemas/AddDraftPost.schema.js";
 export const PendingPostRouter = trpcRouter.router({
   byPage: protectedProcedure
     .input(PaginationSchema)
-    //.output(APIResponseSchema(z.array(PendingPostSchema)))
     .query(async ({ ctx, input }) => {
       if ((await ctx).userId == null)
         throw new TRPCError({
@@ -24,9 +23,6 @@ export const PendingPostRouter = trpcRouter.router({
 
       const [data, row_count] = await dbContext.$transaction([
         dbContext.pendingPost.findMany({
-          where: {
-            UserId: (await ctx).userId,
-          },
           skip: page_index,
           take: page_size,
           include: {
@@ -46,14 +42,6 @@ export const PendingPostRouter = trpcRouter.router({
           row_count,
         },
       } as TypeAPIResponse<TypePendingPost[]>;
-      // return await APIResponseSchema(z.array(PendingPostSchema)).parseAsync({
-      //   data,
-      //   paging: {
-      //     page_index,
-      //     page_size,
-      //     row_count,
-      //   },
-      // });
     }),
   byId: protectedProcedure
     .input(
@@ -61,7 +49,6 @@ export const PendingPostRouter = trpcRouter.router({
         Id: RequiredString,
       })
     )
-    //.output(APIResponseSchema(PendingPostSchema.nullable()))
     .query(async ({ input }) => {
       const data = await dbContext.pendingPost.findFirst({
         where: {
@@ -78,9 +65,6 @@ export const PendingPostRouter = trpcRouter.router({
       return {
         data,
       } as TypeAPIResponse<TypePendingPost>;
-      // return await APIResponseSchema(PendingPostSchema.nullable()).parseAsync({
-      //   data,
-      // });
     }),
   createFromDraft: protectedProcedure
     .input(AddDraftPostSchema)

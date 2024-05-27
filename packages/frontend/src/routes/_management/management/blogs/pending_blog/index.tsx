@@ -176,11 +176,14 @@ export const Route = createFileRoute(
         getRowId: (row) => row.Id,
         enableRowActions: true,
         renderRowActionMenuItems: ({ row }) =>
-          RenderCustomActionMenuItems({
-            rowId: row.id,
-            actionList: tableRowActions(row?.original?.Id),
-            //onClickAction: closeMenu,
-          }),
+          row.original?.ApprovedByUserId == null ||
+          row.original?.ApprovedByUserId == ""
+            ? RenderCustomActionMenuItems({
+                rowId: row.id,
+                actionList: tableRowActions(row?.original?.Id),
+                //onClickAction: closeMenu,
+              })
+            : undefined,
       },
     });
 

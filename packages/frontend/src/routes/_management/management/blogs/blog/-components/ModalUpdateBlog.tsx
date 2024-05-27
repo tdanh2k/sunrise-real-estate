@@ -119,7 +119,6 @@ export const ModalUpdateBlog: FC<ModalUpdateProps> = ({
           name="Description"
           label="Mô tả"
           control={control}
-          editable={!isLoading}
         />
         {/* <MantineReactTableRHF
           legendLabel="Hình ảnh"

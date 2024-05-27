@@ -143,5 +143,13 @@ export const Contact: FC = () => {
 };
 
 export const Route = createFileRoute("/_client/contact")({
+  wrapInSuspense: true,
+  pendingComponent: () => (
+    <LoadingOverlay
+      visible={true}
+      zIndex={1000}
+      overlayProps={{ radius: "sm", blur: 2 }}
+    />
+  ),
   component: Contact,
 });

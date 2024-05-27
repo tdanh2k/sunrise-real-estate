@@ -6,7 +6,7 @@
         "!.env.vault",
         "!.env.project",
         "db.sql",
-        ".gitignore",
+        ".gitignore"
     ],
     "appService.defaultWebAppToDeploy": "None",
     "appService.showBuildDuringDeployPrompt": true,

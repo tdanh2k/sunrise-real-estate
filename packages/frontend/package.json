@@ -71,7 +71,7 @@
     "@types/react-slick": "^0.23.13",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
-    "@vitejs/plugin-react-swc": "^3.6.0",
+    "@vitejs/plugin-react-swc": "^3.7.0",
     "dotenv-vault": "^1.26.1",
     "eslint": "^9.3.0",
     "eslint-plugin-react-hooks": "^4.6.2",
@@ -81,7 +81,7 @@
     "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
-    "vite-plugin-compression2": "^1.1.0",
+    "vite-plugin-compression2": "^1.1.1",
     "vite-plugin-mkcert": "^1.17.5",
     "vite-plugin-static-copy": "^1.0.5"
   }

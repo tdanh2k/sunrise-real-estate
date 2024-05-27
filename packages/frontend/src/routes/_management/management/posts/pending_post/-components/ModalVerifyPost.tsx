@@ -63,7 +63,7 @@ export const ModalVerifyPost: FC<ModalProps> = ({
     mode: "all",
     values: {
       ...defaultValues,
-      ...pendingPostByIdResponse,
+      ...(pendingPostByIdResponse?.data ?? {}),
     },
   });
 
